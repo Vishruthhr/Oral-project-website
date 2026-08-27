@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="toothGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <g transform="translate(64, 64) scale(0.75)">
+    <!-- Tooth SVG Icon -->
+    <path fill="url(#toothGrad)" d="M256,32 C170,32 128,80 128,160 C128,210 148,250 160,290 C176,346 160,448 200,480 C240,448 240,360 256,360 C272,360 272,448 312,480 C352,448 336,346 352,290 C364,250 384,210 384,160 C384,80 342,32 256,32 Z" />
+    <!-- Medical Cross Badge -->
+    <circle cx="360" cy="120" r="60" fill="#16A34A" />
+    <path d="M360,85 L360,155 M325,120 L395,120" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" />
+  </g>
+</svg>

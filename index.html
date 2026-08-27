@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1B2A4A">
+  <meta name="description" content="Oral Health Assessment Workstation — Clinical Dental Examination Platform.">
+  <link rel="manifest" href="manifest.json">
+  <title>Oral Health Assessment Workstation</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ==================== LEFT NAVIGATION RAIL ==================== -->
+  <nav class="rail" id="rail" aria-label="Main Navigation">
+    <div class="rail-brand">
+      <div class="mark">🦷 Oral Health</div>
+      <div class="tag">Clinical Workstation</div>
+    </div>
+
+    <div class="tab-item active" data-section="sec-general">
+      <span class="tab-num">01</span>
+      <span class="label-text">General Information</span>
+    </div>
+    <div class="tab-item" data-section="sec-dentition">
+      <span class="tab-num">02</span>
+      <span class="label-text">Dentition Chart</span>
+    </div>
+    <div class="tab-item" data-section="sec-perio">
+      <span class="tab-num">03</span>
+      <span class="label-text">Periodontal (CPI/LOA)</span>
+    </div>
+    <div class="tab-item" data-section="sec-other">
+      <span class="tab-num">04</span>
+      <span class="label-text">Other Findings</span>
+    </div>
+    <div class="tab-item" data-section="sec-records">
+      <span class="tab-num">05</span>
+      <span class="label-text">Saved Records</span>
+    </div>
+
+    <div class="rail-status">
+      <div class="label">Current Subject DMFT</div>
+      <div class="rail-dmft">
+        <div><div class="n" id="railD">0</div><div class="l">D</div></div>
+        <div><div class="n" id="railM">0</div><div class="l">M</div></div>
+        <div><div class="n" id="railF">0</div><div class="l">F</div></div>
+        <div><div class="n" id="railDMFT">0</div><div class="l">DMFT</div></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN WORKSTATION ==================== -->
+  <main>
+    <header class="topbar">
+      <div class="topbar-title-wrap">
+        <h1>Oral Health Assessment Form</h1>
+        <div class="sub">Standard Digital Clinical Dental Charting Platform</div>
+        
+        <!-- Live Chairside Patient Banner & Timer -->
+        <div class="chairside-banner-pill">
+          <span class="patient-badge" id="activePatientBadge">Patient: <i>Unassigned</i></span>
+          <span class="exam-timer" id="examTimerBadge">⏱️ 00:00</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button type="button" class="btn-topbar active" id="btnAudioToggle" title="Audio feedback">🔊 Clicks</button>
+        <button type="button" class="btn-topbar" id="btnThemeToggle" title="Toggle Theme">☀️ Light Clinic</button>
+        <button type="button" class="help-btn" id="btnHelp">📖 Help &amp; Codebook</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Workstation Guidance Banner -->
+      <div class="demo-banner">
+        <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. All clinical records and drafts are securely persisted on-device.
+      </div>
+
+      <!-- ===================== SECTION 1: GENERAL INFO ===================== -->
+      <section class="card" id="sec-general">
+        <h2><span class="sec-num">01</span> General Information</h2>
+        <div class="card-sub">Demographics and examination details</div>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label" for="f_participantId">Participant ID <span class="req">*</span></label>
+            <input type="text" id="f_participantId" placeholder="e.g. KA-DVG-001" autocomplete="off">
+            <div class="field-error" id="err_participantId">Participant ID is required.</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="f_examDate">Examination Date <span class="req">*</span></label>
+            <input type="date" id="f_examDate">
+            <div class="field-error" id="err_examDate">Examination date is required.</div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label" for="f_examinerId">Examiner ID</label>
+            <input type="text" id="f_examinerId" placeholder="e.g. EX1">
+          </div>
+          <div class="field">
+            <label class="field-label" for="f_village">Village / Area</label>
+            <input type="text" id="f_village" placeholder="e.g. Area 4 / North Village">
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label">Location <span class="req">*</span></label>
+            <div class="chip-row" id="chips_location">
+              <button type="button" class="chip" data-val="1">Urban</button>
+              <button type="button" class="chip" data-val="2">Peri-urban</button>
+              <button type="button" class="chip" data-val="3">Rural</button>
+            </div>
+            <div class="field-error" id="err_location">Select a location.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Sex <span class="req">*</span></label>
+            <div class="chip-row" id="chips_sex">
+              <button type="button" class="chip" data-val="1">Male</button>
+              <button type="button" class="chip" data-val="2">Female</button>
+            </div>
+            <div class="field-error" id="err_sex">Select sex.</div>
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div class="field">
+            <label class="field-label" for="f_dob">Date of Birth</label>
+            <input type="date" id="f_dob">
+          </div>
+          <div class="field">
+            <label class="field-label">Age (auto-calculated)</label>
+            <div class="readonly-pill" id="agePill">— years</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="f_education">Years of Education</label>
+            <input type="number" id="f_education" min="0" max="30" placeholder="e.g. 12">
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label" for="f_ethnicGroup">Ethnic Group</label>
+            <input type="text" id="f_ethnicGroup" placeholder="e.g. Group A">
+          </div>
+          <div class="field">
+            <label class="field-label" for="f_occupation">Occupation</label>
+            <input type="text" id="f_occupation" placeholder="e.g. Farmer, Homemaker, Teacher">
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SECTION 2: DENTITION ===================== -->
+      <section class="card" id="sec-dentition">
+        <h2>
+          <span class="sec-num">02</span> Dentition Status 
+          <button type="button" class="help-ico" data-help="crown" title="View Dentition Codes">i</button>
+        </h2>
+        <div class="card-sub">Tap a tooth to record crown &amp; root status — FDI two-digit notation, 32 permanent teeth</div>
+
+        <!-- Odontogram Action Toolbar -->
+        <div class="arch-toolbar">
+          <label class="toggle-switch-label">
+            <input type="checkbox" id="autoAdvanceToggle" checked>
+            <span>Auto-advance next tooth in sequence (18 → 38)</span>
+          </label>
+          <div class="arch-toolbar-actions">
+            <button type="button" class="btn-tool active" id="btnToggleRoots">🦷 Roots</button>
+            <button type="button" class="btn-tool" id="btnMarkAllSound">✓ Fill Sound (0)</button>
+            <button type="button" class="btn-tool" id="btnClearArch">↺ Clear Arch</button>
+          </div>
+        </div>
+
+        <!-- Anatomical Parabolic Arch View -->
+        <div class="arch-wrap">
+          <div class="arch-label">Upper Arch — 18 → 28 (Maxillary)</div>
+          <div class="arch-row" id="upperArch"></div>
+
+          <div class="arch-label" style="margin-top: 26px;">Lower Arch — 48 → 38 (Mandibular)</div>
+          <div class="arch-row" id="lowerArch"></div>
+        </div>
+
+        <!-- Dentition Breakdown Metrics -->
+        <div class="dentition-stats-strip">
+          <div class="dent-stat"><div class="num" id="dentD">0</div><div class="lbl">Decayed (D)</div></div>
+          <div class="dent-stat"><div class="num" id="dentM">0</div><div class="lbl">Missing (M)</div></div>
+          <div class="dent-stat"><div class="num" id="dentF">0</div><div class="lbl">Filled (F)</div></div>
+          <div class="dent-stat"><div class="num" id="dentDMFT" style="color:var(--teal);">0</div><div class="lbl">DMFT Index</div></div>
+          <div class="dent-stat"><div class="num" id="dentSound" style="color:var(--sage);">0</div><div class="lbl">Sound (0)</div></div>
+          <div class="dent-stat"><div class="num" id="dentRecorded">0/32</div><div class="lbl">Recorded</div></div>
+        </div>
+
+        <div class="tooth-legend" id="toothLegend"></div>
+      </section>
+
+      <!-- ===================== SECTION 3: PERIODONTAL ===================== -->
+      <section class="card" id="sec-perio">
+        <h2>
+          <span class="sec-num">03</span> Periodontal Status 
+          <button type="button" class="help-ico" data-help="cpi" title="View CPI & LOA Codes">i</button>
+        </h2>
+        <div class="card-sub">Community Periodontal Index (CPI) and Loss of Attachment (LOA), per sextant</div>
+        
+        <!-- Periodontal Sextant Form Grid -->
+        <div class="sextant-grid" id="sextantGrid"></div>
+      </section>
+
+      <!-- ===================== SECTION 4: OTHER FINDINGS ===================== -->
+      <section class="card" id="sec-other">
+        <h2><span class="sec-num">04</span> Other Findings</h2>
+        <div class="card-sub">Fluorosis, trauma, oral mucosa, prosthetic status, treatment need</div>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label">Dental Fluorosis <button type="button" class="help-ico" data-help="fluorosis">i</button></label>
+            <select id="f_fluorosis"></select>
+          </div>
+          <div class="field">
+            <label class="field-label">Traumatic Dental Injury <button type="button" class="help-ico" data-help="tdi">i</button></label>
+            <select id="f_tdi"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Oral Mucosal Lesion Present?</label>
+          <div class="chip-row" id="chips_oml">
+            <button type="button" class="chip" data-val="Y">Yes</button>
+            <button type="button" class="chip selected" data-val="N">No</button>
+          </div>
+        </div>
+
+        <div class="grid2" id="omlDetails" style="display:none;">
+          <div class="field">
+            <label class="field-label">OML Site <button type="button" class="help-ico" data-help="omlsite">i</button></label>
+            <select id="f_omlSite"></select>
+          </div>
+          <div class="field">
+            <label class="field-label">OML Condition <button type="button" class="help-ico" data-help="omlcond">i</button></label>
+            <select id="f_omlCondition"></select>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label">Prosthesis — Upper <button type="button" class="help-ico" data-help="pros">i</button></label>
+            <select id="f_prosUpper"></select>
+          </div>
+          <div class="field">
+            <label class="field-label">Prosthesis — Lower</label>
+            <select id="f_prosLower"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Overall Treatment Need <button type="button" class="help-ico" data-help="treat">i</button></label>
+          <select id="f_treatment"></select>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Notes</label>
+          <textarea id="f_notes" rows="3" placeholder="Optional remarks..."></textarea>
+        </div>
+
+        <div class="action-row">
+          <button type="button" class="btn ghost" id="btnReset">Clear Form</button>
+          <button type="button" class="btn primary" id="btnSave">💾 Validate &amp; Save Record</button>
+        </div>
+      </section>
+
+      <!-- ===================== SECTION 5: RECORDS ===================== -->
+      <section class="card" id="sec-records">
+        <h2><span class="sec-num">05</span> Saved Records</h2>
+        <div class="card-sub">Session records — export to keep them</div>
+
+        <!-- Session Aggregate Summary -->
+        <div class="records-stats-bar">
+          <div class="rec-stat-card">
+            <div class="stat-val" id="statTotalRecords">0</div>
+            <div class="stat-lbl">Total Examined</div>
+          </div>
+          <div class="rec-stat-card">
+            <div class="stat-val" id="statMeanDMFT">0.0</div>
+            <div class="stat-lbl">Mean DMFT</div>
+          </div>
+          <div class="rec-stat-card">
+            <div class="stat-val" id="statMeanAge">—</div>
+            <div class="stat-lbl">Mean Age</div>
+          </div>
+          <div class="rec-stat-card">
+            <div class="stat-val" id="statCariesFree">0%</div>
+            <div class="stat-lbl">Caries Free (DMFT=0)</div>
+          </div>
+        </div>
+
+        <div class="action-row" style="justify-content:space-between; margin-bottom:14px; align-items:center;">
+          <div id="recCount" style="font-size:13px; color:var(--muted);">0 records saved this session</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <input type="file" id="fileImportInput" accept=".json" style="display:none;">
+            <button type="button" class="btn ghost" id="btnImportJSON">📥 Import JSON</button>
+            <button type="button" class="btn ghost" id="btnExportJSON">Export JSON</button>
+            <button type="button" class="btn teal" id="btnExportCSV">Export CSV</button>
+            <button type="button" class="btn coral" id="btnClearAllRecords" style="padding:8px 14px; font-size:12px;" title="Delete all records">Delete All</button>
+          </div>
+        </div>
+
+        <div class="search-input-wrap" style="margin-bottom:14px;">
+          <input type="text" id="searchRecordsInput" placeholder="🔍 Search records by ID, Examiner, Village...">
+        </div>
+
+        <div id="recordsTableWrap"></div>
+      </section>
+
+    </div>
+
+    <!-- ===================== STICKY LIVE SUMMARY STRIP ===================== -->
+    <div class="summary-strip">
+      <div class="grp">
+        <div class="metric"><div class="n" id="sumD">0</div><div class="l">Decayed</div></div>
+        <div class="metric"><div class="n" id="sumM">0</div><div class="l">Missing</div></div>
+        <div class="metric"><div class="n" id="sumF">0</div><div class="l">Filled</div></div>
+        <div class="metric"><div class="n" id="sumDMFT">0</div><div class="l">DMFT</div></div>
+        <div class="metric"><div class="n" id="sumCPI">—</div><div class="l">Worst CPI</div></div>
+      </div>
+      <button type="button" class="btn coral" id="btnSaveStrip">💾 Validate &amp; Save Record</button>
+    </div>
+  </main>
+</div>
+
+<!-- ==================== TOOTH TOUCH KEYPAD MODAL ==================== -->
+<div class="modal-backdrop" id="toothModalBackdrop"></div>
+<div class="tooth-keypad-modal" id="toothModal" role="dialog" aria-modal="true" aria-labelledby="activeToothTitle">
+  <div class="modal-header">
+    <div>
+      <h3 id="activeToothTitle" style="margin:0 0 2px; font-family:var(--serif); font-size:18px; color:var(--navy);">Tooth #18</h3>
+      <div id="activeToothSub" style="font-size:11.5px; color:var(--muted);">FDI notation — select crown and root status</div>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <button type="button" class="btn ghost btn-sm" id="btnPrevTooth">◀ Prev</button>
+      <button type="button" class="btn ghost btn-sm" id="btnNextTooth">Next ▶</button>
+      <button type="button" class="btn ghost btn-sm" id="btnCloseToothModal">✕</button>
+    </div>
+  </div>
+
+  <div class="modal-mode-tabs" id="keypadModeToggle">
+    <button type="button" class="mode-tab active" data-mode="crown">Crown Status</button>
+    <button type="button" class="mode-tab" data-mode="root">Root Status</button>
+  </div>
+
+  <div class="modal-keypad-body">
+    <div class="chip-container" id="crownKeypad"></div>
+    <div class="chip-container" id="rootKeypad" style="display:none;"></div>
+  </div>
+
+  <div class="modal-footer">
+    <span style="font-size:11px; color:var(--muted);">Tap a code to assign. Auto-advances to next tooth in sequence.</span>
+    <button type="button" class="btn primary btn-sm" onclick="window.app.odontogram.closeModal()">Done</button>
+  </div>
+</div>
+
+<!-- ==================== HELP DRAWER & CODEBOOK ==================== -->
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<div class="drawer" id="helpDrawer">
+  <div class="drawer-head">
+    <h2>Clinical Reference &amp; Codebook</h2>
+    <button type="button" class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- ==================== INLINE HELP POPOVER & TOAST ==================== -->
+<div class="popover" id="popover"><div class="popover-arrow"></div><div id="popoverContent"></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- Tooth Hover HUD Tooltip -->
+<div class="tooth-hover-hud" id="toothHoverHUD" role="tooltip" aria-hidden="true"></div>
+
+<!-- JavaScript Application Bundle -->
+<script src="js/clinical-constants.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/odontogram.js"></script>
+<script src="js/export.js"></script>
+<script src="js/app.js"></script>
+
+<!-- Progressive Web App Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('SW registration note:', err);
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
