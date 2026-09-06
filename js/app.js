@@ -1,6 +1,6 @@
 /**
  * Clinical Oral Health Assessment - Application Controller
- * Complete Form Event Engine, Periodontal Sextant Form Renderer, Calculations & Storage Sync
+ * Professional Dental Workstation Engine for Tablet & Desktop
  */
 
 class ClinicalOralApp {
@@ -63,7 +63,7 @@ class ClinicalOralApp {
   }
 
   async init() {
-    // Default to Light Theme
+    // Apply theme (Default: Light)
     this.applyTheme(this.settings.theme || 'light');
     this.initAudioContext();
     this.startExamTimer();
@@ -71,7 +71,6 @@ class ClinicalOralApp {
     this.exporter = new ExportManager(this);
     this.odontogram = new OdontogramController(this);
 
-    this.bindDOM();
     this.bindNavigation();
     this.bindGeneralFields();
     this.renderSextants();
@@ -175,21 +174,21 @@ class ClinicalOralApp {
 
   cycleTheme() {
     const themes = ['light', 'dark', 'contrast'];
-    const current = this.settings.theme || 'light';
+    const current = document.documentElement.getAttribute('data-theme') || this.settings.theme || 'light';
     const nextIdx = (themes.indexOf(current) + 1) % themes.length;
     const nextTheme = themes[nextIdx];
     this.settings.theme = nextTheme;
     if (window.storageManager) window.storageManager.saveSetting('theme', nextTheme);
     this.applyTheme(nextTheme);
-    this.showToast(`Theme switched to ${nextTheme.toUpperCase()}`, 'info');
+    this.showToast(`Theme: ${nextTheme.toUpperCase()}`, 'info');
   }
 
   /* ====================== NAVIGATION ====================== */
   bindNavigation() {
-    const allNavItems = document.querySelectorAll('[data-nav-target], .tab-item');
+    const allNavItems = document.querySelectorAll('.tab-item');
     allNavItems.forEach(item => {
       item.addEventListener('click', () => {
-        const targetSection = item.dataset.navTarget || item.dataset.section;
+        const targetSection = item.dataset.section;
         this.navigateToSection(targetSection);
       });
     });
@@ -211,12 +210,12 @@ class ClinicalOralApp {
     }
 
     // ScrollSpy
-    const sectionIds = ['sec-general', 'sec-dentition', 'sec-perio', 'sec-periodontal', 'sec-other', 'sec-records'];
+    const sectionIds = ['sec-general', 'sec-dentition', 'sec-perio', 'sec-other', 'sec-records'];
     window.addEventListener('scroll', () => {
       let activeId = sectionIds[0];
       for (const id of sectionIds) {
         const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top < 150) activeId = id;
+        if (el && el.getBoundingClientRect().top < 160) activeId = id;
       }
       this.highlightNavButtons(activeId);
     }, { passive: true });
@@ -235,9 +234,8 @@ class ClinicalOralApp {
   }
 
   highlightNavButtons(sectionId) {
-    document.querySelectorAll('[data-nav-target], .tab-item').forEach(b => {
-      const target = b.dataset.navTarget || b.dataset.section;
-      b.classList.toggle('active', target === sectionId || (sectionId === 'sec-periodontal' && target === 'sec-perio'));
+    document.querySelectorAll('.tab-item').forEach(b => {
+      b.classList.toggle('active', b.dataset.section === sectionId);
     });
   }
 
@@ -266,11 +264,11 @@ class ClinicalOralApp {
     });
 
     // Location Chips
-    document.querySelectorAll('#chips_location .chip, #chips_location .segmented-btn').forEach(btn => {
+    document.querySelectorAll('#chips_location .chip').forEach(btn => {
       btn.addEventListener('click', () => {
         this.triggerHaptic();
         this.playClinicalClick();
-        document.querySelectorAll('#chips_location .chip, #chips_location .segmented-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('#chips_location .chip').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         this.currentRecord.location = btn.dataset.val;
         this.clearFieldError('chips_location');
@@ -279,11 +277,11 @@ class ClinicalOralApp {
     });
 
     // Sex Chips
-    document.querySelectorAll('#chips_sex .chip, #chips_sex .segmented-btn').forEach(btn => {
+    document.querySelectorAll('#chips_sex .chip').forEach(btn => {
       btn.addEventListener('click', () => {
         this.triggerHaptic();
         this.playClinicalClick();
-        document.querySelectorAll('#chips_sex .chip, #chips_sex .segmented-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('#chips_sex .chip').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         this.currentRecord.sex = btn.dataset.val;
         this.clearFieldError('chips_sex');
@@ -301,7 +299,7 @@ class ClinicalOralApp {
 
   updateAgeDisplay() {
     const age = this.calcAge(this.currentRecord.dob, this.currentRecord.examDate);
-    const pill = document.getElementById('agePill') || document.getElementById('ageDisplayPill');
+    const pill = document.getElementById('agePill');
     if (pill) {
       pill.textContent = age !== null ? `${age} years` : '— years';
     }
@@ -309,7 +307,7 @@ class ClinicalOralApp {
 
   /* ====================== SECTION 3: PERIODONTAL SEXTANTS ====================== */
   renderSextants() {
-    const grid = document.getElementById('sextantGrid') || document.getElementById('sextantsGrid');
+    const grid = document.getElementById('sextantGrid');
     if (!grid) return;
 
     const sextants = CLINICAL_CONSTANTS.SEXTANTS;
@@ -321,7 +319,7 @@ class ClinicalOralApp {
         </div>
         
         <div class="sx-field">
-          <label class="sx-label">CPI (Bleeding / Pockets)</label>
+          <label class="sx-label">CPI (Bleeding / Calculus / Pockets)</label>
           <select data-cpi="${i}" class="input-select sx-select">
             ${this.buildSelectOptions(CLINICAL_CONSTANTS.CPI_OPTS, this.currentRecord.cpi[i])}
           </select>
@@ -336,7 +334,7 @@ class ClinicalOralApp {
       </div>
     `).join('');
 
-    // Attach listeners
+    // Attach change listeners
     grid.querySelectorAll('[data-cpi]').forEach(s => {
       s.addEventListener('change', (e) => {
         this.currentRecord.cpi[+s.dataset.cpi] = e.target.value;
@@ -394,14 +392,14 @@ class ClinicalOralApp {
     });
 
     // OML Yes / No toggle
-    document.querySelectorAll('#chips_oml .chip, #chips_oml .segmented-btn').forEach(btn => {
+    document.querySelectorAll('#chips_oml .chip').forEach(btn => {
       btn.addEventListener('click', () => {
         this.triggerHaptic();
         this.playClinicalClick();
-        document.querySelectorAll('#chips_oml .chip, #chips_oml .segmented-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('#chips_oml .chip').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         this.currentRecord.omlPresent = btn.dataset.val;
-        const details = document.getElementById('omlDetails') || document.getElementById('omlDetailsGroup');
+        const details = document.getElementById('omlDetails');
         if (details) {
           details.style.display = btn.dataset.val === 'Y' ? 'grid' : 'none';
         }
@@ -410,9 +408,9 @@ class ClinicalOralApp {
     });
 
     // Save & Reset action buttons
-    const btnSave = document.getElementById('btnSave') || document.getElementById('btnSaveRecord');
-    const btnSaveStrip = document.getElementById('btnSaveStrip') || document.getElementById('btnSaveSticky');
-    const btnReset = document.getElementById('btnReset') || document.getElementById('btnClearForm');
+    const btnSave = document.getElementById('btnSave');
+    const btnSaveStrip = document.getElementById('btnSaveStrip');
+    const btnReset = document.getElementById('btnReset');
 
     if (btnSave) btnSave.addEventListener('click', () => this.handleSaveRecord());
     if (btnSaveStrip) btnSaveStrip.addEventListener('click', () => this.handleSaveRecord());
@@ -437,18 +435,18 @@ class ClinicalOralApp {
     this.updatePatientBanner(r.participantId);
     this.updateAgeDisplay();
 
-    document.querySelectorAll('#chips_location .chip, #chips_location .segmented-btn').forEach(b => {
+    document.querySelectorAll('#chips_location .chip').forEach(b => {
       b.classList.toggle('selected', b.dataset.val === r.location);
     });
 
-    document.querySelectorAll('#chips_sex .chip, #chips_sex .segmented-btn').forEach(b => {
+    document.querySelectorAll('#chips_sex .chip').forEach(b => {
       b.classList.toggle('selected', b.dataset.val === r.sex);
     });
 
-    document.querySelectorAll('#chips_oml .chip, #chips_oml .segmented-btn').forEach(b => {
+    document.querySelectorAll('#chips_oml .chip').forEach(b => {
       b.classList.toggle('selected', b.dataset.val === (r.omlPresent || 'N'));
     });
-    const omlDetails = document.getElementById('omlDetails') || document.getElementById('omlDetailsGroup');
+    const omlDetails = document.getElementById('omlDetails');
     if (omlDetails) {
       omlDetails.style.display = r.omlPresent === 'Y' ? 'grid' : 'none';
     }
@@ -517,7 +515,6 @@ class ClinicalOralApp {
       await window.storageManager.saveRecord(recordToSave);
       if (window.storageManager) window.storageManager.clearDraft();
 
-      const action = this.editingRecordId ? 'updated' : 'saved';
       this.showToast(`Record saved ✓ — form cleared for next subject.`, 'success');
       this.playClinicalClick(1000);
 
@@ -658,8 +655,8 @@ class ClinicalOralApp {
   }
 
   renderRecordsTable() {
-    const wrap = document.getElementById('recordsTableWrap') || document.getElementById('recordsTableContainer');
-    const countBadge = document.getElementById('recCount') || document.getElementById('recordsCountBadge');
+    const wrap = document.getElementById('recordsTableWrap');
+    const countBadge = document.getElementById('recCount');
     
     if (countBadge) {
       countBadge.textContent = `${this.records.length} record${this.records.length === 1 ? '' : 's'} saved this session`;
@@ -744,10 +741,10 @@ class ClinicalOralApp {
 
   /* ====================== MODALS & CODEBOOK ====================== */
   bindModalsAndHelp() {
-    const btnHelp = document.getElementById('btnHelp') || document.getElementById('btnOpenHelp');
+    const btnHelp = document.getElementById('btnHelp');
     const helpDrawer = document.getElementById('helpDrawer');
-    const helpBackdrop = document.getElementById('drawerBackdrop') || document.getElementById('helpDrawerBackdrop');
-    const btnCloseHelp = document.getElementById('drawerClose') || document.getElementById('btnCloseHelp');
+    const helpBackdrop = document.getElementById('drawerBackdrop');
+    const btnCloseHelp = document.getElementById('drawerClose');
 
     const openHelp = () => {
       if (helpDrawer && helpBackdrop) {
@@ -774,7 +771,7 @@ class ClinicalOralApp {
     const pop = document.getElementById('popover');
     const popContent = document.getElementById('popoverContent');
 
-    document.querySelectorAll('.help-ico, .mini-help-btn').forEach(btn => {
+    document.querySelectorAll('.help-ico').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const helpKey = btn.dataset.help;
@@ -783,7 +780,7 @@ class ClinicalOralApp {
 
         popContent.innerHTML = `
           <div style="font-weight:700; margin-bottom:8px;">${topic.title}</div>
-          ${topic.rows.map(([c, l]) => `<div class="pc"><b style="font-family:var(--mono); color:var(--teal-l, #38BDF8); width:24px; flex-shrink:0;">${c}</b><span>${l}</span></div>`).join('')}
+          ${topic.rows.map(([c, l]) => `<div class="pc"><b style="font-family:var(--mono); color:var(--teal-l, #E7F1EF); width:24px; flex-shrink:0;">${c}</b><span>${l}</span></div>`).join('')}
         `;
 
         const rect = btn.getBoundingClientRect();
@@ -799,7 +796,7 @@ class ClinicalOralApp {
   }
 
   renderDrawer() {
-    const body = document.getElementById('drawerBody') || document.getElementById('codebookContent');
+    const body = document.getElementById('drawerBody');
     if (!body) return;
 
     const sections = [
@@ -891,13 +888,13 @@ class ClinicalOralApp {
     setT('railDMFT', stats.DMFT);
 
     const age = this.calcAge(this.currentRecord.dob, this.currentRecord.examDate);
-    const agePill = document.getElementById('agePill') || document.getElementById('ageDisplayPill');
+    const agePill = document.getElementById('agePill');
     if (agePill) agePill.textContent = age !== null ? `${age} years` : '— years';
   }
 
   /* ====================== TOAST NOTIFICATIONS ====================== */
   showToast(message, type = 'info') {
-    const toast = document.getElementById('toast') || document.getElementById('toastNotification');
+    const toast = document.getElementById('toast');
     if (!toast) return;
 
     toast.className = `toast show ${type}`;

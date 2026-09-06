@@ -78,7 +78,7 @@ class OdontogramController {
       this.modalBackdrop.addEventListener('click', () => this.closeModal());
     }
 
-    // Keyboard navigation
+    // Keyboard navigation (Numpad / Arrow keys)
     window.addEventListener('keydown', (e) => {
       if (!this.activeTooth || !this.modal || !this.modal.classList.contains('open')) return;
       const key = e.key.toUpperCase();
@@ -135,11 +135,11 @@ class OdontogramController {
       <div class="hud-tooth-name">${info.name}</div>
       <div class="hud-status-row">
         <span class="hud-status-label">Crown:</span>
-        <span class="hud-status-val" style="color: ${crownMeta ? crownMeta.color : 'var(--text-muted)'};">${crownText}</span>
+        <span class="hud-status-val" style="color: ${crownMeta ? crownMeta.color : 'var(--muted)'};">${crownText}</span>
       </div>
       <div class="hud-status-row" style="margin-top: 3px;">
         <span class="hud-status-label">Root:</span>
-        <span class="hud-status-val" style="color: ${rootMeta ? rootMeta.color : 'var(--text-muted)'};">${rootText}</span>
+        <span class="hud-status-val" style="color: ${rootMeta ? rootMeta.color : 'var(--muted)'};">${rootText}</span>
       </div>
     `;
 
@@ -218,14 +218,14 @@ class OdontogramController {
 
     const mid = (total - 1) / 2;
     // Parabolic arch offset calculation for natural curvature
-    const offset = Math.round(Math.pow(Math.abs(index - mid) / mid, 1.6) * (isUpper ? 12 : -12));
+    const offset = Math.round(Math.pow(Math.abs(index - mid) / mid, 1.6) * (isUpper ? 10 : -10));
 
     const isRecorded = crownCode !== '';
     const crownClass = isRecorded ? `code-${crownCode}` : 'code-0';
     const isCurrentActive = this.activeTooth === toothNum ? 'active-selection' : '';
 
     const toothType = this.getToothMorphologyType(toothNum);
-    const svgIcon = this.getAnatomicalSVG(toothType, isUpper, crownCode);
+    const svgIcon = this.getAnatomicalSVG(toothType, isUpper, toothNum);
 
     const rootColor = this.getComputedRootColor(rootCode);
 
@@ -260,8 +260,8 @@ class OdontogramController {
     return 'molar'; // 6, 7, 8
   }
 
-  // Realistic Anatomical Tooth SVG with True Anatomical Features
-  getAnatomicalSVG(type, isUpper, crownCode) {
+  // Precision Anatomical Tooth SVG with True Anatomical Features
+  getAnatomicalSVG(type, isUpper, toothNum) {
     let svgBody = '';
 
     if (type === 'molar') {
@@ -269,74 +269,76 @@ class OdontogramController {
         // Maxillary Molar: 3 anatomical roots pointing UP, wide 4-cusp crown pointing DOWN
         svgBody = `
           <!-- Maxillary Molar Roots (Mesiobuccal, Distobuccal, Palatal) -->
-          <path d="M5,18 C4,10 5,3 8,2 C10,2 11,8 13,18 M15,18 C16,10 17,2 19,2 C21,2 22,10 23,18 M25,18 C27,8 28,3 30,3 C32,3 33,10 32,18" class="anat-root" />
-          <!-- Anatomical Crown with 4 Cusps & Oblique Ridge -->
-          <path d="M4,18 C3,26 6,34 18.5,34 C31,34 34,26 33,18 C33,16 4,16 4,18 Z" class="anat-crown" />
-          <path d="M9,22 C14,27 23,27 28,22 M18.5,20 L18.5,32 M11,27 L26,27" class="anat-groove" />
+          <path d="M6,17 C5,10 6,3 9,2 C11,2 12,8 14,17 M15,17 C17,10 18,2 20,2 C22,2 23,10 24,17 M25,17 C27,8 28,3 31,3 C33,3 34,10 33,17" class="anat-root" />
+          <!-- Anatomical Rhomboid Crown with 4 Cusps & Oblique Ridge -->
+          <path d="M4,17 C3,25 6,34 19,34 C32,34 35,25 34,17 C34,15 4,15 4,17 Z" class="anat-crown" />
+          <path d="M9,22 C14,27 24,27 29,22 M19,19 L19,32 M12,27 L26,27" class="anat-groove" />
+          <circle cx="19" cy="25" r="1.2" class="anat-pit" />
         `;
       } else {
-        // Mandibular Molar: 2 robust curved roots pointing DOWN, wide occlusal crown pointing UP
+        // Mandibular Molar: 2 robust curved roots pointing DOWN, wide 5-cusp occlusal crown pointing UP
         svgBody = `
-          <!-- Mandibular Molar Crown -->
-          <path d="M4,16 C3,8 6,2 18.5,2 C31,2 34,8 33,16 C33,18 4,18 4,16 Z" class="anat-crown" />
-          <path d="M9,12 C14,7 23,7 28,12 M18.5,4 L18.5,15 M11,8 L26,8" class="anat-groove" />
+          <!-- Mandibular Molar Crown with 5 Cusps -->
+          <path d="M4,17 C3,9 6,2 19,2 C32,2 35,9 34,17 C34,19 4,19 4,17 Z" class="anat-crown" />
+          <path d="M9,12 C14,7 24,7 29,12 M19,4 L19,17 M12,9 L26,9" class="anat-groove" />
+          <circle cx="19" cy="11" r="1.2" class="anat-pit" />
           <!-- 2 Divergent Curved Roots (Mesial & Distal) -->
-          <path d="M7,16 C6,24 7,33 11,35 C14,35 15,26 16,16 M21,16 C22,26 23,35 26,35 C30,33 31,24 30,16" class="anat-root" />
+          <path d="M7,17 C6,25 7,34 11,36 C15,36 16,27 17,17 M21,17 C22,27 23,36 27,36 C31,34 32,25 31,17" class="anat-root" />
         `;
       }
     } else if (type === 'premolar') {
       if (isUpper) {
-        // Maxillary Premolar: Dual roots pointing UP, bicuspid crown pointing DOWN
+        // Maxillary Premolar: Dual tapered roots pointing UP, bicuspid crown pointing DOWN
         svgBody = `
-          <path d="M9,18 C8,10 9,3 12,2 C14,2 15,10 17,18 M20,18 C22,10 23,3 25,2 C28,3 29,10 28,18" class="anat-root" />
-          <path d="M6,18 C5,25 9,33 18.5,33 C28,33 32,25 31,18 Z" class="anat-crown" />
-          <path d="M12,25 C16,28 21,28 25,25 M18.5,20 L18.5,30" class="anat-groove" />
+          <path d="M10,17 C9,10 10,3 13,2 C15,2 16,10 18,17 M20,17 C22,10 23,3 25,2 C28,3 29,10 28,17" class="anat-root" />
+          <path d="M6,17 C5,25 9,34 19,34 C29,34 33,25 32,17 Z" class="anat-crown" />
+          <path d="M12,25 C16,28 22,28 26,25 M19,19 L19,31" class="anat-groove" />
         `;
       } else {
         // Mandibular Premolar: Tapered single root pointing DOWN, bicuspid crown pointing UP
         svgBody = `
-          <path d="M6,16 C5,9 9,2 18.5,2 C28,2 32,9 31,16 Z" class="anat-crown" />
-          <path d="M12,9 C16,6 21,6 25,9 M18.5,4 L18.5,14" class="anat-groove" />
-          <path d="M10,16 C10,24 13,34 18.5,35 C24,34 27,24 27,16 Z" class="anat-root" />
+          <path d="M6,17 C5,9 9,2 19,2 C29,2 33,9 32,17 Z" class="anat-crown" />
+          <path d="M12,9 C16,6 22,6 26,9 M19,5 L19,17" class="anat-groove" />
+          <path d="M11,17 C11,25 14,35 19,36 C24,35 27,25 27,17 Z" class="anat-root" />
         `;
       }
     } else if (type === 'canine') {
       if (isUpper) {
         // Maxillary Canine: Stout long root pointing UP, pointed spear cusp pointing DOWN
         svgBody = `
-          <path d="M11,18 C10,10 13,3 18.5,2 C24,3 27,10 26,18 Z" class="anat-root" />
-          <path d="M7,18 C6,24 11,30 18.5,34 C26,30 31,24 30,18 Z" class="anat-crown" />
-          <path d="M18.5,20 L18.5,32" class="anat-groove" />
+          <path d="M12,17 C11,9 13,3 19,2 C25,3 27,9 26,17 Z" class="anat-root" />
+          <path d="M7,17 C6,24 11,30 19,35 C27,30 32,24 31,17 Z" class="anat-crown" />
+          <path d="M19,19 L19,33" class="anat-groove" />
         `;
       } else {
         // Mandibular Canine: Stout root pointing DOWN, pointed crown pointing UP
         svgBody = `
-          <path d="M7,16 C6,10 11,4 18.5,2 C26,4 31,10 30,16 Z" class="anat-crown" />
-          <path d="M18.5,14 L18.5,3" class="anat-groove" />
-          <path d="M11,16 C10,24 13,32 18.5,35 C24,32 27,24 26,16 Z" class="anat-root" />
+          <path d="M7,17 C6,10 11,4 19,2 C27,4 32,10 31,17 Z" class="anat-crown" />
+          <path d="M19,15 L19,3" class="anat-groove" />
+          <path d="M12,17 C11,25 13,33 19,36 C25,33 27,25 26,17 Z" class="anat-root" />
         `;
       }
     } else {
       // Incisor (Central & Lateral)
       if (isUpper) {
-        // Maxillary Incisor: Broad chisel crown pointing DOWN, single tapering root pointing UP
+        // Maxillary Incisor: Broad spade chisel crown pointing DOWN, single tapering root pointing UP
         svgBody = `
-          <path d="M12,18 C11,10 14,4 18.5,2 C23,4 26,10 25,18 Z" class="anat-root" />
-          <path d="M7,18 C7,26 8,33 9,33.5 C12,33.5 25,33.5 28,33.5 C29,33 30,26 30,18 Z" class="anat-crown" />
-          <path d="M11,31 L26,31 M14,24 L14,31 M23,24 L23,31" class="anat-groove" />
+          <path d="M13,17 C12,9 14,3 19,2 C24,3 26,9 25,17 Z" class="anat-root" />
+          <path d="M7,17 C7,25 8,34 9.5,34.5 C13,34.5 25,34.5 28.5,34.5 C30,34 31,25 31,17 Z" class="anat-crown" />
+          <path d="M11,32 L27,32 M14,26 L14,32 M24,26 L24,32" class="anat-groove" />
         `;
       } else {
         // Mandibular Incisor: Slender chisel crown pointing UP, slender root pointing DOWN
         svgBody = `
-          <path d="M8,16 C8,8 9,2.5 10,2 C13,2 24,2 27,2 C28,2.5 29,8 29,16 Z" class="anat-crown" />
-          <path d="M11,4 L26,4 M14,4 L14,11 M23,4 L23,11" class="anat-groove" />
-          <path d="M12,16 C11,24 14,31 18.5,35 C23,31 26,24 25,16 Z" class="anat-root" />
+          <path d="M8,17 C8,9 9,2.5 10.5,2 C14,2 24,2 27.5,2 C29,2.5 30,9 30,17 Z" class="anat-crown" />
+          <path d="M11,4 L27,4 M14,4 L14,10 M24,4 L24,10" class="anat-groove" />
+          <path d="M13,17 C12,25 14,33 19,36 C24,33 26,25 25,17 Z" class="anat-root" />
         `;
       }
     }
 
     return `
-      <svg viewBox="0 0 37 37" width="28" height="30" class="tooth-anat-svg" aria-hidden="true">
+      <svg viewBox="0 0 38 38" width="30" height="32" class="tooth-anat-svg" aria-hidden="true">
         <g>
           ${svgBody}
         </g>
@@ -346,7 +348,7 @@ class OdontogramController {
 
   getComputedRootColor(code) {
     const map = {
-      '0': '#4A7C59',
+      '0': '#5C8A57',
       '1': '#B24A34',
       '2': '#D97A3F',
       '3': '#3E6FA3',

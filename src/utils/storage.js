@@ -1,6 +1,5 @@
 /**
- * Oral Health Clinical Assessment - Storage Manager
- * IndexedDB + LocalStorage Offline Persistence Layer
+ * IndexedDB + LocalStorage Persistence Manager (React Engine)
  */
 
 class StorageManager {
@@ -15,8 +14,7 @@ class StorageManager {
 
   initDB() {
     return new Promise((resolve) => {
-      if (!('indexedDB' in window)) {
-        console.warn('IndexedDB not supported, falling back to LocalStorage');
+      if (typeof window === 'undefined' || !('indexedDB' in window)) {
         resolve(false);
         return;
       }
@@ -38,8 +36,7 @@ class StorageManager {
         resolve(true);
       };
 
-      request.onerror = (event) => {
-        console.error('IndexedDB error:', event.target.error);
+      request.onerror = () => {
         resolve(false);
       };
     });
@@ -100,24 +97,7 @@ class StorageManager {
       const data = localStorage.getItem('oral_records_fallback');
       return data ? JSON.parse(data) : [];
     } catch (e) {
-      console.error('Failed reading LS records:', e);
       return [];
-    }
-  }
-
-  async getRecordById(id) {
-    await this.isReady;
-    if (this.db) {
-      return new Promise((resolve, reject) => {
-        const tx = this.db.transaction([this.storeName], 'readonly');
-        const store = tx.objectStore(this.storeName);
-        const req = store.get(id);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = (e) => reject(e.target.error);
-      });
-    } else {
-      const records = this.getAllRecordsFromLS();
-      return records.find(r => r.id === id) || null;
     }
   }
 
@@ -157,13 +137,8 @@ class StorageManager {
 
   saveDraft(data) {
     try {
-      localStorage.setItem(this.draftKey, JSON.stringify({
-        data,
-        timestamp: Date.now()
-      }));
-    } catch (e) {
-      console.warn('Draft auto-save failed:', e);
-    }
+      localStorage.setItem(this.draftKey, JSON.stringify({ data, timestamp: Date.now() }));
+    } catch (e) {}
   }
 
   loadDraft() {
@@ -173,7 +148,6 @@ class StorageManager {
       const parsed = JSON.parse(raw);
       return parsed.data || null;
     } catch (e) {
-      console.warn('Draft auto-load failed:', e);
       return null;
     }
   }
@@ -181,9 +155,7 @@ class StorageManager {
   clearDraft() {
     try {
       localStorage.removeItem(this.draftKey);
-    } catch (e) {
-      console.warn('Clear draft failed:', e);
-    }
+    } catch (e) {}
   }
 
   saveSetting(key, val) {
@@ -191,31 +163,17 @@ class StorageManager {
       const settings = this.getSettings();
       settings[key] = val;
       localStorage.setItem(this.settingsKey, JSON.stringify(settings));
-    } catch (e) {
-      console.warn('Save setting failed:', e);
-    }
+    } catch (e) {}
   }
 
   getSettings() {
     try {
       const raw = localStorage.getItem(this.settingsKey);
-      return raw ? JSON.parse(raw) : {
-        autoAdvance: true,
-        haptics: true,
-        audioFeedback: true,
-        theme: 'light',
-        defaultExaminer: '',
-        defaultVillage: ''
-      };
+      return raw ? JSON.parse(raw) : { autoAdvance: true, haptics: true, audioFeedback: true, theme: 'light' };
     } catch (e) {
       return { autoAdvance: true, haptics: true, audioFeedback: true, theme: 'light' };
     }
   }
 }
 
-if (typeof window !== 'undefined') {
-  window.storageManager = new StorageManager();
-}
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = StorageManager;
-}
+export const storage = new StorageManager();
