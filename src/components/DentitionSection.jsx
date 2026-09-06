@@ -28,13 +28,13 @@ export default function DentitionSection() {
 
   function getComputedRootColor(code) {
     const map = {
-      '0': '#5C8A57',
-      '1': '#B24A34',
-      '2': '#D97A3F',
-      '3': '#3E6FA3',
-      '7': '#7C5CBF',
-      '8': '#DAD4C4',
-      '9': '#FFFFFF'
+      '0': '#0284C7',
+      '1': '#EF4444',
+      '2': '#F59E0B',
+      '3': '#0EA5E9',
+      '7': '#8B5CF6',
+      '8': '#94A3B8',
+      '9': '#CBD5E1'
     };
     return map[code] || 'transparent';
   }
@@ -255,7 +255,7 @@ export default function DentitionSection() {
         <div className="dent-stat"><div className="num">{liveDMFT.M}</div><div className="lbl">Missing (M)</div></div>
         <div className="dent-stat"><div className="num">{liveDMFT.F}</div><div className="lbl">Filled (F)</div></div>
         <div className="dent-stat"><div className="num" style={{ color: 'var(--teal)' }}>{liveDMFT.DMFT}</div><div className="lbl">DMFT Index</div></div>
-        <div className="dent-stat"><div className="num" style={{ color: 'var(--sage)' }}>{soundCount}</div><div className="lbl">Sound (0)</div></div>
+        <div className="dent-stat"><div className="num" style={{ color: 'var(--navy-2)' }}>{soundCount}</div><div className="lbl">Sound (0)</div></div>
         <div className="dent-stat"><div className="num">{recordedCount}/32</div><div className="lbl">Recorded</div></div>
       </div>
 

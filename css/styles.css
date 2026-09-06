@@ -1,127 +1,119 @@
 /**
  * Oral Health Clinical Assessment - Stylesheet
- * Medical White & Light Blue Theme (Default) + Pro Dark Mode
- * Realistic Anatomical Tooth Renderings, Parabolic Dental Arch, and Responsive Tablet Workstation
+ * Standard Light Theme (Medical White & Light Blue with Rich Colored Left Rail)
+ * Standard Dark Theme (Professional Dark Slate with Rich Navy Left Rail)
+ * Zero High Contrast (Removed), Zero Green Everywhere
  */
 
+/* ==================== LIGHT THEME (DEFAULT) ==================== */
 :root, [data-theme="light"] {
-  /* Medical White & Light Blue Palette (Default) */
-  --bg: #F0F6FE;
+  --bg: #F0F6FD;
+  --bg-gradient: linear-gradient(180deg, #F0F6FD 0%, #E6F0FA 100%);
   --paper: #FFFFFF;
+  --paper-subtle: #F8FBFE;
   --ink: #0F172A;
-  --muted: #64748B;
+  --muted: #475569;
   
   --navy: #0284C7;        /* Medical Sky Blue Primary */
-  --navy-2: #0369A1;      /* Deep Ocean Blue */
-  --teal: #0284C7;        /* Clinical Sky Blue */
+  --navy-2: #0369A1;      /* Clinical Ocean Blue */
+  --teal: #0284C7;        /* Sky Blue */
   --teal-l: #E0F2FE;      /* Soft Light Blue Tint */
-  --coral: #EF4444;       /* Medical Coral/Red (Decay Alert) */
+  --teal-border: #BAE6FD; /* Crisp Light Blue Border */
+  --coral: #EF4444;       /* Medical Red (Decay Alert) */
   --coral-l: #FEE2E2;     /* Soft Coral Tint */
-  --sage: #10B981;        /* Clean Clinical Emerald (Healthy) */
-  --sage-l: #D1FAE5;      /* Soft Green Tint */
-  --sand: #F1F5F9;        /* Light Ice Slate */
-  --line: #CBD5E1;        /* Crisp Slate Border */
+  --sand: #EBF4FC;        /* Soft Clinical Ice Slate */
+  --line: #CBDCEE;        /* Crisp Slate-Blue Border */
   --gold: #F59E0B;        /* Clinical Gold/Amber (Trauma) */
+  --accent-cyan: #0EA5E9; /* Electric Cyan Accent */
+  --accent-sapphire: #2563EB; /* Deep Clinical Sapphire */
 
-  --rail-bg: #FFFFFF;
-  --rail-border: #E2E8F0;
-  --rail-ink: #334155;
-  --rail-active-bg: #E0F2FE;
-  --rail-active-ink: #0284C7;
+  /* Rich Colored Left Rail for Light Theme */
+  --rail-bg: linear-gradient(180deg, #0A2540 0%, #06182E 100%);
+  --rail-border: #133358;
+  --rail-ink: #CBD5E1;
+  --rail-active-bg: rgba(56, 189, 248, 0.18);
+  --rail-active-ink: #38BDF8;
+  --rail-mark: #38BDF8;
+  --rail-tag: #94A3B8;
+  --rail-card-bg: rgba(255, 255, 255, 0.07);
+  --rail-card-border: rgba(255, 255, 255, 0.12);
+  --rail-dmft-box: rgba(255, 255, 255, 0.08);
 
   --input-bg: #FFFFFF;
-  --arch-bg: #F8FAFC;
+  --input-border: #C8DCF0;
+  --arch-bg: linear-gradient(180deg, #F8FAFD 0%, #EFF6FC 100%);
   --tooth-bg: #FFFFFF;
   --crown-bg: #FFFFFF;
-  --root-bg: #F1F5F9;
-  --anat-stroke: #0369A1;
-  --badge-bg: #F0F7FF;
+  --root-bg: #F1F6FC;
+  --anat-stroke: #0284C7;
+  --badge-bg: #E0F2FE;
   --badge-ink: #0284C7;
 
   --serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --mono: "SFMono-Regular", Consolas, Menlo, "Liberation Mono", monospace;
 
-  --radius-sm: 6px;
-  --radius-md: 9px;
-  --radius-lg: 14px;
-  --shadow-sm: 0 1px 3px rgba(2, 132, 199, 0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 14px rgba(2, 132, 199, 0.08), 0 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg: 0 12px 28px rgba(2, 132, 199, 0.12), 0 4px 10px rgba(0,0,0,0.06);
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(2, 132, 199, 0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(2, 132, 199, 0.1), 0 2px 6px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 32px rgba(2, 132, 199, 0.14), 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* Dark Pro Theme */
+/* ==================== STANDARD DARK THEME ==================== */
 [data-theme="dark"] {
-  --bg: #0B1120;
-  --paper: #131D31;
-  --ink: #F1F5F9;
+  --bg: #0F172A;
+  --bg-gradient: linear-gradient(180deg, #0F172A 0%, #0B1120 100%);
+  --paper: #1E293B;
+  --paper-subtle: #172234;
+  --ink: #F8FAFC;
   --muted: #94A3B8;
   --navy: #38BDF8;
   --navy-2: #38BDF8;
   --teal: #38BDF8;
   --teal-l: rgba(56, 189, 248, 0.15);
+  --teal-border: rgba(56, 189, 248, 0.3);
   --coral: #F87171;
-  --coral-l: rgba(248, 113, 113, 0.15);
-  --sage: #34D399;
-  --sage-l: rgba(52, 211, 153, 0.15);
-  --sand: #1E293B;
+  --coral-l: rgba(248, 113, 113, 0.18);
+  --sand: #0F172A;
   --line: #334155;
   --gold: #FBBF24;
+  --accent-cyan: #38BDF8;
+  --accent-sapphire: #60A5FA;
 
-  --rail-bg: #111827;
-  --rail-border: #1F2937;
+  /* Rich Colored Left Rail for Dark Theme */
+  --rail-bg: linear-gradient(180deg, #080E1A 0%, #050912 100%);
+  --rail-border: #1E2D44;
   --rail-ink: #94A3B8;
-  --rail-active-bg: rgba(56, 189, 248, 0.15);
+  --rail-active-bg: rgba(56, 189, 248, 0.16);
   --rail-active-ink: #38BDF8;
+  --rail-mark: #38BDF8;
+  --rail-tag: #64748B;
+  --rail-card-bg: #0F172A;
+  --rail-card-border: #1E2D44;
+  --rail-dmft-box: #162236;
 
-  --input-bg: #1E293B;
-  --arch-bg: #0F172A;
+  --input-bg: #0F172A;
+  --input-border: #334155;
+  --arch-bg: #0B1120;
   --tooth-bg: #1E293B;
-  --crown-bg: #334155;
-  --root-bg: #1E293B;
+  --crown-bg: #1E293B;
+  --root-bg: #0F172A;
   --anat-stroke: #94A3B8;
-  --badge-bg: rgba(15, 23, 42, 0.9);
-  --badge-ink: #38BDF8;
-}
+  --badge-bg: #0F172A;
+  --badge-ink: #94A3B8;
 
-/* High Contrast Sunlight Theme */
-[data-theme="contrast"] {
-  --bg: #FFFFFF;
-  --paper: #FFFFFF;
-  --ink: #000000;
-  --muted: #222222;
-  --navy: #004D40;
-  --navy-2: #000000;
-  --teal: #004D40;
-  --teal-l: #E0F2F1;
-  --coral: #B71C1C;
-  --coral-l: #FFEBEE;
-  --sage: #1B5E20;
-  --sage-l: #E8F5E9;
-  --sand: #EEEEEE;
-  --line: #000000;
-  --gold: #D97706;
-
-  --rail-bg: #FFFFFF;
-  --rail-border: #000000;
-  --rail-ink: #000000;
-  --rail-active-bg: #E0F2F1;
-  --rail-active-ink: #004D40;
-
-  --input-bg: #FFFFFF;
-  --arch-bg: #FFFFFF;
-  --tooth-bg: #EEEEEE;
-  --crown-bg: #FFFFFF;
-  --root-bg: #E0E0E0;
-  --anat-stroke: #000000;
-  --badge-bg: #FFFFFF;
-  --badge-ink: #000000;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.6);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   margin: 0;
   background: var(--bg);
+  background-image: var(--bg-gradient);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 15px;
@@ -134,7 +126,7 @@ a { color: inherit; }
 /* ---------- App Shell Layout ---------- */
 .shell { display: flex; min-height: 100vh; }
 
-/* ---------- Left Rail Navigation (White & Light Blue) ---------- */
+/* ---------- Left Rail Navigation (Rich Colored Sidebar) ---------- */
 nav.rail {
   width: 240px;
   flex-shrink: 0;
@@ -148,9 +140,9 @@ nav.rail {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 12px rgba(2, 132, 199, 0.04);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
   z-index: 20;
-  transition: background-color .2s ease, border-color .2s ease;
+  transition: background .2s ease, border-color .2s ease;
 }
 
 .rail-brand {
@@ -165,11 +157,11 @@ nav.rail {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--teal);
+  color: var(--rail-mark);
 }
 .rail-brand .tag {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--rail-tag);
   margin-top: 4px;
   text-transform: uppercase;
   letter-spacing: .08em;
@@ -184,45 +176,46 @@ nav.rail {
   cursor: pointer;
   font-size: 13.5px;
   font-weight: 600;
-  border-left: 3px solid transparent;
+  border-left: 3.5px solid transparent;
   color: var(--rail-ink);
   transition: all .15s ease;
   user-select: none;
 }
 .tab-item:hover {
-  background: var(--teal-l);
-  color: var(--teal);
+  background: rgba(56, 189, 248, 0.1);
+  color: #FFFFFF;
   padding-left: 26px;
 }
 .tab-item.active {
   background: var(--rail-active-bg);
-  border-left-color: var(--teal);
+  border-left-color: var(--rail-active-ink);
   color: var(--rail-active-ink);
   font-weight: 800;
 }
 .tab-num {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--muted);
+  color: var(--rail-tag);
   width: 18px;
   font-weight: 700;
 }
-.tab-item.active .tab-num { color: var(--teal); }
+.tab-item.active .tab-num { color: var(--rail-active-ink); }
 
 .rail-status {
   margin-top: auto;
-  padding: 16px 20px;
+  padding: 16px 18px;
   border-top: 1.5px solid var(--rail-border);
-  background: var(--sand);
+  background: var(--rail-card-bg);
   margin-left: 12px;
   margin-right: 12px;
   border-radius: var(--radius-md);
+  border: 1px solid var(--rail-card-border);
 }
 .rail-status .label {
   font-size: 10.5px;
   text-transform: uppercase;
   letter-spacing: .08em;
-  color: var(--muted);
+  color: var(--rail-tag);
   margin-bottom: 8px;
   font-weight: 800;
   text-align: center;
@@ -231,21 +224,20 @@ nav.rail {
 .rail-dmft div {
   flex: 1;
   text-align: center;
-  background: var(--paper);
+  background: var(--rail-dmft-box);
   border-radius: 7px;
   padding: 6px 2px;
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--rail-card-border);
 }
 .rail-dmft .n {
   font-family: var(--mono);
   font-weight: 800;
   font-size: 15px;
-  color: var(--teal);
+  color: var(--rail-mark);
 }
 .rail-dmft .l {
   font-size: 9.5px;
-  color: var(--muted);
+  color: var(--rail-tag);
   text-transform: uppercase;
   font-weight: 800;
 }
@@ -285,14 +277,15 @@ header.topbar {
   align-items: center;
   gap: 10px;
   background: var(--teal-l);
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  border: 1px solid var(--teal-border);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 12px;
   margin-top: 6px;
 }
-.patient-badge { color: var(--navy-2); }
+.patient-badge { color: var(--ink); font-weight: 600; }
 .patient-badge b { color: var(--teal); font-family: var(--mono); }
+.patient-badge i { color: var(--muted); font-style: italic; }
 .exam-timer { color: var(--coral); font-family: var(--mono); font-weight: 800; }
 
 .topbar-actions {
@@ -303,7 +296,7 @@ header.topbar {
 
 .btn-topbar {
   background: var(--paper);
-  color: var(--navy-2);
+  color: var(--ink);
   border: 1.5px solid var(--line);
   padding: 8px 14px;
   border-radius: 8px;
@@ -322,7 +315,7 @@ header.topbar {
 .btn-topbar:active { transform: scale(0.97); }
 
 .help-btn {
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--navy-2) 100%);
   color: #FFFFFF;
   border: none;
   padding: 9px 16px;
@@ -333,11 +326,11 @@ header.topbar {
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.25);
   transition: all .15s ease;
 }
 .help-btn:hover {
-  background: var(--navy-2);
+  opacity: 0.94;
   transform: translateY(-1px);
 }
 
@@ -346,9 +339,10 @@ header.topbar {
   max-width: 980px;
 }
 
+/* Guidance / Demo Banner */
 .demo-banner {
-  background: #FFFFFF;
-  border: 1.5px solid var(--teal-l);
+  background: var(--teal-l);
+  border: 1.5px solid var(--teal-border);
   border-left: 4px solid var(--teal);
   border-radius: var(--radius-md);
   padding: 14px 18px;
@@ -358,17 +352,19 @@ header.topbar {
   line-height: 1.5;
   box-shadow: var(--shadow-sm);
 }
+.demo-banner b { color: var(--navy-2); }
 
-/* ---------- Paper Section Cards ---------- */
+/* ---------- Section Cards ---------- */
 .card {
   background: var(--paper);
   border: 1.5px solid var(--line);
+  border-top: 3.5px solid var(--teal);
   border-radius: var(--radius-lg);
   padding: 26px 30px;
   margin-bottom: 24px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   position: relative;
-  transition: background-color .2s ease, border-color .2s ease;
+  transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
 .card h2 {
@@ -387,10 +383,10 @@ header.topbar {
   font-size: 12px;
   background: var(--teal-l);
   color: var(--teal);
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: 6px;
   font-weight: 800;
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  border: 1px solid var(--teal-border);
 }
 .card .card-sub {
   font-size: 13px;
@@ -419,7 +415,7 @@ header.topbar {
   border-radius: 50%;
   background: var(--teal-l);
   color: var(--teal);
-  border: 1px solid rgba(2, 132, 199, 0.3);
+  border: 1px solid var(--teal-border);
   font-size: 11px;
   font-weight: 800;
   cursor: pointer;
@@ -437,17 +433,26 @@ header.topbar {
 input[type=text], input[type=number], input[type=date], select, textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--input-border);
   border-radius: 8px;
   font-size: 14px;
   font-family: var(--sans);
   background: var(--input-bg);
   color: var(--ink);
   outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
   min-height: 44px;
 }
 select { font-family: var(--sans); font-size: 13.5px; }
+select option {
+  background: var(--paper);
+  color: var(--ink);
+}
+[data-theme="dark"] select option {
+  background: #0F172A;
+  color: #F8FAFC;
+}
+
 input:focus, select:focus, textarea:focus {
   border-color: var(--teal);
   box-shadow: 0 0 0 3px var(--teal-l);
@@ -489,8 +494,8 @@ input.invalid, select.invalid {
 .chip {
   padding: 9px 18px;
   border-radius: 8px;
-  border: 1.5px solid var(--line);
-  background: var(--input-bg);
+  border: 1.5px solid var(--input-border);
+  background: var(--sand);
   font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
@@ -509,10 +514,10 @@ input.invalid, select.invalid {
   transform: translateY(-1px);
 }
 .chip.selected {
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--navy-2) 100%);
   border-color: var(--teal);
   color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
 }
 
 /* ==================== ANATOMICAL TOOTH ARCH ==================== */
@@ -557,7 +562,7 @@ input.invalid, select.invalid {
 .arch-wrap {
   margin: 10px 0 18px;
   overflow-x: auto;
-  padding: 18px 12px 24px;
+  padding: 22px 14px 28px;
   background: var(--arch-bg);
   border: 1.5px solid var(--line);
   border-radius: var(--radius-lg);
@@ -568,7 +573,7 @@ input.invalid, select.invalid {
   text-transform: uppercase;
   letter-spacing: .08em;
   color: var(--teal);
-  margin: 8px 0 10px;
+  margin: 8px 0 12px;
   text-align: center;
   font-weight: 800;
 }
@@ -581,10 +586,10 @@ input.invalid, select.invalid {
   margin-bottom: 10px;
 }
 
-/* Precision Anatomical Tooth Card (Pure White with Crisp Blue Borders) */
+/* Precision Anatomical Tooth Card */
 .tooth {
   width: 40px;
-  height: 66px;
+  height: 68px;
   border-radius: 8px;
   border: 1.5px solid var(--line);
   background: var(--tooth-bg);
@@ -602,18 +607,18 @@ input.invalid, select.invalid {
   transition: transform .14s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .14s ease, border-color .14s ease;
   flex-shrink: 0;
   user-select: none;
-  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 .tooth:hover {
-  transform: translateY(-4px) scale(1.06) !important;
+  transform: translateY(-5px) scale(1.08) !important;
   border-color: var(--teal);
-  box-shadow: 0 8px 18px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3);
   z-index: 10;
 }
 .tooth.active-selection {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px var(--teal-l), 0 6px 16px rgba(2, 132, 199, 0.35);
-  transform: translateY(-3px) scale(1.04) !important;
+  box-shadow: 0 0 0 3px var(--teal-l), 0 8px 20px rgba(2, 132, 199, 0.35);
+  transform: translateY(-4px) scale(1.06) !important;
   z-index: 11;
 }
 
@@ -634,7 +639,7 @@ input.invalid, select.invalid {
 
 /* Anatomical Tooth SVG Vector Styling */
 .tooth-anat-svg {
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
   transition: transform .14s ease;
 }
 .tooth:hover .tooth-anat-svg {
@@ -644,9 +649,9 @@ input.invalid, select.invalid {
 .anat-crown {
   fill: var(--crown-bg);
   stroke: var(--anat-stroke);
-  stroke-width: 1.3;
+  stroke-width: 1.35;
   stroke-linejoin: round;
-  transition: fill .14s ease;
+  transition: fill .14s ease, stroke .14s ease;
 }
 .anat-root {
   fill: var(--root-bg);
@@ -658,20 +663,20 @@ input.invalid, select.invalid {
 .anat-groove {
   fill: none;
   stroke: var(--anat-stroke);
-  opacity: 0.45;
-  stroke-width: 0.9;
+  opacity: 0.55;
+  stroke-width: 0.95;
   stroke-linecap: round;
 }
 .anat-pit {
   fill: var(--anat-stroke);
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .crown-code-badge {
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
-  padding: 1px 4px;
+  padding: 1.5px 4.5px;
   border-radius: 4px;
   background: var(--badge-bg);
   color: var(--badge-ink);
@@ -687,54 +692,143 @@ input.invalid, select.invalid {
   border: 1px solid rgba(0,0,0,0.2);
 }
 
-/* Dentition Status Colors */
-.code-0 { background: #FFFFFF !important; color: #64748B !important; }
-.code-0 .anat-crown { fill: #FFFFFF; }
+/* ==================== DENTITION STATUS COLORS ==================== */
+/* Code 0: Sound */
+.code-0 { background: var(--tooth-bg) !important; color: var(--muted) !important; }
+.code-0 .anat-crown { fill: var(--crown-bg); stroke: var(--anat-stroke); }
+.code-0 .crown-code-badge { background: var(--badge-bg); color: var(--badge-ink); }
+.code-0 .tooth-num { color: var(--navy-2); }
 
-.code-1 { background: var(--coral) !important; color: #fff !important; }
-.code-1 .anat-crown { fill: var(--coral); }
-.code-1 .crown-code-badge { background: #fff; color: var(--coral); }
-.code-1 .tooth-num { color: #fff; }
+/* Code 1: Decayed (Red) */
+.code-1 {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+  border-color: #EF4444 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35) !important;
+}
+.code-1 .anat-crown { fill: #EF4444; stroke: #FFFFFF; }
+.code-1 .anat-groove { stroke: #FFFFFF; opacity: 0.8; }
+.code-1 .crown-code-badge { background: #FFFFFF; color: #DC2626; border-color: transparent; }
+.code-1 .tooth-num { color: #FFFFFF; }
 
-.code-2 { background: var(--gold) !important; color: #fff !important; }
-.code-2 .anat-crown { fill: var(--gold); }
-.code-2 .crown-code-badge { background: #fff; color: var(--gold); }
-.code-2 .tooth-num { color: #fff; }
+/* Code 2: Filled with Decay (Amber) */
+.code-2 {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  border-color: #F59E0B !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35) !important;
+}
+.code-2 .anat-crown { fill: #F59E0B; stroke: #FFFFFF; }
+.code-2 .anat-groove { stroke: #FFFFFF; opacity: 0.8; }
+.code-2 .crown-code-badge { background: #FFFFFF; color: #D97706; border-color: transparent; }
+.code-2 .tooth-num { color: #FFFFFF; }
 
-.code-3 { background: var(--teal) !important; color: #fff !important; }
-.code-3 .anat-crown { fill: var(--teal); }
-.code-3 .crown-code-badge { background: #fff; color: var(--teal); }
-.code-3 .tooth-num { color: #fff; }
+/* Code 3: Filled No Decay (Clinical Blue) */
+.code-3 {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+  border-color: #0284C7 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.35) !important;
+}
+.code-3 .anat-crown { fill: #0284C7; stroke: #FFFFFF; }
+.code-3 .anat-groove { stroke: #FFFFFF; opacity: 0.8; }
+.code-3 .crown-code-badge { background: #FFFFFF; color: #0369A1; border-color: transparent; }
+.code-3 .tooth-num { color: #FFFFFF; }
 
-.code-4 { background: #1E293B !important; color: #fff !important; }
-.code-4 .anat-crown { fill: #1E293B; }
-.code-4 .crown-code-badge { background: #fff; color: #1E293B; }
-.code-4 .tooth-num { color: #fff; }
+/* Code 4: Missing due to Caries (Dark Slate with Red Border) */
+.code-4 {
+  background: #1E293B !important;
+  border: 1.5px dashed #EF4444 !important;
+  color: #FFFFFF !important;
+}
+.code-4 .anat-crown { fill: #334155; stroke: #EF4444; }
+.code-4 .crown-code-badge { background: #EF4444; color: #FFFFFF; }
+.code-4 .tooth-num { color: #F87171; }
 
-.code-5 { background: #94A3B8 !important; color: #fff !important; }
-.code-5 .anat-crown { fill: #94A3B8; }
-.code-5 .crown-code-badge { background: #fff; color: #94A3B8; }
+[data-theme="dark"] .code-4 {
+  background: #0F172A !important;
+  border: 1.5px dashed #EF4444 !important;
+  color: #F87171 !important;
+}
+[data-theme="dark"] .code-4 .anat-crown { fill: #1E293B; stroke: #EF4444; }
+[data-theme="dark"] .code-4 .crown-code-badge { background: rgba(239, 68, 68, 0.25); color: #EF4444; border-color: #EF4444; }
 
-.code-6 { background: #0EA5E9 !important; color: #fff !important; }
-.code-6 .anat-crown { fill: #0EA5E9; }
-.code-6 .crown-code-badge { background: #fff; color: #0EA5E9; }
-.code-6 .tooth-num { color: #fff; }
+/* Code 5: Missing other reason (Muted Slate) */
+.code-5 {
+  background: #94A3B8 !important;
+  border: 1.5px dashed #64748B !important;
+  color: #FFFFFF !important;
+}
+.code-5 .anat-crown { fill: #CBD5E1; stroke: #64748B; }
+.code-5 .crown-code-badge { background: #FFFFFF; color: #64748B; }
 
-.code-7 { background: #8B5CF6 !important; color: #fff !important; }
-.code-7 .anat-crown { fill: #8B5CF6; }
-.code-7 .crown-code-badge { background: #fff; color: #8B5CF6; }
-.code-7 .tooth-num { color: #fff; }
+[data-theme="dark"] .code-5 {
+  background: #0F172A !important;
+  border: 1.5px dashed #64748B !important;
+  color: #94A3B8 !important;
+}
+[data-theme="dark"] .code-5 .anat-crown { fill: #1E293B; stroke: #64748B; }
+[data-theme="dark"] .code-5 .crown-code-badge { background: rgba(100, 116, 139, 0.25); color: #94A3B8; border-color: #64748B; }
 
-.code-8 { background: #CBD5E1 !important; color: #475569 !important; border-style: dashed !important; }
-.code-8 .anat-crown { fill: #CBD5E1; }
+/* Code 6: Fissure Sealant (Electric Cyan) */
+.code-6 {
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%) !important;
+  border-color: #0EA5E9 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 10px rgba(14, 165, 233, 0.35) !important;
+}
+.code-6 .anat-crown { fill: #0EA5E9; stroke: #FFFFFF; }
+.code-6 .anat-groove { stroke: #FFFFFF; opacity: 0.8; }
+.code-6 .crown-code-badge { background: #FFFFFF; color: #0284C7; }
+.code-6 .tooth-num { color: #FFFFFF; }
 
-.code-T { background: #F59E0B !important; color: #fff !important; }
-.code-T .anat-crown { fill: #F59E0B; }
-.code-T .crown-code-badge { background: #fff; color: #F59E0B; }
-.code-T .tooth-num { color: #fff; }
+/* Code 7: Prosthetic Crown (Purple) */
+.code-7 {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%) !important;
+  border-color: #8B5CF6 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35) !important;
+}
+.code-7 .anat-crown { fill: #8B5CF6; stroke: #FFFFFF; }
+.code-7 .anat-groove { stroke: #FFFFFF; opacity: 0.8; }
+.code-7 .crown-code-badge { background: #FFFFFF; color: #6D28D9; }
+.code-7 .tooth-num { color: #FFFFFF; }
 
-.code-9 { background: #fff !important; color: #94A3B8 !important; }
-.code-9 .anat-crown { fill: #FFFFFF; }
+/* Code 8: Un-erupted (Dotted Slate) */
+.code-8 {
+  background: #E2E8F0 !important;
+  color: #475569 !important;
+  border: 1.5px dashed #94A3B8 !important;
+}
+.code-8 .anat-crown { fill: #CBD5E1; stroke: #94A3B8; }
+
+[data-theme="dark"] .code-8 {
+  background: #0F172A !important;
+  border: 1.5px dotted #64748B !important;
+  color: #94A3B8 !important;
+}
+[data-theme="dark"] .code-8 .anat-crown { fill: #1E293B; stroke: #64748B; }
+[data-theme="dark"] .code-8 .crown-code-badge { background: #0F172A; color: #94A3B8; }
+
+/* Code T: Trauma (Gold) */
+.code-T {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  border-color: #F59E0B !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35) !important;
+}
+.code-T .anat-crown { fill: #F59E0B; stroke: #FFFFFF; }
+.code-T .crown-code-badge { background: #FFFFFF; color: #D97706; }
+.code-T .tooth-num { color: #FFFFFF; }
+
+/* Code 9: Not Recorded */
+.code-9 {
+  background: var(--sand) !important;
+  color: var(--muted) !important;
+  border: 1.5px solid var(--line) !important;
+}
+.code-9 .anat-crown { fill: var(--paper); stroke: var(--muted); }
+.code-9 .crown-code-badge { background: var(--sand); color: var(--muted); }
 
 /* Dentition Stats Bar */
 .dentition-stats-strip {
@@ -782,7 +876,7 @@ input.invalid, select.invalid {
   border-radius: var(--radius-md);
   padding: 16px;
   box-shadow: var(--shadow-sm);
-  transition: transform .15s ease, border-color .15s ease;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
 .sextant-card:hover {
   border-color: var(--teal);
@@ -794,7 +888,7 @@ input.invalid, select.invalid {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1.5px solid var(--line);
   padding-bottom: 6px;
 }
 .sx-badge {
@@ -811,6 +905,7 @@ input.invalid, select.invalid {
   border-radius: 4px;
   color: var(--teal);
   font-weight: 700;
+  border: 1px solid var(--teal-border);
 }
 .sx-field { margin-bottom: 10px; }
 .sx-field:last-child { margin-bottom: 0; }
@@ -826,7 +921,7 @@ input.invalid, select.invalid {
   padding: 8px 10px;
   font-size: 13px;
   background: var(--input-bg);
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--input-border);
   border-radius: 6px;
   min-height: 40px;
 }
@@ -847,12 +942,12 @@ input.invalid, select.invalid {
   min-height: 44px;
 }
 .btn.primary {
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--navy-2) 100%);
   color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.28);
 }
 .btn.primary:hover {
-  background: var(--navy-2);
+  opacity: 0.94;
   transform: translateY(-1px);
 }
 
@@ -869,28 +964,28 @@ input.invalid, select.invalid {
 }
 
 .btn.teal {
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--navy-2) 100%);
   color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.28);
 }
 .btn.teal:hover {
-  background: var(--navy-2);
+  opacity: 0.94;
 }
 
 .btn.coral {
-  background: var(--coral);
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
   color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.25);
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.28);
 }
 .btn.coral:hover {
-  opacity: 0.92;
+  opacity: 0.94;
 }
 
 .btn.btn-sm { padding: 6px 12px; font-size: 12px; min-height: 34px; }
 
 .action-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 14px; }
 
-/* ==================== STICKY SUMMARY STRIP (WHITE & LIGHT BLUE) ==================== */
+/* ==================== STICKY SUMMARY STRIP ==================== */
 .summary-strip {
   position: sticky;
   bottom: 0;
@@ -901,7 +996,7 @@ input.invalid, select.invalid {
   display: flex;
   align-items: center;
   gap: 28px;
-  box-shadow: 0 -4px 16px rgba(2, 132, 199, 0.08);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
   z-index: 12;
 }
 .summary-strip .grp { display: flex; gap: 16px; flex: 1; }
@@ -910,7 +1005,7 @@ input.invalid, select.invalid {
   background: var(--teal-l);
   padding: 6px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(2, 132, 199, 0.15);
+  border: 1px solid var(--teal-border);
 }
 .summary-strip .metric .n { font-family: var(--mono); font-size: 18px; font-weight: 800; color: var(--navy-2); }
 .summary-strip .metric .l { font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 800; }
@@ -921,7 +1016,7 @@ input.invalid, select.invalid {
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   background: var(--teal-l);
-  border: 1.5px solid rgba(2, 132, 199, 0.2);
+  border: 1.5px solid var(--teal-border);
   border-radius: var(--radius-md);
   padding: 14px 18px;
   margin-bottom: 16px;
@@ -940,7 +1035,7 @@ table.records th {
   border-bottom: 2px solid var(--line);
   font-weight: 800;
 }
-table.records td { padding: 11px 12px; border-bottom: 1px solid var(--line); font-family: var(--mono); }
+table.records td { padding: 11px 12px; border-bottom: 1px solid var(--line); font-family: var(--mono); color: var(--ink); }
 table.records tr:hover { background: var(--teal-l); }
 .row-actions { display: flex; gap: 8px; }
 .icon-link {
@@ -962,7 +1057,7 @@ table.records tr:hover { background: var(--teal-l); }
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(15, 23, 42, 0.6);
   opacity: 0;
   visibility: hidden;
   transition: opacity .2s ease;
@@ -1008,6 +1103,7 @@ table.records tr:hover { background: var(--teal-l); }
 .modal-mode-tabs {
   display: flex;
   border-bottom: 1.5px solid var(--line);
+  background: var(--sand);
 }
 .mode-tab {
   flex: 1;
@@ -1032,7 +1128,7 @@ table.records tr:hover { background: var(--teal-l); }
 .code-chip {
   padding: 9px 14px;
   border-radius: 8px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--input-border);
   font-size: 13px;
   font-weight: 700;
   display: inline-flex;
@@ -1053,8 +1149,9 @@ table.records tr:hover { background: var(--teal-l); }
   font-weight: 800;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(2, 132, 199, 0.1);
+  background: var(--teal-l);
   color: var(--teal);
+  border: 1px solid var(--teal-border);
 }
 .dmf-tag {
   font-size: 9px;
@@ -1078,7 +1175,7 @@ table.records tr:hover { background: var(--teal-l); }
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.4);
+  background: rgba(15, 23, 42, 0.6);
   opacity: 0;
   visibility: hidden;
   transition: opacity .2s;
@@ -1094,12 +1191,13 @@ table.records tr:hover { background: var(--teal-l); }
   max-width: 92vw;
   height: 100vh;
   background: var(--paper);
-  box-shadow: -8px 0 30px rgba(0,0,0,0.18);
+  box-shadow: -8px 0 30px rgba(0,0,0,0.25);
   transform: translateX(100%);
   transition: transform .25s ease;
   z-index: 41;
   display: flex;
   flex-direction: column;
+  border-left: 1.5px solid var(--line);
 }
 .drawer.open { transform: translateX(0); }
 
@@ -1122,7 +1220,7 @@ table.records tr:hover { background: var(--teal-l); }
   letter-spacing: .04em;
   color: var(--teal);
   margin: 0 0 10px;
-  border-bottom: 1.5px solid var(--teal-l);
+  border-bottom: 1.5px solid var(--teal-border);
   padding-bottom: 6px;
   font-weight: 800;
 }
@@ -1238,12 +1336,12 @@ table.records tr:hover { background: var(--teal-l); }
     padding: 8px 12px;
     overflow-x: auto;
     box-shadow: none;
-    border-bottom: 1.5px solid var(--line);
+    border-bottom: 1.5px solid var(--rail-border);
     border-right: none;
   }
   .rail-brand { display: none; }
   .tab-item { padding: 8px 12px; border-left: none; border-bottom: 2.5px solid transparent; }
-  .tab-item.active { border-bottom-color: var(--teal); }
+  .tab-item.active { border-bottom-color: var(--rail-active-ink); }
   .dentition-stats-strip { grid-template-columns: repeat(2, 1fr); }
   .records-stats-bar { grid-template-columns: 1fr 1fr; }
 }

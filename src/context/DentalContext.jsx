@@ -110,11 +110,9 @@ export function DentalProvider({ children }) {
   }
 
   function toggleTheme() {
-    const themes = ['light', 'dark', 'contrast'];
-    const nextIdx = (themes.indexOf(theme) + 1) % themes.length;
-    const next = themes[nextIdx];
+    const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
-    showToastMsg(`Theme: ${next.toUpperCase()}`, 'info');
+    showToastMsg(`Theme: ${next === 'dark' ? 'Dark Theme' : 'Light Theme'}`, 'info');
   }
 
   function updateField(key, val) {

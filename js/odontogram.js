@@ -348,13 +348,13 @@ class OdontogramController {
 
   getComputedRootColor(code) {
     const map = {
-      '0': '#5C8A57',
-      '1': '#B24A34',
-      '2': '#D97A3F',
-      '3': '#3E6FA3',
-      '7': '#7C5CBF',
-      '8': '#DAD4C4',
-      '9': '#FFFFFF'
+      '0': '#0284C7',
+      '1': '#EF4444',
+      '2': '#F59E0B',
+      '3': '#0EA5E9',
+      '7': '#8B5CF6',
+      '8': '#94A3B8',
+      '9': '#CBD5E1'
     };
     return map[code] || 'transparent';
   }

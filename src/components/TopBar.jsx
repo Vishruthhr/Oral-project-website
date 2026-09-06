@@ -14,9 +14,8 @@ export default function TopBar() {
   } = useDental();
 
   const themeLabels = {
-    light: '☀️ Light Clinic',
-    dark: '🌙 Dark Pro',
-    contrast: '👁️ High Contrast'
+    light: 'Light Theme',
+    dark: 'Dark Theme'
   };
 
   return (
@@ -34,18 +33,6 @@ export default function TopBar() {
       </div>
 
       <div className="topbar-actions">
-        <button
-          type="button"
-          className={`btn-topbar ${audioEnabled ? 'active' : ''}`}
-          onClick={() => {
-            playClick(880);
-            setAudioEnabled(!audioEnabled);
-          }}
-          title="Toggle Tactile Audio Feedback"
-        >
-          {audioEnabled ? '🔊 Sound' : '🔇 Muted'}
-        </button>
-
         <button
           type="button"
           className="btn-topbar"

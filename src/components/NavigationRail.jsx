@@ -22,7 +22,7 @@ export default function NavigationRail() {
   return (
     <nav className="rail" aria-label="Main Navigation">
       <div className="rail-brand">
-        <div className="mark">🦷 Oral Health</div>
+        <div className="mark">Oral Health</div>
         <div className="tag">Clinical Workstation</div>
       </div>
 

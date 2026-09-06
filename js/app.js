@@ -167,20 +167,18 @@ class ClinicalOralApp {
     document.documentElement.setAttribute('data-theme', theme);
     const themeBtn = document.getElementById('btnThemeToggle');
     if (themeBtn) {
-      const icons = { light: '☀️ Light Clinic', dark: '🌙 Dark Pro', contrast: '👁️ High Contrast' };
-      themeBtn.innerHTML = icons[theme] || '🎨 Theme';
+      const icons = { light: 'Light Theme', dark: 'Dark Theme' };
+      themeBtn.innerHTML = icons[theme] || 'Theme';
     }
   }
 
   cycleTheme() {
-    const themes = ['light', 'dark', 'contrast'];
     const current = document.documentElement.getAttribute('data-theme') || this.settings.theme || 'light';
-    const nextIdx = (themes.indexOf(current) + 1) % themes.length;
-    const nextTheme = themes[nextIdx];
+    const nextTheme = current === 'light' ? 'dark' : 'light';
     this.settings.theme = nextTheme;
     if (window.storageManager) window.storageManager.saveSetting('theme', nextTheme);
     this.applyTheme(nextTheme);
-    this.showToast(`Theme: ${nextTheme.toUpperCase()}`, 'info');
+    this.showToast(`Theme: ${nextTheme === 'dark' ? 'Dark Theme' : 'Light Theme'}`, 'info');
   }
 
   /* ====================== NAVIGATION ====================== */
@@ -196,17 +194,6 @@ class ClinicalOralApp {
     const btnTheme = document.getElementById('btnThemeToggle');
     if (btnTheme) {
       btnTheme.addEventListener('click', () => this.cycleTheme());
-    }
-
-    const btnAudio = document.getElementById('btnAudioToggle');
-    if (btnAudio) {
-      btnAudio.addEventListener('click', () => {
-        this.settings.audioFeedback = !this.settings.audioFeedback;
-        if (window.storageManager) window.storageManager.saveSetting('audioFeedback', this.settings.audioFeedback);
-        btnAudio.classList.toggle('active', this.settings.audioFeedback);
-        this.showToast(`Audio Clicks ${this.settings.audioFeedback ? 'Enabled 🔊' : 'Muted 🔇'}`, 'info');
-        if (this.settings.audioFeedback) this.playClinicalClick(880);
-      });
     }
 
     // ScrollSpy

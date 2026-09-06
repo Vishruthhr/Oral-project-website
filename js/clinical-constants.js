@@ -27,28 +27,28 @@ const CLINICAL_CONSTANTS = {
 
   // Crown Status Codes
   CROWN_CODES: [
-    { code: '0', label: 'Sound crown', desc: 'No evidence of treated or untreated clinical caries.', color: '#4A7C59', bg: '#EFEBE1', isDMF: null },
-    { code: '1', label: 'Decayed crown', desc: 'Cavitation on pit/fissure or smooth surface, undermined enamel, or soft floor/wall.', color: '#B24A34', bg: '#F7E7E2', isDMF: 'D' },
-    { code: '2', label: 'Filled, with decay', desc: 'Tooth has permanent restoration and one or more areas with active decay.', color: '#D97A3F', bg: '#FDEBD0', isDMF: 'D' },
-    { code: '3', label: 'Filled, no decay', desc: 'Tooth has permanent restoration with no evidence of caries.', color: '#3E6FA3', bg: '#EBF5FB', isDMF: 'F' },
-    { code: '4', label: 'Missing — caries', desc: 'Tooth extracted due to caries pathology.', color: '#2B2E33', bg: '#EAECEE', isDMF: 'M' },
-    { code: '5', label: 'Missing — other reason', desc: 'Congenitally absent, ortho extraction, trauma, or periodontal extraction.', color: '#A8A296', bg: '#F2F4F4', isDMF: null },
-    { code: '6', label: 'Fissure sealant', desc: 'Fissure sealant placed on pits/fissures with no active caries.', color: '#3E9C93', bg: '#E8F8F5', isDMF: null },
-    { code: '7', label: 'Bridge abutment / crown / veneer', desc: 'Fixed dental prosthesis abutment, crown, bridge, veneer, or implant.', color: '#7C5CBF', bg: '#F4ECF7', isDMF: null },
-    { code: '8', label: 'Unerupted', desc: 'Tooth space with no clinical eruption (excluding missing).', color: '#8A8474', bg: '#DAD4C4', isDMF: null },
-    { code: 'T', label: 'Trauma (fracture)', desc: 'Surface fracture caused by trauma with no caries evidence.', color: '#9C7A22', bg: '#FEF9E7', isDMF: null },
-    { code: '9', label: 'Not recorded', desc: 'Tooth excluded or examination impossible (e.g. banded tooth).', color: '#B7B2A4', bg: '#FFFFFF', isDMF: null }
+    { code: '0', label: 'Sound crown', desc: 'No evidence of treated or untreated clinical caries.', color: '#0284C7', bg: '#E0F2FE', isDMF: null },
+    { code: '1', label: 'Decayed crown', desc: 'Cavitation on pit/fissure or smooth surface, undermined enamel, or soft floor/wall.', color: '#EF4444', bg: '#FEE2E2', isDMF: 'D' },
+    { code: '2', label: 'Filled, with decay', desc: 'Tooth has permanent restoration and one or more areas with active decay.', color: '#F59E0B', bg: '#FEF3C7', isDMF: 'D' },
+    { code: '3', label: 'Filled, no decay', desc: 'Tooth has permanent restoration with no evidence of caries.', color: '#0284C7', bg: '#E0F2FE', isDMF: 'F' },
+    { code: '4', label: 'Missing — caries', desc: 'Tooth extracted due to caries pathology.', color: '#1E293B', bg: '#E2E8F0', isDMF: 'M' },
+    { code: '5', label: 'Missing — other reason', desc: 'Congenitally absent, ortho extraction, trauma, or periodontal extraction.', color: '#64748B', bg: '#F1F5F9', isDMF: null },
+    { code: '6', label: 'Fissure sealant', desc: 'Fissure sealant placed on pits/fissures with no active caries.', color: '#0EA5E9', bg: '#E0F2FE', isDMF: null },
+    { code: '7', label: 'Bridge abutment / crown / veneer', desc: 'Fixed dental prosthesis abutment, crown, bridge, veneer, or implant.', color: '#8B5CF6', bg: '#F3E8FF', isDMF: null },
+    { code: '8', label: 'Unerupted', desc: 'Tooth space with no clinical eruption (excluding missing).', color: '#94A3B8', bg: '#E2E8F0', isDMF: null },
+    { code: 'T', label: 'Trauma (fracture)', desc: 'Surface fracture caused by trauma with no caries evidence.', color: '#F59E0B', bg: '#FEF3C7', isDMF: null },
+    { code: '9', label: 'Not recorded', desc: 'Tooth excluded or examination impossible (e.g. banded tooth).', color: '#CBD5E1', bg: '#FFFFFF', isDMF: null }
   ],
 
   // Root Status Codes
   ROOT_CODES: [
-    { code: '0', label: 'Sound root', desc: 'Exposed root with no evidence of decay or restoration.', color: '#4A7C59' },
-    { code: '1', label: 'Decayed root', desc: 'Cavitated lesion with soft or leathery base on exposed root.', color: '#B24A34' },
-    { code: '2', label: 'Filled root, with decay', desc: 'Restoration present with secondary root caries.', color: '#D97A3F' },
-    { code: '3', label: 'Filled root, no decay', desc: 'Permanent restoration on root without active caries.', color: '#3E6FA3' },
-    { code: '7', label: 'Bridge abutment / crown', desc: 'Fixed prosthesis involving root or post/core.', color: '#7C5CBF' },
-    { code: '8', label: 'Unexposed root', desc: 'Root not exposed to oral cavity (normal gingival margin).', color: '#DAD4C4' },
-    { code: '9', label: 'Not recorded', desc: 'Root excluded or unrecordable.', color: '#B7B2A4' }
+    { code: '0', label: 'Sound root', desc: 'Exposed root with no evidence of decay or restoration.', color: '#0284C7' },
+    { code: '1', label: 'Decayed root', desc: 'Cavitated lesion with soft or leathery base on exposed root.', color: '#EF4444' },
+    { code: '2', label: 'Filled root, with decay', desc: 'Restoration present with secondary root caries.', color: '#F59E0B' },
+    { code: '3', label: 'Filled root, no decay', desc: 'Permanent restoration on root without active caries.', color: '#0284C7' },
+    { code: '7', label: 'Bridge abutment / crown', desc: 'Fixed prosthesis involving root or post/core.', color: '#8B5CF6' },
+    { code: '8', label: 'Unexposed root', desc: 'Root not exposed to oral cavity (normal gingival margin).', color: '#94A3B8' },
+    { code: '9', label: 'Not recorded', desc: 'Root excluded or unrecordable.', color: '#CBD5E1' }
   ],
 
   // 6 Sextants for CPI and LOA (Strictly matching the form)
