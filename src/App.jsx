@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDental } from './context/DentalContext';
+import LoginPage from './components/LoginPage';
 import NavigationRail from './components/NavigationRail';
 import TopBar from './components/TopBar';
 import GeneralInfoSection from './components/GeneralInfoSection';
@@ -12,6 +14,17 @@ import StickySummaryStrip from './components/StickySummaryStrip';
 import Toast from './components/Toast';
 
 export default function App() {
+  const { isAuthenticated } = useDental();
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <LoginPage />
+        <Toast />
+      </>
+    );
+  }
+
   return (
     <div className="shell">
       <NavigationRail />

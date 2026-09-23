@@ -11,6 +11,7 @@ export default function SavedRecordsSection() {
     const q = search.toLowerCase().trim();
     if (!q) return true;
     return (
+      (r.patientName || '').toLowerCase().includes(q) ||
       (r.participantId || '').toLowerCase().includes(q) ||
       (r.examinerId || '').toLowerCase().includes(q) ||
       (r.village || '').toLowerCase().includes(q) ||
@@ -162,10 +163,10 @@ export default function SavedRecordsSection() {
             <table className="records data-table">
               <thead>
                 <tr>
-                  <th>Participant ID</th>
+                  <th>Patient Name</th>
+                  <th>Patient ID</th>
                   <th>Exam Date</th>
                   <th>Age</th>
-                  <th>Location</th>
                   <th>DMFT</th>
                   <th>Actions</th>
                 </tr>
@@ -174,14 +175,13 @@ export default function SavedRecordsSection() {
                 {filtered.map(r => {
                   const stats = calcDMFT(r);
                   const age = calcAge(r.dob, r.examDate);
-                  const locLabel = { '1': 'Urban', '2': 'Peri-urban', '3': 'Rural' }[r.location] || '—';
 
                   return (
                     <tr key={r.id}>
-                      <td><b>{r.participantId || '—'}</b></td>
+                      <td><b>{r.patientName || '—'}</b></td>
+                      <td>{r.participantId || '—'}</td>
                       <td>{r.examDate || '—'}</td>
                       <td>{age !== null ? age : '—'}</td>
-                      <td>{locLabel}</td>
                       <td>
                         <span className={`dmft-pill ${stats.DMFT > 0 ? 'has-decay' : 'sound'}`}>
                           {stats.DMFT}

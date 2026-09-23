@@ -65,19 +65,21 @@ export function exportRecordsToCSV(records) {
   if (!records || records.length === 0) return false;
 
   const headers = [
-    'Participant_ID',
+    'Patient_Name',
+    'Patient_ID',
     'Exam_Date',
     'Examiner_ID',
     'Village_Area',
-    'Location_Code',
-    'Location_Label',
+    'Phone_Number',
     'Sex_Code',
     'Sex_Label',
     'Date_of_Birth',
     'Age_Years',
     'Years_Education',
     'Ethnic_Group',
-    'Occupation'
+    'Occupation_Code',
+    'Occupation_Label',
+    'Habits'
   ];
 
   CLINICAL_CONSTANTS.ALL_TEETH.forEach(t => headers.push(`T${t}_Crown`));
@@ -90,6 +92,11 @@ export function exportRecordsToCSV(records) {
   headers.push('Worst_CPI');
 
   headers.push(
+    'Perio_BOP_Percent',
+    'Perio_Plaque_Percent',
+    'Perio_Mean_PD_mm',
+    'Perio_Mean_CAL_mm',
+    'Perio_Deep_Pockets_Count',
     'Fluorosis_Dean',
     'TDI_Trauma',
     'OML_Present',
@@ -106,23 +113,69 @@ export function exportRecordsToCSV(records) {
   records.forEach(r => {
     const stats = calcDMFT(r);
     const age = calcAge(r.dob, r.examDate);
-    const locLabel = { '1': 'Urban', '2': 'Peri-urban', '3': 'Rural' }[r.location] || '';
     const sexLabel = { '1': 'Male', '2': 'Female' }[r.sex] || '';
+    
+    let ethnicVal = r.ethnicGroup || '';
+    if (ethnicVal === 'Other') {
+      ethnicVal = r.ethnicGroupOther ? `Other: ${r.ethnicGroupOther}` : 'Other';
+    }
+
+    let occCode = r.occupation || '';
+    let occLabel = {
+      '0': 'Unskilled / Manual worker',
+      '1': 'Skilled worker',
+      '2': 'Educated / Professional',
+      '3': 'Other'
+    }[r.occupation] || r.occupation || '';
+    if (occCode === '3') {
+      occLabel = r.occupationOther ? `Other: ${r.occupationOther}` : 'Other';
+    }
+
+    // Perio summary metrics for this record
+    let bopSites = 0, plaqueSites = 0, totalSites = 0, sumPD = 0, countPD = 0, sumCAL = 0, countCAL = 0, deepPockets = 0;
+    if (r.perio) {
+      CLINICAL_CONSTANTS.ALL_TEETH.forEach(t => {
+        const pt = r.perio[t];
+        if (pt && pt.present) {
+          const isUpper = CLINICAL_CONSTANTS.UPPER_TEETH.includes(t);
+          const sites = isUpper ? CLINICAL_CONSTANTS.PERIO_SITES_UPPER : CLINICAL_CONSTANTS.PERIO_SITES_LOWER;
+          sites.forEach(s => {
+            totalSites++;
+            if (pt.bop && pt.bop[s]) bopSites++;
+            if (pt.plaque && pt.plaque[s]) plaqueSites++;
+            const pdVal = pt.pd && pt.pd[s] !== undefined && pt.pd[s] !== '' ? Number(pt.pd[s]) : 0;
+            const gmVal = pt.gm && pt.gm[s] !== undefined && pt.gm[s] !== '' ? Number(pt.gm[s]) : 0;
+            sumPD += pdVal;
+            countPD++;
+            sumCAL += (pdVal + gmVal);
+            countCAL++;
+            if (pdVal >= 6) deepPockets++;
+          });
+        }
+      });
+    }
+
+    const perioBopPct = totalSites > 0 ? Math.round((bopSites / totalSites) * 100) : '';
+    const perioPlaquePct = totalSites > 0 ? Math.round((plaqueSites / totalSites) * 100) : '';
+    const perioMeanPD = countPD > 0 ? (sumPD / countPD).toFixed(1) : '';
+    const perioMeanCAL = countCAL > 0 ? (sumCAL / countCAL).toFixed(1) : '';
 
     const row = [
+      r.patientName || '',
       r.participantId || '',
       r.examDate || '',
       r.examinerId || '',
       r.village || '',
-      r.location || '',
-      locLabel,
+      r.phoneNumber || '',
       r.sex || '',
       sexLabel,
       r.dob || '',
       age !== null ? age : '',
       r.education !== undefined ? r.education : '',
-      r.ethnicGroup || '',
-      r.occupation || ''
+      ethnicVal,
+      occCode,
+      occLabel,
+      r.habits || ''
     ];
 
     CLINICAL_CONSTANTS.ALL_TEETH.forEach(t => {
@@ -145,6 +198,11 @@ export function exportRecordsToCSV(records) {
     row.push(getWorstCPI(r));
 
     row.push(
+      perioBopPct,
+      perioPlaquePct,
+      perioMeanPD,
+      perioMeanCAL,
+      r.perio ? deepPockets : '',
       r.fluorosis || '',
       r.tdi || '',
       r.omlPresent || 'N',

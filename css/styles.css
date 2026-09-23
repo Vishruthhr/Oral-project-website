@@ -1301,6 +1301,912 @@ table.records tr:hover { background: var(--teal-l); }
 .hud-status-label { color: var(--muted); font-weight: 700; width: 48px; }
 .hud-status-val { font-weight: 700; color: var(--ink); }
 
+/* ==================== 6-POINT PERIODONTAL CHART (PERIODONTALCHART-ONLINE STYLE) ==================== */
+.perio-master-card {
+  padding: 24px;
+}
+
+.perio-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.perio-mode-switcher {
+  display: flex;
+  background: var(--sand);
+  border: 1.5px solid var(--line);
+  padding: 4px;
+  border-radius: 30px;
+  gap: 4px;
+}
+
+.perio-mode-switcher .mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.perio-mode-switcher .mode-btn:hover {
+  color: var(--ink);
+}
+
+.perio-mode-switcher .mode-btn.active {
+  background: var(--paper);
+  color: var(--navy);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Control & Action Bar */
+.perio-control-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--paper-subtle);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.control-btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-perio-tool {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-perio-tool:hover {
+  background: var(--teal-l);
+  border-color: var(--teal);
+  color: var(--navy);
+}
+
+.btn-perio-tool.danger {
+  color: var(--coral);
+}
+
+.btn-perio-tool.danger:hover {
+  background: var(--coral-l);
+  border-color: var(--coral);
+}
+
+.perio-toggles-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.toggle-pill {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggle-pill:hover {
+  color: var(--ink);
+  border-color: var(--navy);
+}
+
+.toggle-pill.active {
+  background: var(--teal-l);
+  border-color: var(--navy);
+  color: var(--navy);
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+/* Periodontal Live Indices & Risk Dashboard */
+.perio-indices-dashboard {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.index-stat-card {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+  min-height: 96px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.index-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--teal-border);
+}
+
+.index-stat-card .stat-num {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: var(--mono);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.index-stat-card .stat-unit {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.index-stat-card .stat-pct {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.index-stat-card .stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 4px 0 6px;
+  line-height: 1.2;
+}
+
+.index-stat-card .status-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.status-pill.pill-good {
+  background: var(--teal-l);
+  color: var(--navy);
+  border: 1px solid var(--teal-border);
+}
+
+.status-pill.pill-alert {
+  background: var(--coral-l);
+  color: var(--coral);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-pill.pill-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .status-pill.pill-warning {
+  color: #FBBF24;
+}
+
+.status-pill.pill-info {
+  background: var(--sand);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.text-danger {
+  color: var(--coral);
+}
+
+.text-warning {
+  color: #D97706;
+}
+
+[data-theme="dark"] .text-warning {
+  color: #FBBF24;
+}
+
+/* Jaws Structure */
+.perio-jaw-section {
+  background: var(--paper-subtle);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.jaw-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.jaw-badge {
+  font-size: 13px;
+  font-weight: 800;
+  background: var(--navy);
+  color: #FFFFFF;
+  padding: 4px 12px;
+  border-radius: 16px;
+  letter-spacing: 0.02em;
+}
+
+.jaw-sub {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Scrollable Container with Sticky Row Labels */
+.perio-table-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.perio-chart-table {
+  display: flex;
+  min-width: 1250px;
+  position: relative;
+}
+
+/* Row Labels Sticky Column */
+.perio-labels-col {
+  position: sticky;
+  left: 0;
+  z-index: 15;
+  width: 160px;
+  flex-shrink: 0;
+  background: var(--paper);
+  border-right: 2px solid var(--line);
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.perio-label-cell {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.perio-label-cell:first-child {
+  height: 38px;
+  font-weight: 800;
+  color: var(--ink);
+  background: var(--sand);
+}
+
+.perio-label-cell.buccal-tag {
+  background: rgba(2, 132, 199, 0.04);
+}
+
+.perio-label-cell.lingual-tag {
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.perio-label-cell.graphic-label {
+  height: 80px;
+  background: var(--sand);
+  font-weight: 800;
+  color: var(--navy-2);
+}
+
+.perio-label-cell:last-child {
+  border-bottom: none;
+}
+
+/* Teeth Stream */
+.perio-teeth-stream {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* Single Tooth Column */
+.perio-tooth-col {
+  width: 68px;
+  min-width: 68px;
+  flex: 1;
+  border-right: 1px solid var(--line);
+  transition: background 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.perio-tooth-col:nth-child(8) {
+  border-right: 3px solid var(--navy);
+}
+
+.perio-tooth-col:hover {
+  background: rgba(2, 132, 199, 0.03);
+}
+
+.perio-tooth-col.tooth-missing {
+  background: rgba(0, 0, 0, 0.02);
+  opacity: 0.45;
+}
+
+.perio-tooth-col.tooth-missing .perio-cell:not(.cell-tooth-header) {
+  pointer-events: none;
+}
+
+.perio-tooth-col.is-implant {
+  background: rgba(56, 189, 248, 0.06);
+}
+
+/* Cells in Tooth Column */
+.perio-cell {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+  padding: 2px 3px;
+}
+
+.perio-cell:last-child {
+  border-bottom: none;
+}
+
+.perio-cell.cell-tooth-header {
+  height: 38px;
+  background: var(--sand);
+}
+
+/* Anatomical Dental Arch Image Chart & Overlays */
+.perio-anatomical-arch-card {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.arch-strip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.arch-strip-header .strip-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy-2);
+}
+
+.arch-strip-header .strip-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.perio-chart-illustration-box {
+  position: relative;
+  width: 100%;
+  height: 162px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .perio-chart-illustration-box {
+  background: #0B1120;
+}
+
+.perio-background-teeth-img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+[data-theme="dark"] .perio-background-teeth-img {
+  filter: brightness(0.92) contrast(1.1);
+}
+
+.perio-svg-curves-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.perio-arch-svg-overlay {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.perio-implant-img-overlay {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.missing-tooth-mask .missing-rect {
+  fill: rgba(148, 163, 184, 0.45);
+  stroke: #94A3B8;
+  stroke-width: 1;
+  stroke-dasharray: 4, 3;
+}
+
+[data-theme="dark"] .missing-tooth-mask .missing-rect {
+  fill: rgba(15, 23, 42, 0.65);
+  stroke: #334155;
+}
+
+.missing-tooth-mask .missing-cross {
+  stroke: #EF4444;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+/* Occlusal Arch Diagram Strip */
+.perio-occlusal-strip {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  margin: 14px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.occlusal-jaw-svg {
+  width: 100%;
+  max-width: 920px;
+  height: 81px;
+  display: block;
+}
+
+/* Tooth Header Button */
+.tooth-num-btn {
+  background: var(--navy);
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 800;
+  width: 32px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.tooth-num-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+
+.tooth-num-btn.missing {
+  background: #94A3B8;
+  color: #FFFFFF;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Mobility & Furcation Micro Selects */
+.perio-select-micro {
+  width: 44px;
+  height: 24px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--mono);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 0 2px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.implant-pill-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.implant-pill-btn.active {
+  background: var(--navy);
+  color: #FFFFFF;
+  border-color: var(--navy);
+  font-weight: 800;
+}
+
+.furc-select {
+  width: 44px;
+  height: 24px;
+  font-size: 10.5px;
+  font-weight: 700;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--ink);
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.furc-select.active {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+  color: #B45309;
+}
+
+[data-theme="dark"] .furc-select.active {
+  background: rgba(245, 158, 11, 0.2);
+  color: #FBBF24;
+  border-color: #F59E0B;
+}
+
+.cell-dash {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Triple Dots (BOP & Plaque) */
+.perio-dots-triple {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.dot-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: var(--input-bg);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.dot-btn:hover {
+  transform: scale(1.2);
+  border-color: var(--navy);
+}
+
+.dot-btn.bop-dot.active {
+  background: #EF4444;
+  border-color: #DC2626;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.6);
+}
+
+.dot-btn.plaque-dot.active {
+  background: #0284C7;
+  border-color: #0369A1;
+  box-shadow: 0 0 5px rgba(2, 132, 199, 0.6);
+}
+
+/* Triple Inputs (GM, PD, CAL) */
+.perio-inputs-triple {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 2px;
+  padding: 0 1px;
+}
+
+.perio-num-input {
+  width: 18px;
+  height: 24px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
+  text-align: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+
+.perio-num-input::-webkit-outer-spin-button,
+.perio-num-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.perio-num-input.gm-input {
+  color: var(--navy);
+}
+
+.perio-num-input.pd-input.pd-normal {
+  color: var(--ink);
+}
+
+.perio-num-input.pd-input.pd-moderate {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+  color: #B45309;
+  font-weight: 800;
+}
+
+[data-theme="dark"] .perio-num-input.pd-input.pd-moderate {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #F59E0B;
+  color: #FBBF24;
+}
+
+.perio-num-input.pd-input.pd-severe {
+  background: #FEE2E2;
+  border-color: #EF4444;
+  color: #B91C1C;
+  font-weight: 800;
+}
+
+[data-theme="dark"] .perio-num-input.pd-input.pd-severe {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #EF4444;
+  color: #F87171;
+}
+
+.perio-num-input.pd-input.deep-highlight {
+  box-shadow: 0 0 0 2px #EF4444;
+  animation: pulse-border 1.2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.8); }
+  50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2); }
+  100% { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.8); }
+}
+
+.cal-val-display {
+  width: 18px;
+  height: 24px;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sand);
+  border-radius: 3px;
+  color: var(--navy-2);
+}
+
+/* SVG Chart Elements */
+.perio-graphic-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perio-svg-chart {
+  width: 100%;
+  height: 72px;
+  display: block;
+}
+
+.cej-line {
+  stroke: var(--navy);
+  stroke-width: 1.5;
+  stroke-dasharray: 2, 2;
+}
+
+.grid-sub-line {
+  stroke: var(--line);
+  stroke-width: 0.8;
+  opacity: 0.6;
+}
+
+.perio-pocket-area {
+  fill: rgba(239, 68, 68, 0.22);
+  stroke: none;
+}
+
+[data-theme="dark"] .perio-pocket-area {
+  fill: rgba(248, 113, 113, 0.28);
+}
+
+.perio-gm-line {
+  fill: none;
+  stroke: #0284C7;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+[data-theme="dark"] .perio-gm-line {
+  stroke: #38BDF8;
+}
+
+.perio-pd-line {
+  fill: none;
+  stroke: #EF4444;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+[data-theme="dark"] .perio-pd-line {
+  stroke: #F87171;
+}
+
+.graph-bop-circle {
+  fill: #EF4444;
+  stroke: #FFFFFF;
+  stroke-width: 1;
+}
+
+.graph-pi-rect {
+  fill: #0284C7;
+  stroke: #FFFFFF;
+  stroke-width: 0.8;
+}
+
+.graph-implant-fixture .implant-body {
+  fill: #94A3B8;
+  stroke: #64748B;
+  stroke-width: 1;
+}
+
+.graph-implant-fixture .implant-thread {
+  stroke: #FFFFFF;
+  stroke-width: 0.8;
+}
+
+.perio-svg-placeholder.missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.missing-x {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.missing-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Legend Strip */
+.perio-legend-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 12px 18px;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.legend-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-badge {
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.legend-badge.pd-normal {
+  background: var(--sand);
+  color: var(--navy-2);
+  border: 1px solid var(--line);
+}
+
+.legend-badge.pd-moderate {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #F59E0B;
+}
+
+[data-theme="dark"] .legend-badge.pd-moderate {
+  background: rgba(245, 158, 11, 0.2);
+  color: #FBBF24;
+}
+
+.legend-badge.pd-severe {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #EF4444;
+}
+
+[data-theme="dark"] .legend-badge.pd-severe {
+  background: rgba(239, 68, 68, 0.25);
+  color: #F87171;
+}
+
+.legend-badge.cal-badge {
+  background: var(--teal-l);
+  color: var(--navy);
+  border: 1px solid var(--teal-border);
+}
+
 /* ==================== TABLET & RESPONSIVE BREAKPOINTS ==================== */
 @media(max-width: 1100px) {
   .content { padding: 22px 24px 120px; }
@@ -1345,3 +2251,351 @@ table.records tr:hover { background: var(--teal-l); }
   .dentition-stats-strip { grid-template-columns: repeat(2, 1fr); }
   .records-stats-bar { grid-template-columns: 1fr 1fr; }
 }
+
+/* ==================== UNIFORM FIELD STYLING ==================== */
+.field input[type="text"],
+.field input[type="tel"],
+.field input[type="date"],
+.field input[type="number"],
+.field input[type="password"],
+.field select,
+.field textarea {
+  width: 100%;
+  height: 42px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--input-bg);
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.field textarea {
+  height: auto;
+  min-height: 76px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px var(--teal-l);
+}
+
+.animate-fade-in {
+  animation: fadeInSmooth 0.2s ease-out forwards;
+}
+
+@keyframes fadeInSmooth {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== LOGIN PAGE & AUTH STYLES ==================== */
+.login-wrapper {
+  min-height: 100vh;
+  width: 100vw;
+  background: var(--bg-gradient);
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+  font-family: var(--sans);
+  box-sizing: border-box;
+}
+
+.login-top-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+}
+
+.login-card-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  box-shadow: var(--shadow-lg);
+  box-sizing: border-box;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.login-logo-icon {
+  font-size: 28px;
+}
+
+.login-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.login-tagline {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 4px 0 0 0;
+}
+
+.login-welcome-section {
+  text-align: center;
+  margin-bottom: 18px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.login-welcome-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 4px 0;
+}
+
+.login-welcome-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.login-error-alert {
+  background: var(--coral-l);
+  border: 1px solid var(--coral);
+  color: var(--coral);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-success-alert {
+  background: var(--teal-l);
+  border: 1px solid var(--teal-border);
+  color: var(--navy);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-input-wrap input {
+  padding-right: 80px;
+  width: 100%;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+  z-index: 2;
+}
+
+.password-toggle-btn:hover {
+  background: var(--teal-l);
+}
+
+.login-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: -2px;
+}
+
+.remember-me-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-me-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--navy);
+  cursor: pointer;
+}
+
+.forgot-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s ease;
+}
+
+.forgot-link-btn:hover {
+  text-decoration: underline;
+}
+
+.login-submit-btn {
+  width: 100%;
+  height: 42px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.forgot-back-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.back-to-login-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.15s ease;
+}
+
+.back-to-login-btn:hover {
+  color: var(--navy);
+}
+
+.login-footer-hint {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.login-footer-hint code {
+  background: var(--teal-l);
+  color: var(--navy);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+}
+
+.login-card-footer {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.login-card-footer p {
+  margin: 2px 0;
+}
+
+.btn-logout {
+  background: var(--coral-l);
+  color: var(--coral);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-logout:hover {
+  background: var(--coral);
+  color: #ffffff;
+}
+
+.input-error {
+  border-color: var(--coral) !important;
+  background-color: var(--coral-l) !important;
+}
+
+.field-inline-error {
+  display: block;
+  font-size: 11px;
+  color: var(--coral);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+

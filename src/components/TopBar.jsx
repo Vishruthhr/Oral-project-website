@@ -7,16 +7,18 @@ export default function TopBar() {
     timerDisplay,
     theme,
     toggleTheme,
-    audioEnabled,
-    setAudioEnabled,
     setHelpDrawerOpen,
-    playClick
+    logout
   } = useDental();
 
   const themeLabels = {
     light: 'Light Theme',
     dark: 'Dark Theme'
   };
+
+  const displayName = currentRecord.patientName
+    ? currentRecord.patientName
+    : (currentRecord.participantId ? currentRecord.participantId : 'Unassigned');
 
   return (
     <header className="topbar">
@@ -26,7 +28,7 @@ export default function TopBar() {
 
         <div className="chairside-banner-pill">
           <span className="patient-badge">
-            Patient: {currentRecord.participantId ? <b>{currentRecord.participantId}</b> : <i>Unassigned</i>}
+            Patient: <b>{displayName}</b>
           </span>
           <span className="exam-timer">{timerDisplay}</span>
         </div>
@@ -39,7 +41,7 @@ export default function TopBar() {
           onClick={toggleTheme}
           title="Toggle Theme"
         >
-          {themeLabels[theme] || '🎨 Theme'}
+          {themeLabels[theme] || 'Theme'}
         </button>
 
         <button
@@ -49,6 +51,15 @@ export default function TopBar() {
           title="Open Clinical Reference & Codebook"
         >
           📖 Help &amp; Codebook
+        </button>
+
+        <button
+          type="button"
+          className="btn-logout"
+          onClick={logout}
+          title="Sign out of workstation"
+        >
+          🚪 Logout
         </button>
       </div>
     </header>

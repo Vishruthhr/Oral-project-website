@@ -8,6 +8,18 @@ export default function CodebookDrawer() {
   if (!helpDrawerOpen) return null;
 
   const sections = [
+    {
+      title: '6-Point Periodontal Assessment Criteria',
+      rows: [
+        ['PD', 'Probing Depth: Distance from gingival margin to pocket base (1–3mm Normal, 4–5mm Moderate, ≥6mm Severe Deep Pocket)'],
+        ['GM', 'Gingival Margin: Recession (+) or coronal overgrowth (-) relative to CEJ'],
+        ['CAL', 'Clinical Attachment Level: Auto-calculated attachment loss (CAL = PD + GM)'],
+        ['BOP', 'Bleeding on Probing: Evaluated within 30 seconds of gentle probing (Red marker)'],
+        ['PI', 'Plaque Index: Supragingival / marginal biofilm presence at tooth cervical third (Blue marker)'],
+        ['Mobility', 'Degree 0 (Physiological), I (≤1mm horizontal), II (>1mm horizontal), III (Vertical/axial displacement)'],
+        ['Furcation', 'Grade 0 (None), Grade 1 (≤3mm horizontal probing), Grade 2 (>3mm but not through-and-through), Grade 3 (Through-and-through)']
+      ]
+    },
     { title: 'Crown Status', rows: CLINICAL_CONSTANTS.CROWN_CODES.map(o => [o.code, o.label]) },
     { title: 'Root Status', rows: CLINICAL_CONSTANTS.ROOT_CODES.map(o => [o.code, o.label]) },
     { title: 'CPI (per sextant)', rows: CLINICAL_CONSTANTS.CPI_OPTS.slice(1) },

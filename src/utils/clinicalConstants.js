@@ -15,6 +15,20 @@ export const CLINICAL_CONSTANTS = {
     48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38
   ],
 
+  PERIO_SITES_UPPER: ['db', 'b', 'mb', 'dp', 'p', 'mp'],
+  PERIO_SITES_LOWER: ['db', 'b', 'mb', 'dl', 'l', 'ml'],
+  PERIO_SITES_LABELS: {
+    db: 'Disto-buccal',
+    b: 'Mid-buccal',
+    mb: 'Mesio-buccal',
+    dp: 'Disto-palatal',
+    p: 'Mid-palatal',
+    mp: 'Mesio-palatal',
+    dl: 'Disto-lingual',
+    l: 'Mid-lingual',
+    ml: 'Mesio-lingual'
+  },
+
   CROWN_CODES: [
     { code: '0', label: 'Sound crown', desc: 'No evidence of treated or untreated clinical caries.', color: '#0284C7', bg: '#E0F2FE', isDMF: null },
     { code: '1', label: 'Decayed crown', desc: 'Cavitation on pit/fissure or smooth surface, undermined enamel, or soft floor/wall.', color: '#EF4444', bg: '#FEE2E2', isDMF: 'D' },
@@ -37,6 +51,24 @@ export const CLINICAL_CONSTANTS = {
     { code: '7', label: 'Bridge abutment / crown', desc: 'Fixed prosthesis involving root or post/core.', color: '#8B5CF6' },
     { code: '8', label: 'Unexposed root', desc: 'Root not exposed to oral cavity (normal gingival margin).', color: '#94A3B8' },
     { code: '9', label: 'Not recorded', desc: 'Root excluded or unrecordable.', color: '#CBD5E1' }
+  ],
+
+  ETHNIC_OPTS: [
+    ['', 'Select...'],
+    ['Asian', 'Asian'],
+    ['Black/African', 'Black/African'],
+    ['White/Caucasian', 'White/Caucasian'],
+    ['Hispanic/Latino', 'Hispanic/Latino'],
+    ['Mixed', 'Mixed'],
+    ['Other', 'Other']
+  ],
+
+  OCCUPATION_OPTS: [
+    ['', 'Select...'],
+    ['0', '0 – Unskilled / Manual worker'],
+    ['1', '1 – Skilled worker'],
+    ['2', '2 – Educated / Professional'],
+    ['3', '3 – Other']
   ],
 
   SEXTANTS: [
