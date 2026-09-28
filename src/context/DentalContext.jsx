@@ -19,25 +19,78 @@ export function DentalProvider({ children }) {
   const [autoAdvance, setAutoAdvance] = useState(() => storage.getSettings().autoAdvance !== false);
   const [showRoots, setShowRoots] = useState(true);
   const [activeTooth, setActiveTooth] = useState(null);
+  const [activePart, setActivePart] = useState('crown');
+  const [historyStack, setHistoryStack] = useState([]);
   const [keypadMode, setKeypadMode] = useState('crown');
   const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
   const [elapsedSecs, setElapsedSecs] = useState(0);
 
+  function getRegisteredUsers() {
+    try {
+      const raw = localStorage.getItem('dental_registered_users');
+      return raw ? JSON.parse(raw) : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
   function login(username, password) {
-    if (!username.trim() || !password.trim()) {
+    const u = username.trim();
+    const p = password.trim();
+    if (!u || !p) {
       return { success: false, error: 'Please enter both username and password.' };
     }
-    if (username === AUTH_CONFIG.username && password === AUTH_CONFIG.password) {
+    if (u === AUTH_CONFIG.username && p === AUTH_CONFIG.password) {
       sessionStorage.setItem('dental_auth_session', 'true');
+      sessionStorage.setItem('dental_current_user', u);
+      setIsAuthenticated(true);
+      return { success: true };
+    }
+    const regUsers = getRegisteredUsers();
+    const match = regUsers.find(user => user.username.toLowerCase() === u.toLowerCase() && user.password === p);
+    if (match) {
+      sessionStorage.setItem('dental_auth_session', 'true');
+      sessionStorage.setItem('dental_current_user', match.username);
       setIsAuthenticated(true);
       return { success: true };
     }
     return { success: false, error: 'Invalid username or password.' };
   }
 
+  function signup(username, password) {
+    const u = username.trim();
+    const p = password.trim();
+    if (!u || !p) {
+      return { success: false, error: 'Please enter both username and password.' };
+    }
+    if (u.length < 3) {
+      return { success: false, error: 'Username must be at least 3 characters long.' };
+    }
+    if (p.length < 4) {
+      return { success: false, error: 'Password must be at least 4 characters long.' };
+    }
+
+    const regUsers = getRegisteredUsers();
+    const isTaken = regUsers.some(user => user.username.toLowerCase() === u.toLowerCase()) ||
+                    (u.toLowerCase() === AUTH_CONFIG.username.toLowerCase());
+    if (isTaken) {
+      return { success: false, error: 'Username is already taken. Please choose another username or log in.' };
+    }
+
+    regUsers.push({ username: u, password: p, createdAt: new Date().toISOString() });
+    localStorage.setItem('dental_registered_users', JSON.stringify(regUsers));
+
+    sessionStorage.setItem('dental_auth_session', 'true');
+    sessionStorage.setItem('dental_current_user', u);
+    setIsAuthenticated(true);
+    showToastMsg(`Account created! Welcome, ${u}.`, 'success');
+    return { success: true };
+  }
+
   function logout() {
     sessionStorage.removeItem('dental_auth_session');
+    sessionStorage.removeItem('dental_current_user');
     setIsAuthenticated(false);
     showToastMsg('Logged out successfully.', 'info');
   }
@@ -102,6 +155,7 @@ export function DentalProvider({ children }) {
       omlPresent: 'N',
       omlSite: '',
       omlCondition: '',
+      omlOtherDetails: '',
       prosUpper: '',
       prosLower: '',
       treatment: '',
@@ -184,6 +238,7 @@ export function DentalProvider({ children }) {
     playClick(code === '0' ? 600 : 800);
     setCurrentRecord(prev => {
       const currentTooth = prev.teeth[toothNum] || { crown: '', root: '' };
+      setHistoryStack(h => [...h, { toothNum, state: { ...currentTooth } }]);
       const updatedTeeth = {
         ...prev.teeth,
         [toothNum]: { ...currentTooth, [type]: code }
@@ -198,6 +253,42 @@ export function DentalProvider({ children }) {
         navigateTooth(1, toothNum);
       }, 140);
     }
+  }
+
+  function undoLastChange() {
+    if (historyStack.length === 0) {
+      showToastMsg('Nothing to undo.', 'info');
+      return;
+    }
+    const last = historyStack[historyStack.length - 1];
+    setHistoryStack(h => h.slice(0, h.length - 1));
+    setCurrentRecord(prev => {
+      const updatedTeeth = {
+        ...prev.teeth,
+        [last.toothNum]: last.state
+      };
+      const updated = { ...prev, teeth: updatedTeeth };
+      storage.saveDraft(updated);
+      showToastMsg(`Undid change on Tooth #${last.toothNum}`, 'info');
+      return updated;
+    });
+  }
+
+  function resetToothStatus(toothNum) {
+    if (!toothNum) return;
+    playClick();
+    setCurrentRecord(prev => {
+      const currentTooth = prev.teeth[toothNum] || { crown: '', root: '' };
+      setHistoryStack(h => [...h, { toothNum, state: { ...currentTooth } }]);
+      const updatedTeeth = {
+        ...prev.teeth,
+        [toothNum]: { crown: '', root: '' }
+      };
+      const updated = { ...prev, teeth: updatedTeeth };
+      storage.saveDraft(updated);
+      showToastMsg(`Reset status for Tooth #${toothNum}`, 'info');
+      return updated;
+    });
   }
 
   function navigateTooth(step, fromTooth = activeTooth) {
@@ -571,6 +662,7 @@ export function DentalProvider({ children }) {
   const value = {
     isAuthenticated,
     login,
+    signup,
     logout,
     currentRecord,
     records,
@@ -580,6 +672,8 @@ export function DentalProvider({ children }) {
     autoAdvance,
     showRoots,
     activeTooth,
+    activePart,
+    setActivePart,
     keypadMode,
     helpDrawerOpen,
     toast,
@@ -600,6 +694,8 @@ export function DentalProvider({ children }) {
     showToastMsg,
     updateField,
     updateToothStatus,
+    undoLastChange,
+    resetToothStatus,
     navigateTooth,
     fillAllSound,
     clearArch,

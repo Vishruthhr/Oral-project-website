@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDental } from '../context/DentalContext';
 
 export default function LoginPage() {
-  const { login, theme, toggleTheme } = useDental();
+  const { login, signup, theme, toggleTheme } = useDental();
   
-  // Navigation view: 'login' | 'forgot'
+  // Navigation view: 'login' | 'signup' | 'forgot'
   const [view, setView] = useState('login');
 
   // Login form state
@@ -17,6 +17,13 @@ export default function LoginPage() {
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [generalError, setGeneralError] = useState('');
+
+  // Signup form state
+  const [signupUsername, setSignupUsername] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [signupError, setSignupError] = useState('');
 
   // Forgot password form state
   const [forgotInput, setForgotInput] = useState('');
@@ -50,7 +57,6 @@ export default function LoginPage() {
     }
     if (hasError) return;
 
-    // Process Remember Me
     if (rememberMe) {
       localStorage.setItem('dental_remember_user', username.trim());
       localStorage.setItem('dental_remember_me', 'true');
@@ -65,6 +71,37 @@ export default function LoginPage() {
     }
   };
 
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+    setSignupError('');
+
+    if (!signupUsername.trim()) {
+      setSignupError('Please enter a username.');
+      return;
+    }
+    if (signupUsername.trim().length < 3) {
+      setSignupError('Username must be at least 3 characters long.');
+      return;
+    }
+    if (!signupPassword.trim()) {
+      setSignupError('Please enter a password.');
+      return;
+    }
+    if (signupPassword.trim().length < 4) {
+      setSignupError('Password must be at least 4 characters long.');
+      return;
+    }
+    if (signupPassword !== signupConfirmPassword) {
+      setSignupError('Passwords do not match.');
+      return;
+    }
+
+    const res = signup(signupUsername, signupPassword);
+    if (!res.success) {
+      setSignupError(res.error);
+    }
+  };
+
   const handleForgotSubmit = (e) => {
     e.preventDefault();
     setForgotError('');
@@ -75,7 +112,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Mock reset success flow
     setForgotSuccess(true);
   };
 
@@ -103,7 +139,7 @@ export default function LoginPage() {
             <p className="login-tagline">Standard Digital Clinical Dental Charting Platform</p>
           </div>
 
-          {view === 'login' ? (
+          {view === 'login' && (
             /* ================= LOGIN VIEW ================= */
             <>
               <div className="login-welcome-section">
@@ -202,13 +238,130 @@ export default function LoginPage() {
                 <button type="submit" className="btn teal login-submit-btn">
                   Sign In to Workstation
                 </button>
-              </form>
 
-              <div className="login-footer-hint">
-                <span>Demo Credentials: <code>admin</code> / <code>password123</code></span>
-              </div>
+                <div className="forgot-back-wrap" style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
+                    Don't have an account?{' '}
+                  </span>
+                  <button
+                    type="button"
+                    className="forgot-link-btn"
+                    style={{ fontWeight: '600' }}
+                    onClick={() => {
+                      setView('signup');
+                      setSignupError('');
+                      setSignupUsername('');
+                      setSignupPassword('');
+                      setSignupConfirmPassword('');
+                    }}
+                  >
+                    Create a new account
+                  </button>
+                </div>
+              </form>
             </>
-          ) : (
+          )}
+
+          {view === 'signup' && (
+            /* ================= SIGNUP VIEW ================= */
+            <>
+              <div className="login-welcome-section">
+                <h2 className="login-welcome-title">Create New Account</h2>
+                <p className="login-welcome-sub">Sign up for workstation access</p>
+              </div>
+
+              {signupError && (
+                <div className="login-error-alert" role="alert">
+                  <span className="alert-icon">⚠️</span>
+                  <span>{signupError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSignupSubmit} className="login-form" noValidate>
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_username">
+                    New Username <span className="req">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="signup_username"
+                    value={signupUsername}
+                    onChange={(e) => {
+                      setSignupUsername(e.target.value);
+                      if (signupError) setSignupError('');
+                    }}
+                    placeholder="Choose a username"
+                    autoComplete="off"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_password">
+                    New Password <span className="req">*</span>
+                  </label>
+                  <div className="password-input-wrap">
+                    <input
+                      type={showSignupPassword ? 'text' : 'password'}
+                      id="signup_password"
+                      value={signupPassword}
+                      onChange={(e) => {
+                        setSignupPassword(e.target.value);
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="Choose a password"
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle-btn"
+                      onClick={() => setShowSignupPassword(!showSignupPassword)}
+                      title={showSignupPassword ? 'Hide password' : 'Show password'}
+                      tabIndex={-1}
+                    >
+                      {showSignupPassword ? '🙈 Hide' : '👁️ Show'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_confirm_password">
+                    Confirm Password <span className="req">*</span>
+                  </label>
+                  <input
+                    type={showSignupPassword ? 'text' : 'password'}
+                    id="signup_confirm_password"
+                    value={signupConfirmPassword}
+                    onChange={(e) => {
+                      setSignupConfirmPassword(e.target.value);
+                      if (signupError) setSignupError('');
+                    }}
+                    placeholder="Re-enter password to confirm"
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                <button type="submit" className="btn teal login-submit-btn">
+                  ✨ Create Account &amp; Sign In
+                </button>
+
+                <div className="forgot-back-wrap" style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <button
+                    type="button"
+                    className="back-to-login-btn"
+                    onClick={() => {
+                      setView('login');
+                      setGeneralError('');
+                    }}
+                  >
+                    ← Back to Sign In
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+
+          {view === 'forgot' && (
             /* ================= FORGOT PASSWORD VIEW ================= */
             <>
               <div className="login-welcome-section">
@@ -264,12 +417,6 @@ export default function LoginPage() {
                   </button>
                 </div>
               </form>
-
-              <div className="login-footer-hint">
-                <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
-                  Note: Front-end mock reset flow for demonstration. Not production-secure.
-                </span>
-              </div>
             </>
           )}
 

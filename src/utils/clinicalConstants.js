@@ -1,6 +1,27 @@
-/**
- * Standard Clinical Dental Constants & Criteria Definitions (React Engine)
- */
+export const TOOTH_COLOR_CONFIG = {
+  crown: {
+    '0': { label: 'Sound crown', color: '#FFFDF7', bg: '#F8FAFC', stroke: '#334155', desc: 'No active caries or treatment.' },
+    '1': { label: 'Decayed crown', color: '#78350F', bg: '#FEF2F2', stroke: '#451A03', desc: 'Active caries pathology on crown.' },
+    '2': { label: 'Filled, with decay', color: '#D97706', bg: '#FFFBEB', stroke: '#92400E', desc: 'Restoration present with active secondary caries.' },
+    '3': { label: 'Filled, no decay', color: '#0284C7', bg: '#F0F9FF', stroke: '#0369A1', desc: 'Permanent restoration in sound condition.' },
+    '4': { label: 'Missing — caries', color: '#475569', bg: '#F1F5F9', stroke: '#1E293B', desc: 'Extracted due to caries.' },
+    '5': { label: 'Missing — other', color: '#64748B', bg: '#F1F5F9', stroke: '#334155', desc: 'Extracted for trauma/ortho/other.' },
+    '6': { label: 'Fissure sealant', color: '#0EA5E9', bg: '#F0F9FF', stroke: '#0284C7', desc: 'Pit/fissure sealant placed.' },
+    '7': { label: 'Crown / Cap / Bridge', color: '#EAB308', bg: '#FEFCE8', stroke: '#CA8A04', desc: 'Fixed full crown or bridge abutment.' },
+    '8': { label: 'Unerupted', color: '#94A3B8', bg: '#F8FAFC', stroke: '#64748B', desc: 'Tooth space unerupted.' },
+    'T': { label: 'Trauma (fracture)', color: '#DC2626', bg: '#FEF2F2', stroke: '#991B1B', desc: 'Crown fracture or trauma.' },
+    '9': { label: 'Not recorded', color: '#CBD5E1', bg: '#FFFFFF', stroke: '#94A3B8', desc: 'Excluded or not recorded.' }
+  },
+  root: {
+    '0': { label: 'Sound root', color: '#F5EBE0', bg: '#FAFAF9', stroke: '#44403C', desc: 'Exposed or sound root surface.' },
+    '1': { label: 'Decayed root', color: '#78350F', bg: '#FEF2F2', stroke: '#451A03', desc: 'Root surface caries lesion.' },
+    '2': { label: 'Filled root, with decay', color: '#D97706', bg: '#FFFBEB', stroke: '#92400E', desc: 'Root restoration with active decay.' },
+    '3': { label: 'Filled root, no decay', color: '#2563EB', bg: '#EFF6FF', stroke: '#1D4ED8', desc: 'Sound root restoration.' },
+    '7': { label: 'Post & Core / RCT / Bridge', color: '#9333EA', bg: '#F3E8FF', stroke: '#7E22CE', desc: 'Root canal treatment or post/core.' },
+    '8': { label: 'Unexposed root', color: '#94A3B8', bg: '#F8FAFC', stroke: '#64748B', desc: 'Root unexposed to oral cavity.' },
+    '9': { label: 'Not recorded', color: '#CBD5E1', bg: '#FFFFFF', stroke: '#94A3B8', desc: 'Root excluded or not recorded.' }
+  }
+};
 
 export const CLINICAL_CONSTANTS = {
   UPPER_TEETH: [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
@@ -30,27 +51,27 @@ export const CLINICAL_CONSTANTS = {
   },
 
   CROWN_CODES: [
-    { code: '0', label: 'Sound crown', desc: 'No evidence of treated or untreated clinical caries.', color: '#0284C7', bg: '#E0F2FE', isDMF: null },
-    { code: '1', label: 'Decayed crown', desc: 'Cavitation on pit/fissure or smooth surface, undermined enamel, or soft floor/wall.', color: '#EF4444', bg: '#FEE2E2', isDMF: 'D' },
-    { code: '2', label: 'Filled, with decay', desc: 'Tooth has permanent restoration and one or more areas with active decay.', color: '#F59E0B', bg: '#FEF3C7', isDMF: 'D' },
-    { code: '3', label: 'Filled, no decay', desc: 'Tooth has permanent restoration with no evidence of caries.', color: '#0284C7', bg: '#E0F2FE', isDMF: 'F' },
-    { code: '4', label: 'Missing — caries', desc: 'Tooth extracted due to caries pathology.', color: '#1E293B', bg: '#E2E8F0', isDMF: 'M' },
-    { code: '5', label: 'Missing — other reason', desc: 'Congenitally absent, ortho extraction, trauma, or periodontal extraction.', color: '#64748B', bg: '#F1F5F9', isDMF: null },
-    { code: '6', label: 'Fissure sealant', desc: 'Fissure sealant placed on pits/fissures with no active caries.', color: '#0EA5E9', bg: '#E0F2FE', isDMF: null },
-    { code: '7', label: 'Bridge abutment / crown / veneer', desc: 'Fixed dental prosthesis abutment, crown, bridge, veneer, or implant.', color: '#8B5CF6', bg: '#F3E8FF', isDMF: null },
-    { code: '8', label: 'Unerupted', desc: 'Tooth space with no clinical eruption (excluding missing).', color: '#94A3B8', bg: '#E2E8F0', isDMF: null },
-    { code: 'T', label: 'Trauma (fracture)', desc: 'Surface fracture caused by trauma with no caries evidence.', color: '#F59E0B', bg: '#FEF3C7', isDMF: null },
-    { code: '9', label: 'Not recorded', desc: 'Tooth excluded or examination impossible (e.g. banded tooth).', color: '#CBD5E1', bg: '#FFFFFF', isDMF: null }
+    { code: '0', label: TOOTH_COLOR_CONFIG.crown['0'].label, desc: TOOTH_COLOR_CONFIG.crown['0'].desc, color: TOOTH_COLOR_CONFIG.crown['0'].color, bg: TOOTH_COLOR_CONFIG.crown['0'].bg, isDMF: null },
+    { code: '1', label: TOOTH_COLOR_CONFIG.crown['1'].label, desc: TOOTH_COLOR_CONFIG.crown['1'].desc, color: TOOTH_COLOR_CONFIG.crown['1'].color, bg: TOOTH_COLOR_CONFIG.crown['1'].bg, isDMF: 'D' },
+    { code: '2', label: TOOTH_COLOR_CONFIG.crown['2'].label, desc: TOOTH_COLOR_CONFIG.crown['2'].desc, color: TOOTH_COLOR_CONFIG.crown['2'].color, bg: TOOTH_COLOR_CONFIG.crown['2'].bg, isDMF: 'D' },
+    { code: '3', label: TOOTH_COLOR_CONFIG.crown['3'].label, desc: TOOTH_COLOR_CONFIG.crown['3'].desc, color: TOOTH_COLOR_CONFIG.crown['3'].color, bg: TOOTH_COLOR_CONFIG.crown['3'].bg, isDMF: 'F' },
+    { code: '4', label: TOOTH_COLOR_CONFIG.crown['4'].label, desc: TOOTH_COLOR_CONFIG.crown['4'].desc, color: TOOTH_COLOR_CONFIG.crown['4'].color, bg: TOOTH_COLOR_CONFIG.crown['4'].bg, isDMF: 'M' },
+    { code: '5', label: TOOTH_COLOR_CONFIG.crown['5'].label, desc: TOOTH_COLOR_CONFIG.crown['5'].desc, color: TOOTH_COLOR_CONFIG.crown['5'].color, bg: TOOTH_COLOR_CONFIG.crown['5'].bg, isDMF: null },
+    { code: '6', label: TOOTH_COLOR_CONFIG.crown['6'].label, desc: TOOTH_COLOR_CONFIG.crown['6'].desc, color: TOOTH_COLOR_CONFIG.crown['6'].color, bg: TOOTH_COLOR_CONFIG.crown['6'].bg, isDMF: null },
+    { code: '7', label: TOOTH_COLOR_CONFIG.crown['7'].label, desc: TOOTH_COLOR_CONFIG.crown['7'].desc, color: TOOTH_COLOR_CONFIG.crown['7'].color, bg: TOOTH_COLOR_CONFIG.crown['7'].bg, isDMF: null },
+    { code: '8', label: TOOTH_COLOR_CONFIG.crown['8'].label, desc: TOOTH_COLOR_CONFIG.crown['8'].desc, color: TOOTH_COLOR_CONFIG.crown['8'].color, bg: TOOTH_COLOR_CONFIG.crown['8'].bg, isDMF: null },
+    { code: 'T', label: TOOTH_COLOR_CONFIG.crown['T'].label, desc: TOOTH_COLOR_CONFIG.crown['T'].desc, color: TOOTH_COLOR_CONFIG.crown['T'].color, bg: TOOTH_COLOR_CONFIG.crown['T'].bg, isDMF: null },
+    { code: '9', label: TOOTH_COLOR_CONFIG.crown['9'].label, desc: TOOTH_COLOR_CONFIG.crown['9'].desc, color: TOOTH_COLOR_CONFIG.crown['9'].color, bg: TOOTH_COLOR_CONFIG.crown['9'].bg, isDMF: null }
   ],
 
   ROOT_CODES: [
-    { code: '0', label: 'Sound root', desc: 'Exposed root with no evidence of decay or restoration.', color: '#0284C7' },
-    { code: '1', label: 'Decayed root', desc: 'Cavitated lesion with soft or leathery base on exposed root.', color: '#EF4444' },
-    { code: '2', label: 'Filled root, with decay', desc: 'Restoration present with secondary root caries.', color: '#F59E0B' },
-    { code: '3', label: 'Filled root, no decay', desc: 'Permanent restoration on root without active caries.', color: '#0284C7' },
-    { code: '7', label: 'Bridge abutment / crown', desc: 'Fixed prosthesis involving root or post/core.', color: '#8B5CF6' },
-    { code: '8', label: 'Unexposed root', desc: 'Root not exposed to oral cavity (normal gingival margin).', color: '#94A3B8' },
-    { code: '9', label: 'Not recorded', desc: 'Root excluded or unrecordable.', color: '#CBD5E1' }
+    { code: '0', label: TOOTH_COLOR_CONFIG.root['0'].label, desc: TOOTH_COLOR_CONFIG.root['0'].desc, color: TOOTH_COLOR_CONFIG.root['0'].color },
+    { code: '1', label: TOOTH_COLOR_CONFIG.root['1'].label, desc: TOOTH_COLOR_CONFIG.root['1'].desc, color: TOOTH_COLOR_CONFIG.root['1'].color },
+    { code: '2', label: TOOTH_COLOR_CONFIG.root['2'].label, desc: TOOTH_COLOR_CONFIG.root['2'].desc, color: TOOTH_COLOR_CONFIG.root['2'].color },
+    { code: '3', label: TOOTH_COLOR_CONFIG.root['3'].label, desc: TOOTH_COLOR_CONFIG.root['3'].desc, color: TOOTH_COLOR_CONFIG.root['3'].color },
+    { code: '7', label: TOOTH_COLOR_CONFIG.root['7'].label, desc: TOOTH_COLOR_CONFIG.root['7'].desc, color: TOOTH_COLOR_CONFIG.root['7'].color },
+    { code: '8', label: TOOTH_COLOR_CONFIG.root['8'].label, desc: TOOTH_COLOR_CONFIG.root['8'].desc, color: TOOTH_COLOR_CONFIG.root['8'].color },
+    { code: '9', label: TOOTH_COLOR_CONFIG.root['9'].label, desc: TOOTH_COLOR_CONFIG.root['9'].desc, color: TOOTH_COLOR_CONFIG.root['9'].color }
   ],
 
   ETHNIC_OPTS: [
