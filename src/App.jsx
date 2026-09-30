@@ -34,7 +34,7 @@ export default function App() {
 
         <div className="content">
           <div className="demo-banner">
-            <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. All clinical records and drafts are securely persisted on-device.
+            <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. Clinical records sync to your Supabase account; drafts remain on this device.
           </div>
 
           <GeneralInfoSection />

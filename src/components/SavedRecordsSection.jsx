@@ -72,7 +72,7 @@ export default function SavedRecordsSection() {
         setRecords(all);
         showToastMsg(`Imported ${toImport.length} records successfully!`, 'success');
       } catch (err) {
-        showToastMsg('Failed to parse JSON file.', 'error');
+        showToastMsg(`Import failed: ${err.message}`, 'error');
       }
     };
     reader.readAsText(file);
@@ -91,7 +91,7 @@ export default function SavedRecordsSection() {
   return (
     <section className="card" id="sec-records">
       <h2><span className="sec-num">05</span> Saved Records</h2>
-      <div className="card-sub">Session records — export to keep them</div>
+      <div className="card-sub">Clinical records synced to your Supabase account</div>
 
       <div className="records-stats-bar">
         <div className="rec-stat-card">

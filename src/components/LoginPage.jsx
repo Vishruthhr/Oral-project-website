@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDental } from '../context/DentalContext';
 
 export default function LoginPage() {
-  const { login, theme, toggleTheme } = useDental();
+  const { login, signUp, requestPasswordReset, theme, toggleTheme } = useDental();
   
-  // Navigation view: 'login' | 'forgot'
+  // Navigation view: 'login' | 'forgot' | 'signup'
   const [view, setView] = useState('login');
 
   // Login form state
@@ -22,6 +22,13 @@ export default function LoginPage() {
   const [forgotInput, setForgotInput] = useState('');
   const [forgotError, setForgotError] = useState('');
   const [forgotSuccess, setForgotSuccess] = useState(false);
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupUsername, setSignupUsername] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
+  const [signupError, setSignupError] = useState('');
+  const [signupSuccess, setSignupSuccess] = useState(false);
+
 
   // Load remembered username on mount
   useEffect(() => {
@@ -33,7 +40,7 @@ export default function LoginPage() {
     }
   }, []);
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setUsernameError('');
     setPasswordError('');
@@ -59,24 +66,56 @@ export default function LoginPage() {
       localStorage.setItem('dental_remember_me', 'false');
     }
 
-    const res = login(username, password);
-    if (!res.success) {
-      setGeneralError(res.error);
+    try {
+      const res = await login(username, password);
+      if (!res.success) setGeneralError(res.error);
+    } catch (error) {
+      setGeneralError(error.message || 'Unable to sign in. Please try again.');
     }
   };
 
-  const handleForgotSubmit = (e) => {
+  const handleForgotSubmit = async (e) => {
     e.preventDefault();
     setForgotError('');
     setForgotSuccess(false);
 
     if (!forgotInput.trim()) {
-      setForgotError('Please enter your username or email address.');
+      setForgotError('Please enter your email address.');
       return;
     }
 
-    // Mock reset success flow
-    setForgotSuccess(true);
+    try {
+      await requestPasswordReset(forgotInput);
+      setForgotSuccess(true);
+    } catch (error) {
+      setForgotError(error.message || 'Unable to send a reset link.');
+    }
+  };
+
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault();
+    setSignupError('');
+    setSignupSuccess(false);
+    if (!signupEmail.trim() || !signupUsername.trim() || !signupPassword) {
+      setSignupError('Please complete all required fields.');
+      return;
+    }
+    if (signupPassword !== signupConfirmPassword) {
+      setSignupError('Passwords do not match.');
+      return;
+    }
+    try {
+      const result = await signUp(signupEmail, signupUsername, signupPassword);
+      if (!result.success) {
+        setSignupError(result.error);
+        return;
+      }
+      setSignupSuccess(true);
+      setSignupPassword('');
+      setSignupConfirmPassword('');
+    } catch (error) {
+      setSignupError(error.message || 'Unable to create your account.');
+    }
   };
 
   return (
@@ -121,7 +160,7 @@ export default function LoginPage() {
               <form onSubmit={handleLoginSubmit} className="login-form" noValidate>
                 <div className="field">
                   <label className="field-label" htmlFor="login_username">
-                    Username <span className="req">*</span>
+                    Email <span className="req">*</span>
                   </label>
                   <input
                     type="text"
@@ -132,8 +171,8 @@ export default function LoginPage() {
                       if (usernameError) setUsernameError('');
                       if (generalError) setGeneralError('');
                     }}
-                    placeholder="Enter your username"
-                    autoComplete="username"
+                    placeholder="Enter your email"
+                    autoComplete="email"
                     className={usernameError || generalError ? 'input-error' : ''}
                     autoFocus
                   />
@@ -205,7 +244,102 @@ export default function LoginPage() {
               </form>
 
               <div className="login-footer-hint">
-                <span>Demo Credentials: <code>admin</code> / <code>password123</code></span>
+                <span>Sign-in is managed by your Supabase project.</span>
+              </div>
+              <div className="forgot-back-wrap">
+                <button
+                  type="button"
+                  className="back-to-login-btn"
+                  onClick={() => {
+                    setView('signup');
+                    setSignupError('');
+                    setSignupSuccess(false);
+                  }}
+                >
+                  Create an account
+                </button>
+              </div>
+            </>
+          ) : view === 'signup' ? (
+            <>
+              <div className="login-welcome-section">
+                <h2 className="login-welcome-title">Create your account</h2>
+                <p className="login-welcome-sub">Register an examiner account to access the workstation.</p>
+              </div>
+
+              {signupError && (
+                <div className="login-error-alert" role="alert">
+                  <span className="alert-icon">⚠️</span>
+                  <span>{signupError}</span>
+                </div>
+              )}
+              {signupSuccess && (
+                <div className="login-success-alert" role="status">
+                  <span className="alert-icon">✓</span>
+                  <span>Account created. You can now use the workstation.</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSignupSubmit} className="login-form" noValidate>
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_username">Username <span className="req">*</span></label>
+                  <input
+                    type="text"
+                    id="signup_username"
+                    value={signupUsername}
+                    onChange={(e) => setSignupUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    autoComplete="username"
+                    autoFocus
+                  />
+                </div>
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_email">Email <span className="req">*</span></label>
+                  <input
+                    type="email"
+                    id="signup_email"
+                    value={signupEmail}
+                    onChange={(e) => setSignupEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    autoComplete="email"
+                  />
+                </div>
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_password">Password <span className="req">*</span></label>
+                  <input
+                    type="password"
+                    id="signup_password"
+                    value={signupPassword}
+                    onChange={(e) => setSignupPassword(e.target.value)}
+                    placeholder="Create a password"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div className="field">
+                  <label className="field-label" htmlFor="signup_confirm_password">Confirm password <span className="req">*</span></label>
+                  <input
+                    type="password"
+                    id="signup_confirm_password"
+                    value={signupConfirmPassword}
+                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                    placeholder="Repeat your password"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <button type="submit" className="btn teal login-submit-btn">
+                  Create account
+                </button>
+                <div className="forgot-back-wrap">
+                  <button type="button" className="back-to-login-btn" onClick={() => setView('login')}>
+                    ← Back to sign in
+                  </button>
+                </div>
+              </form>
+
+              <div className="login-footer-hint">
+                <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
+                  Your account is securely managed by Supabase.
+                </span>
               </div>
             </>
           ) : (
@@ -214,7 +348,7 @@ export default function LoginPage() {
               <div className="login-welcome-section">
                 <h2 className="login-welcome-title">Reset your password</h2>
                 <p className="login-welcome-sub">
-                  Enter your registered username or email address below and we'll send you a password reset link.
+                  Enter your registered email address below and we'll send you a password reset link.
                 </p>
               </div>
 
@@ -228,7 +362,7 @@ export default function LoginPage() {
               <form onSubmit={handleForgotSubmit} className="login-form" noValidate>
                 <div className="field">
                   <label className="field-label" htmlFor="forgot_input">
-                    Username or Email <span className="req">*</span>
+                    Email <span className="req">*</span>
                   </label>
                   <input
                     type="text"
@@ -238,7 +372,7 @@ export default function LoginPage() {
                       setForgotInput(e.target.value);
                       if (forgotError) setForgotError('');
                     }}
-                    placeholder="Enter username or email"
+                    placeholder="Enter your email"
                     className={forgotError ? 'input-error' : ''}
                     autoFocus
                   />
@@ -267,7 +401,7 @@ export default function LoginPage() {
 
               <div className="login-footer-hint">
                 <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
-                  Note: Front-end mock reset flow for demonstration. Not production-secure.
+                  Password resets are handled by your Supabase project.
                 </span>
               </div>
             </>
