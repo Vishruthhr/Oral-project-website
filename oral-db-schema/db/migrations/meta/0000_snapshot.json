@@ -1,0 +1,775 @@
+{
+  "id": "a9db4f0e-2df6-4746-8981-d7001c2000fe",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.patient_records": {
+      "name": "patient_records",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "participant_id": {
+          "name": "participant_id",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "patient_name": {
+          "name": "patient_name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exam_date": {
+          "name": "exam_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "examiner_id": {
+          "name": "examiner_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "examiner_code": {
+          "name": "examiner_code",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "village": {
+          "name": "village",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sex": {
+          "name": "sex",
+          "type": "sex",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dob": {
+          "name": "dob",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "education": {
+          "name": "education",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ethnic_group": {
+          "name": "ethnic_group",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ethnic_group_other": {
+          "name": "ethnic_group_other",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "occupation": {
+          "name": "occupation",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "occupation_other": {
+          "name": "occupation_other",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "habits": {
+          "name": "habits",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fluorosis": {
+          "name": "fluorosis",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tdi": {
+          "name": "tdi",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "oml_present": {
+          "name": "oml_present",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "oml_site": {
+          "name": "oml_site",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "oml_condition": {
+          "name": "oml_condition",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "oml_other_details": {
+          "name": "oml_other_details",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pros_upper": {
+          "name": "pros_upper",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pros_lower": {
+          "name": "pros_lower",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "treatment": {
+          "name": "treatment",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "patient_records_examiner_idx": {
+          "name": "patient_records_examiner_idx",
+          "columns": [
+            {
+              "expression": "examiner_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "patient_records_participant_idx": {
+          "name": "patient_records_participant_idx",
+          "columns": [
+            {
+              "expression": "participant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "patient_records_exam_date_idx": {
+          "name": "patient_records_exam_date_idx",
+          "columns": [
+            {
+              "expression": "exam_date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "patient_records_examiner_id_users_id_fk": {
+          "name": "patient_records_examiner_id_users_id_fk",
+          "tableFrom": "patient_records",
+          "tableTo": "users",
+          "columnsFrom": [
+            "examiner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "chk_occupation": {
+          "name": "chk_occupation",
+          "value": "\"patient_records\".\"occupation\" IS NULL OR \"patient_records\".\"occupation\" IN ('0','1','2','3')"
+        },
+        "chk_fluorosis": {
+          "name": "chk_fluorosis",
+          "value": "\"patient_records\".\"fluorosis\" IS NULL OR \"patient_records\".\"fluorosis\" IN ('0','1','2','3','4','5','9')"
+        },
+        "chk_tdi": {
+          "name": "chk_tdi",
+          "value": "\"patient_records\".\"tdi\" IS NULL OR \"patient_records\".\"tdi\" IN ('0','1','2','3','4','5','6','9')"
+        },
+        "chk_pros_upper": {
+          "name": "chk_pros_upper",
+          "value": "\"patient_records\".\"pros_upper\" IS NULL OR \"patient_records\".\"pros_upper\" IN ('0','1','2','3','4','9')"
+        },
+        "chk_pros_lower": {
+          "name": "chk_pros_lower",
+          "value": "\"patient_records\".\"pros_lower\" IS NULL OR \"patient_records\".\"pros_lower\" IN ('0','1','2','3','4','9')"
+        },
+        "chk_treatment": {
+          "name": "chk_treatment",
+          "value": "\"patient_records\".\"treatment\" IS NULL OR \"patient_records\".\"treatment\" IN ('0','1','2','3','4','5','6','7','8','9')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.teeth_status": {
+      "name": "teeth_status",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "record_id": {
+          "name": "record_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tooth_num": {
+          "name": "tooth_num",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "crown_code": {
+          "name": "crown_code",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "root_code": {
+          "name": "root_code",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "teeth_status_record_idx": {
+          "name": "teeth_status_record_idx",
+          "columns": [
+            {
+              "expression": "record_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "teeth_status_record_id_patient_records_id_fk": {
+          "name": "teeth_status_record_id_patient_records_id_fk",
+          "tableFrom": "teeth_status",
+          "tableTo": "patient_records",
+          "columnsFrom": [
+            "record_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "teeth_status_record_tooth_uq": {
+          "name": "teeth_status_record_tooth_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "record_id",
+            "tooth_num"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "chk_teeth_tooth_num": {
+          "name": "chk_teeth_tooth_num",
+          "value": "\"teeth_status\".\"tooth_num\" BETWEEN 11 AND 18 OR \"teeth_status\".\"tooth_num\" BETWEEN 21 AND 28 OR \"teeth_status\".\"tooth_num\" BETWEEN 31 AND 38 OR \"teeth_status\".\"tooth_num\" BETWEEN 41 AND 48"
+        },
+        "chk_crown_code": {
+          "name": "chk_crown_code",
+          "value": "\"teeth_status\".\"crown_code\" IS NULL OR \"teeth_status\".\"crown_code\" IN ('0','1','2','3','4','5','6','7','8','9','T')"
+        },
+        "chk_root_code": {
+          "name": "chk_root_code",
+          "value": "\"teeth_status\".\"root_code\" IS NULL OR \"teeth_status\".\"root_code\" IN ('0','1','2','3','7','8','9')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.perio_tooth": {
+      "name": "perio_tooth",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "record_id": {
+          "name": "record_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tooth_num": {
+          "name": "tooth_num",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "present": {
+          "name": "present",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "implant": {
+          "name": "implant",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "mobility": {
+          "name": "mobility",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "furcation_b": {
+          "name": "furcation_b",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "furcation_dp": {
+          "name": "furcation_dp",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "furcation_mp": {
+          "name": "furcation_mp",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "furcation_l": {
+          "name": "furcation_l",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "perio_tooth_record_idx": {
+          "name": "perio_tooth_record_idx",
+          "columns": [
+            {
+              "expression": "record_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "perio_tooth_record_id_patient_records_id_fk": {
+          "name": "perio_tooth_record_id_patient_records_id_fk",
+          "tableFrom": "perio_tooth",
+          "tableTo": "patient_records",
+          "columnsFrom": [
+            "record_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "perio_tooth_record_tooth_uq": {
+          "name": "perio_tooth_record_tooth_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "record_id",
+            "tooth_num"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "chk_perio_tooth_num": {
+          "name": "chk_perio_tooth_num",
+          "value": "\"perio_tooth\".\"tooth_num\" BETWEEN 11 AND 18 OR \"perio_tooth\".\"tooth_num\" BETWEEN 21 AND 28 OR \"perio_tooth\".\"tooth_num\" BETWEEN 31 AND 38 OR \"perio_tooth\".\"tooth_num\" BETWEEN 41 AND 48"
+        },
+        "chk_mobility": {
+          "name": "chk_mobility",
+          "value": "\"perio_tooth\".\"mobility\" BETWEEN 0 AND 3"
+        },
+        "chk_furcation": {
+          "name": "chk_furcation",
+          "value": "\"perio_tooth\".\"furcation_b\" BETWEEN 0 AND 3 AND \"perio_tooth\".\"furcation_dp\" BETWEEN 0 AND 3 AND \"perio_tooth\".\"furcation_mp\" BETWEEN 0 AND 3 AND \"perio_tooth\".\"furcation_l\" BETWEEN 0 AND 3"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.perio_site": {
+      "name": "perio_site",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "perio_tooth_id": {
+          "name": "perio_tooth_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "site": {
+          "name": "site",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bop": {
+          "name": "bop",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "plaque": {
+          "name": "plaque",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "gm": {
+          "name": "gm",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "pd": {
+          "name": "pd",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 2
+        }
+      },
+      "indexes": {
+        "perio_site_tooth_idx": {
+          "name": "perio_site_tooth_idx",
+          "columns": [
+            {
+              "expression": "perio_tooth_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "perio_site_perio_tooth_id_perio_tooth_id_fk": {
+          "name": "perio_site_perio_tooth_id_perio_tooth_id_fk",
+          "tableFrom": "perio_site",
+          "tableTo": "perio_tooth",
+          "columnsFrom": [
+            "perio_tooth_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "perio_site_tooth_site_uq": {
+          "name": "perio_site_tooth_site_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "perio_tooth_id",
+            "site"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "chk_site": {
+          "name": "chk_site",
+          "value": "\"perio_site\".\"site\" IN ('db','b','mb','dp','p','mp','dl','l','ml')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.perio_sextant": {
+      "name": "perio_sextant",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "record_id": {
+          "name": "record_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sextant": {
+          "name": "sextant",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cpi": {
+          "name": "cpi",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "loa": {
+          "name": "loa",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "perio_sextant_record_idx": {
+          "name": "perio_sextant_record_idx",
+          "columns": [
+            {
+              "expression": "record_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "perio_sextant_record_id_patient_records_id_fk": {
+          "name": "perio_sextant_record_id_patient_records_id_fk",
+          "tableFrom": "perio_sextant",
+          "tableTo": "patient_records",
+          "columnsFrom": [
+            "record_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "perio_sextant_record_sextant_uq": {
+          "name": "perio_sextant_record_sextant_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "record_id",
+            "sextant"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "chk_sextant": {
+          "name": "chk_sextant",
+          "value": "\"perio_sextant\".\"sextant\" BETWEEN 0 AND 5"
+        },
+        "chk_cpi": {
+          "name": "chk_cpi",
+          "value": "\"perio_sextant\".\"cpi\" IS NULL OR \"perio_sextant\".\"cpi\" IN ('0','1','2','3','4','9','X')"
+        },
+        "chk_loa": {
+          "name": "chk_loa",
+          "value": "\"perio_sextant\".\"loa\" IS NULL OR \"perio_sextant\".\"loa\" IN ('0','1','2','3','4','9','X')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.sex": {
+      "name": "sex",
+      "schema": "public",
+      "values": [
+        "male",
+        "female"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

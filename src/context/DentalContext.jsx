@@ -2,14 +2,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { storage } from '../utils/storage';
 import { calcDMFT, calcAge, getWorstCPI } from '../utils/exportUtils';
-import { AUTH_CONFIG } from '../config/authConfig';
+import { isSupabaseConfigured, supabase } from '../utils/supabase';
 
 const DentalContext = createContext();
 
 export function DentalProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => sessionStorage.getItem('dental_auth_session') === 'true'
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(getBlankRecord());
   const [editingRecordId, setEditingRecordId] = useState(null);
   const [records, setRecords] = useState([]);
@@ -26,72 +24,49 @@ export function DentalProvider({ children }) {
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
   const [elapsedSecs, setElapsedSecs] = useState(0);
 
-  function getRegisteredUsers() {
-    try {
-      const raw = localStorage.getItem('dental_registered_users');
-      return raw ? JSON.parse(raw) : [];
-    } catch (err) {
-      return [];
-    }
-  }
-
-  function login(username, password) {
-    const u = username.trim();
-    const p = password.trim();
-    if (!u || !p) {
+  async function login(username, password) {
+    if (!username.trim() || !password.trim()) {
       return { success: false, error: 'Please enter both username and password.' };
     }
-    if (u === AUTH_CONFIG.username && p === AUTH_CONFIG.password) {
-      sessionStorage.setItem('dental_auth_session', 'true');
-      sessionStorage.setItem('dental_current_user', u);
-      setIsAuthenticated(true);
-      return { success: true };
+    if (!isSupabaseConfigured) {
+      return { success: false, error: 'Supabase is not configured. Set the Supabase URL and anon key.' };
     }
-    const regUsers = getRegisteredUsers();
-    const match = regUsers.find(user => user.username.toLowerCase() === u.toLowerCase() && user.password === p);
-    if (match) {
-      sessionStorage.setItem('dental_auth_session', 'true');
-      sessionStorage.setItem('dental_current_user', match.username);
-      setIsAuthenticated(true);
-      return { success: true };
-    }
-    return { success: false, error: 'Invalid username or password.' };
+    const { error } = await supabase.auth.signInWithPassword({ email: username.trim(), password });
+    return error ? { success: false, error: error.message } : { success: true };
   }
 
-  function signup(username, password) {
-    const u = username.trim();
-    const p = password.trim();
-    if (!u || !p) {
-      return { success: false, error: 'Please enter both username and password.' };
+  async function signUp(email, username, password) {
+    if (!email.trim() || !username.trim() || !password.trim()) {
+      return { success: false, error: 'Please complete all required fields.' };
     }
-    if (u.length < 3) {
-      return { success: false, error: 'Username must be at least 3 characters long.' };
+    if (!isSupabaseConfigured) {
+      return { success: false, error: 'Supabase is not configured. Set the Supabase URL and anon key.' };
     }
-    if (p.length < 4) {
-      return { success: false, error: 'Password must be at least 4 characters long.' };
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: { data: { username: username.trim() } },
+    });
+    if (error) return { success: false, error: error.message };
+    if (!data.session) {
+      return {
+        success: false,
+        error: 'Account creation requires email confirmation. Disable Confirm email in Supabase Auth settings, then try again.',
+      };
     }
-
-    const regUsers = getRegisteredUsers();
-    const isTaken = regUsers.some(user => user.username.toLowerCase() === u.toLowerCase()) ||
-                    (u.toLowerCase() === AUTH_CONFIG.username.toLowerCase());
-    if (isTaken) {
-      return { success: false, error: 'Username is already taken. Please choose another username or log in.' };
-    }
-
-    regUsers.push({ username: u, password: p, createdAt: new Date().toISOString() });
-    localStorage.setItem('dental_registered_users', JSON.stringify(regUsers));
-
-    sessionStorage.setItem('dental_auth_session', 'true');
-    sessionStorage.setItem('dental_current_user', u);
-    setIsAuthenticated(true);
-    showToastMsg(`Account created! Welcome, ${u}.`, 'success');
     return { success: true };
   }
 
-  function logout() {
-    sessionStorage.removeItem('dental_auth_session');
-    sessionStorage.removeItem('dental_current_user');
-    setIsAuthenticated(false);
+  async function requestPasswordReset(email) {
+    if (!isSupabaseConfigured) throw new Error('Supabase is not configured.');
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: window.location.origin,
+    });
+    if (error) throw error;
+  }
+
+  async function logout() {
+    await supabase?.auth.signOut();
     showToastMsg('Logged out successfully.', 'info');
   }
 
@@ -170,20 +145,39 @@ export function DentalProvider({ children }) {
   }, [theme]);
 
   useEffect(() => {
+    if (!supabase) return undefined;
+    supabase.auth.getSession().then(({ data }) => {
+      setIsAuthenticated(Boolean(data.session));
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(Boolean(session));
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     async function loadInitial() {
-      const all = await storage.getAllRecords();
-      setRecords(all);
-      const draft = storage.loadDraft();
-      if (draft && draft.participantId) {
-        if (window.confirm(`Restore unsaved draft for participant "${draft.participantId}"?`)) {
-          setCurrentRecord(draft);
-        } else {
-          storage.clearDraft();
+      if (!isAuthenticated) {
+        setRecords([]);
+        return;
+      }
+      try {
+        const all = await storage.getAllRecords();
+        setRecords(all);
+        const draft = storage.loadDraft();
+        if (draft && draft.participantId) {
+          if (window.confirm(`Restore unsaved draft for participant "${draft.participantId}"?`)) {
+            setCurrentRecord(draft);
+          } else {
+            storage.clearDraft();
+          }
         }
+      } catch (error) {
+        showToastMsg(`Could not load records: ${error.message}`, 'error');
       }
     }
     loadInitial();
-  }, []);
+  }, [isAuthenticated]);
 
   // Chairside Timer
   useEffect(() => {
@@ -662,7 +656,8 @@ export function DentalProvider({ children }) {
   const value = {
     isAuthenticated,
     login,
-    signup,
+    signUp,
+    requestPasswordReset,
     logout,
     currentRecord,
     records,
