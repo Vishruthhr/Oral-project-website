@@ -20,21 +20,17 @@ export default function LoginPage() {
 
   // Signup form state
   const [signupUsername, setSignupUsername] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [signupError, setSignupError] = useState('');
+  const [signupSuccess, setSignupSuccess] = useState(false);
 
   // Forgot password form state
   const [forgotInput, setForgotInput] = useState('');
   const [forgotError, setForgotError] = useState('');
   const [forgotSuccess, setForgotSuccess] = useState(false);
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupUsername, setSignupUsername] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
-  const [signupError, setSignupError] = useState('');
-  const [signupSuccess, setSignupSuccess] = useState(false);
 
 
   // Load remembered username on mount
@@ -271,24 +267,7 @@ export default function LoginPage() {
             </>
           )}
 
-              <div className="login-footer-hint">
-                <span>Sign-in is managed by your Supabase project.</span>
-              </div>
-              <div className="forgot-back-wrap">
-                <button
-                  type="button"
-                  className="back-to-login-btn"
-                  onClick={() => {
-                    setView('signup');
-                    setSignupError('');
-                    setSignupSuccess(false);
-                  }}
-                >
-                  Create an account
-                </button>
-              </div>
-            </>
-          ) : view === 'signup' ? (
+          {view === 'signup' && (
             <>
               <div className="login-welcome-section">
                 <h2 className="login-welcome-title">Create your account</h2>
@@ -370,94 +349,6 @@ export default function LoginPage() {
                 </span>
               </div>
 
-              {signupError && (
-                <div className="login-error-alert" role="alert">
-                  <span className="alert-icon">⚠️</span>
-                  <span>{signupError}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleSignupSubmit} className="login-form" noValidate>
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_username">
-                    New Username <span className="req">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="signup_username"
-                    value={signupUsername}
-                    onChange={(e) => {
-                      setSignupUsername(e.target.value);
-                      if (signupError) setSignupError('');
-                    }}
-                    placeholder="Choose a username"
-                    autoComplete="off"
-                    autoFocus
-                  />
-                </div>
-
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_password">
-                    New Password <span className="req">*</span>
-                  </label>
-                  <div className="password-input-wrap">
-                    <input
-                      type={showSignupPassword ? 'text' : 'password'}
-                      id="signup_password"
-                      value={signupPassword}
-                      onChange={(e) => {
-                        setSignupPassword(e.target.value);
-                        if (signupError) setSignupError('');
-                      }}
-                      placeholder="Choose a password"
-                      autoComplete="new-password"
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle-btn"
-                      onClick={() => setShowSignupPassword(!showSignupPassword)}
-                      title={showSignupPassword ? 'Hide password' : 'Show password'}
-                      tabIndex={-1}
-                    >
-                      {showSignupPassword ? '🙈 Hide' : '👁️ Show'}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_confirm_password">
-                    Confirm Password <span className="req">*</span>
-                  </label>
-                  <input
-                    type={showSignupPassword ? 'text' : 'password'}
-                    id="signup_confirm_password"
-                    value={signupConfirmPassword}
-                    onChange={(e) => {
-                      setSignupConfirmPassword(e.target.value);
-                      if (signupError) setSignupError('');
-                    }}
-                    placeholder="Re-enter password to confirm"
-                    autoComplete="new-password"
-                  />
-                </div>
-
-                <button type="submit" className="btn teal login-submit-btn">
-                  ✨ Create Account &amp; Sign In
-                </button>
-
-                <div className="forgot-back-wrap" style={{ marginTop: '16px', textAlign: 'center' }}>
-                  <button
-                    type="button"
-                    className="back-to-login-btn"
-                    onClick={() => {
-                      setView('login');
-                      setGeneralError('');
-                    }}
-                  >
-                    ← Back to Sign In
-                  </button>
-                </div>
-              </form>
             </>
           )}
 

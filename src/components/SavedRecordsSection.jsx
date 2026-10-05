@@ -96,11 +96,40 @@ export default function SavedRecordsSection() {
           cpi.push(String(r[`CPI_Sextant_${i}`] !== undefined ? r[`CPI_Sextant_${i}`] : ''));
           loa.push(String(r[`LOA_Sextant_${i}`] !== undefined ? r[`LOA_Sextant_${i}`] : ''));
         }
-        const all = await storage.getAllRecords();
-        setRecords(all);
-        showToastMsg(`Imported ${toImport.length} records successfully!`, 'success');
-      } catch (err) {
-        showToastMsg(`Import failed: ${err.message}`, 'error');
+        const rec = {
+          id: r.id || `rec_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+          patientName: r.Patient_Name || r.patientName || '',
+          participantId: String(participantId || ''),
+          examDate: r.Exam_Date || r.examDate || new Date().toISOString().slice(0, 10),
+          examinerId: String(r.Examiner_ID || r.examinerId || ''),
+          village: r.Village_Area || r.village || '',
+          phoneNumber: String(r.Phone_Number || r.phoneNumber || ''),
+          sex: String(r.Sex_Code !== undefined ? r.Sex_Code : (r.sex || '')),
+          dob: r.Date_of_Birth || r.dob || '',
+          education: r.Years_Education !== undefined ? r.Years_Education : (r.education || ''),
+          ethnicGroup: r.Ethnic_Group || r.ethnicGroup || '',
+          ethnicGroupOther: r.ethnicGroupOther || '',
+          occupation: String(r.Occupation_Code !== undefined ? r.Occupation_Code : (r.occupation || '')),
+          occupationOther: r.occupationOther || '',
+          habits: r.Habits || r.habits || '',
+          teeth,
+          perio: r.perio || undefined,
+          cpi,
+          loa,
+          fluorosis: String(r.Fluorosis_Dean !== undefined ? r.Fluorosis_Dean : (r.fluorosis || '')),
+          tdi: String(r.TDI_Trauma !== undefined ? r.TDI_Trauma : (r.tdi || '')),
+          omlPresent: r.OML_Present || r.omlPresent || 'N',
+          omlSite: String(r.OML_Site !== undefined ? r.OML_Site : (r.omlSite || '')),
+          omlCondition: String(r.OML_Condition !== undefined ? r.OML_Condition : (r.omlCondition || '')),
+          omlOtherDetails: r.OML_Other_Details || r.omlOtherDetails || '',
+          prosUpper: String(r.Prosthesis_Upper !== undefined ? r.Prosthesis_Upper : (r.prosUpper || '')),
+          prosLower: String(r.Prosthesis_Lower !== undefined ? r.Prosthesis_Lower : (r.prosLower || '')),
+          treatment: String(r.Treatment_Need !== undefined ? r.Treatment_Need : (r.treatment || '')),
+          notes: r.Clinical_Notes || r.notes || ''
+        };
+
+        await storage.saveRecord(rec);
+        count++;
       }
 
       const all = await storage.getAllRecords();
