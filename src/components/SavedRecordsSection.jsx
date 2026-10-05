@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
 import { useDental } from '../context/DentalContext';
-import { calcDMFT, calcAge, exportRecordsToCSV, exportRecordsToJSON } from '../utils/exportUtils';
+import { calcDMFT, calcAge, exportRecordsToExcel, readExcelFile } from '../utils/exportUtils';
+import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { storage } from '../utils/storage';
 
 export default function SavedRecordsSection() {
   const { records, loadRecordForEdit, deleteRecord, setRecords, showToastMsg } = useDental();
   const [search, setSearch] = useState('');
+  const [examinerFilter, setExaminerFilter] = useState('');
+
+  // Unique examiner IDs for autocompletion
+  const uniqueExaminerIds = Array.from(
+    new Set(records.map(r => (r.examinerId || '').trim()).filter(Boolean))
+  ).sort();
 
   const filtered = records.filter(r => {
+    if (examinerFilter.trim()) {
+      const exQ = examinerFilter.toLowerCase().trim();
+      const exId = (r.examinerId || '').toLowerCase().trim();
+      if (!exId.includes(exQ)) return false;
+    }
     const q = search.toLowerCase().trim();
     if (!q) return true;
     return (
@@ -19,13 +31,13 @@ export default function SavedRecordsSection() {
     );
   });
 
-  // Calculate aggregates
+  // Calculate aggregates for current view
   let totalDMFT = 0;
   let totalAge = 0;
   let ageCount = 0;
   let cariesFreeCount = 0;
 
-  records.forEach(r => {
+  filtered.forEach(r => {
     const stats = calcDMFT(r);
     totalDMFT += stats.DMFT;
     if (stats.DMFT === 0) cariesFreeCount++;
@@ -36,37 +48,53 @@ export default function SavedRecordsSection() {
     }
   });
 
-  const meanDMFT = records.length > 0 ? (totalDMFT / records.length).toFixed(1) : '0.0';
+  const meanDMFT = filtered.length > 0 ? (totalDMFT / filtered.length).toFixed(1) : '0.0';
   const meanAge = ageCount > 0 ? (totalAge / ageCount).toFixed(1) + ' yrs' : '—';
-  const cariesFreePct = records.length > 0 ? Math.round((cariesFreeCount / records.length) * 100) + '%' : '0%';
+  const cariesFreePct = filtered.length > 0 ? Math.round((cariesFreeCount / filtered.length) * 100) + '%' : '0%';
 
-  function handleExportCSV() {
-    const ok = exportRecordsToCSV(records);
-    if (ok) showToastMsg(`Exported ${records.length} records to CSV!`, 'success');
-    else showToastMsg('No records to export.', 'warning');
+  function handleExportExcel() {
+    const recordsToExport = filtered;
+    const exTag = examinerFilter.trim();
+    const ok = exportRecordsToExcel(recordsToExport, exTag);
+    if (ok) {
+      const msg = exTag
+        ? `Exported ${recordsToExport.length} record(s) for Examiner "${exTag}" to Excel!`
+        : `Exported ${recordsToExport.length} record(s) to Excel!`;
+      showToastMsg(msg, 'success');
+    } else {
+      showToastMsg('No records to export.', 'warning');
+    }
   }
 
-  function handleExportJSON() {
-    const ok = exportRecordsToJSON(records);
-    if (ok) showToastMsg(`Exported ${records.length} records to JSON!`, 'success');
-    else showToastMsg('No records to export.', 'warning');
-  }
-
-  function handleImportJSON(e) {
+  async function handleImportExcel(e) {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = async (evt) => {
-      try {
-        const parsed = JSON.parse(evt.target.result);
-        const toImport = Array.isArray(parsed) ? parsed : (parsed.records || []);
-        if (toImport.length === 0) {
-          showToastMsg('No valid records found in JSON.', 'warning');
-          return;
-        }
-        for (const rec of toImport) {
-          await storage.saveRecord(rec);
+    try {
+      const rows = await readExcelFile(file);
+      if (!rows || rows.length === 0) {
+        showToastMsg('No data rows found in Excel file.', 'warning');
+        return;
+      }
+
+      let count = 0;
+      for (const r of rows) {
+        const participantId = r.Patient_ID || r.participantId || r['Participant ID'] || r['Patient ID'];
+        if (!participantId && !r.Patient_Name && !r.patientName) continue;
+
+        const teeth = {};
+        CLINICAL_CONSTANTS.ALL_TEETH.forEach(t => {
+          teeth[t] = {
+            crown: String(r[`T${t}_Crown`] !== undefined ? r[`T${t}_Crown`] : (r.teeth?.[t]?.crown || '')),
+            root: String(r[`T${t}_Root`] !== undefined ? r[`T${t}_Root`] : (r.teeth?.[t]?.root || ''))
+          };
+        });
+
+        const cpi = [];
+        const loa = [];
+        for (let i = 1; i <= 6; i++) {
+          cpi.push(String(r[`CPI_Sextant_${i}`] !== undefined ? r[`CPI_Sextant_${i}`] : ''));
+          loa.push(String(r[`LOA_Sextant_${i}`] !== undefined ? r[`LOA_Sextant_${i}`] : ''));
         }
         const all = await storage.getAllRecords();
         setRecords(all);
@@ -74,18 +102,14 @@ export default function SavedRecordsSection() {
       } catch (err) {
         showToastMsg(`Import failed: ${err.message}`, 'error');
       }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  }
 
-  async function handleDeleteAll() {
-    if (records.length === 0) return;
-    if (window.confirm(`Permanently delete ALL ${records.length} saved records?`)) {
-      await storage.clearAllRecords();
-      setRecords([]);
-      showToastMsg('All records cleared.', 'info');
+      const all = await storage.getAllRecords();
+      setRecords(all);
+      showToastMsg(`Successfully imported ${count} record(s) from Excel!`, 'success');
+    } catch (err) {
+      showToastMsg('Failed to read Excel file. Please select a valid Excel (.xlsx, .xls, .csv) file.', 'error');
     }
+    e.target.value = '';
   }
 
   return (
@@ -95,8 +119,8 @@ export default function SavedRecordsSection() {
 
       <div className="records-stats-bar">
         <div className="rec-stat-card">
-          <div className="stat-val">{records.length}</div>
-          <div className="stat-lbl">Total Examined</div>
+          <div className="stat-val">{filtered.length}</div>
+          <div className="stat-lbl">{examinerFilter ? 'Examiner Records' : 'Total Examined'}</div>
         </div>
         <div className="rec-stat-card">
           <div className="stat-val">{meanDMFT}</div>
@@ -114,41 +138,64 @@ export default function SavedRecordsSection() {
 
       <div className="action-row" style={{ justifyContent: 'space-between', marginBottom: '14px', alignItems: 'center' }}>
         <div id="recCount" style={{ fontSize: '13px', color: 'var(--muted)' }}>
-          {records.length} record{records.length === 1 ? '' : 's'} saved this session
+          {filtered.length} record{filtered.length === 1 ? '' : 's'} displayed
+          {examinerFilter.trim() ? ` (filtered by Examiner "${examinerFilter.trim()}")` : ''}
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          <label className="btn ghost" style={{ cursor: 'pointer', margin: 0 }}>
-            📥 Import JSON
-            <input type="file" accept=".json" onChange={handleImportJSON} style={{ display: 'none' }} />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          <label className="btn ghost" style={{ cursor: 'pointer', margin: 0, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            📥 Import Excel
+            <input type="file" accept=".xlsx, .xls, .csv" onChange={handleImportExcel} style={{ display: 'none' }} />
           </label>
-          <button type="button" className="btn ghost" onClick={handleExportJSON}>
-            Export JSON
+          <button type="button" className="btn teal" onClick={handleExportExcel} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            📊 Export Excel {examinerFilter.trim() ? `(${examinerFilter.trim()})` : ''}
           </button>
-          <button type="button" className="btn teal" onClick={handleExportCSV}>
-            Export CSV
-          </button>
-          {records.length > 0 && (
-            <button
-              type="button"
-              className="btn coral"
-              style={{ padding: '8px 14px', fontSize: '12px' }}
-              onClick={handleDeleteAll}
-              title="Delete all records"
-            >
-              Delete All
-            </button>
-          )}
         </div>
       </div>
 
-      <div className="search-input-wrap" style={{ marginBottom: '14px' }}>
-        <input
-          type="text"
-          placeholder="🔍 Search records by ID, Examiner, Village..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+      <div className="grid2" style={{ marginBottom: '14px' }}>
+        <div className="search-input-wrap">
+          <label className="field-label" style={{ marginBottom: '4px', fontSize: '12px' }}>
+            Search Records
+          </label>
+          <input
+            type="text"
+            placeholder="🔍 Search by Patient Name, ID, Village..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+
+        <div className="search-input-wrap">
+          <label className="field-label" style={{ marginBottom: '4px', fontSize: '12px' }}>
+            Filter by Examiner ID
+          </label>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              list="examiner-id-list"
+              placeholder="👤 Enter Examiner ID (e.g., EX-01)..."
+              value={examinerFilter}
+              onChange={e => setExaminerFilter(e.target.value)}
+            />
+            <datalist id="examiner-id-list">
+              {uniqueExaminerIds.map(id => (
+                <option key={id} value={id} />
+              ))}
+            </datalist>
+            {examinerFilter && (
+              <button
+                type="button"
+                className="btn ghost"
+                style={{ padding: '4px 10px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                onClick={() => setExaminerFilter('')}
+                title="Clear Examiner Filter"
+              >
+                Clear Filter
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       <div id="recordsTableWrap">
@@ -156,7 +203,7 @@ export default function SavedRecordsSection() {
           <div className="empty-note">
             {records.length === 0
               ? 'No records saved yet in this session. Fill the form above and click "Validate & Save Record".'
-              : 'No matching records found for search query.'}
+              : 'No matching records found for current filters.'}
           </div>
         ) : (
           <div className="table-responsive">
@@ -165,6 +212,7 @@ export default function SavedRecordsSection() {
                 <tr>
                   <th>Patient Name</th>
                   <th>Patient ID</th>
+                  <th>Examiner ID</th>
                   <th>Exam Date</th>
                   <th>Age</th>
                   <th>DMFT</th>
@@ -180,6 +228,7 @@ export default function SavedRecordsSection() {
                     <tr key={r.id}>
                       <td><b>{r.patientName || '—'}</b></td>
                       <td>{r.participantId || '—'}</td>
+                      <td><span className="badge" style={{ background: 'var(--card-sub-bg)', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>{r.examinerId || '—'}</span></td>
                       <td>{r.examDate || '—'}</td>
                       <td>{age !== null ? age : '—'}</td>
                       <td>

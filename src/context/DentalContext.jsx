@@ -17,6 +17,8 @@ export function DentalProvider({ children }) {
   const [autoAdvance, setAutoAdvance] = useState(() => storage.getSettings().autoAdvance !== false);
   const [showRoots, setShowRoots] = useState(true);
   const [activeTooth, setActiveTooth] = useState(null);
+  const [activePart, setActivePart] = useState('crown');
+  const [historyStack, setHistoryStack] = useState([]);
   const [keypadMode, setKeypadMode] = useState('crown');
   const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
@@ -128,6 +130,7 @@ export function DentalProvider({ children }) {
       omlPresent: 'N',
       omlSite: '',
       omlCondition: '',
+      omlOtherDetails: '',
       prosUpper: '',
       prosLower: '',
       treatment: '',
@@ -229,6 +232,7 @@ export function DentalProvider({ children }) {
     playClick(code === '0' ? 600 : 800);
     setCurrentRecord(prev => {
       const currentTooth = prev.teeth[toothNum] || { crown: '', root: '' };
+      setHistoryStack(h => [...h, { toothNum, state: { ...currentTooth } }]);
       const updatedTeeth = {
         ...prev.teeth,
         [toothNum]: { ...currentTooth, [type]: code }
@@ -243,6 +247,42 @@ export function DentalProvider({ children }) {
         navigateTooth(1, toothNum);
       }, 140);
     }
+  }
+
+  function undoLastChange() {
+    if (historyStack.length === 0) {
+      showToastMsg('Nothing to undo.', 'info');
+      return;
+    }
+    const last = historyStack[historyStack.length - 1];
+    setHistoryStack(h => h.slice(0, h.length - 1));
+    setCurrentRecord(prev => {
+      const updatedTeeth = {
+        ...prev.teeth,
+        [last.toothNum]: last.state
+      };
+      const updated = { ...prev, teeth: updatedTeeth };
+      storage.saveDraft(updated);
+      showToastMsg(`Undid change on Tooth #${last.toothNum}`, 'info');
+      return updated;
+    });
+  }
+
+  function resetToothStatus(toothNum) {
+    if (!toothNum) return;
+    playClick();
+    setCurrentRecord(prev => {
+      const currentTooth = prev.teeth[toothNum] || { crown: '', root: '' };
+      setHistoryStack(h => [...h, { toothNum, state: { ...currentTooth } }]);
+      const updatedTeeth = {
+        ...prev.teeth,
+        [toothNum]: { crown: '', root: '' }
+      };
+      const updated = { ...prev, teeth: updatedTeeth };
+      storage.saveDraft(updated);
+      showToastMsg(`Reset status for Tooth #${toothNum}`, 'info');
+      return updated;
+    });
   }
 
   function navigateTooth(step, fromTooth = activeTooth) {
@@ -627,6 +667,8 @@ export function DentalProvider({ children }) {
     autoAdvance,
     showRoots,
     activeTooth,
+    activePart,
+    setActivePart,
     keypadMode,
     helpDrawerOpen,
     toast,
@@ -647,6 +689,8 @@ export function DentalProvider({ children }) {
     showToastMsg,
     updateField,
     updateToothStatus,
+    undoLastChange,
+    resetToothStatus,
     navigateTooth,
     fillAllSound,
     clearArch,

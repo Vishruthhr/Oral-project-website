@@ -129,6 +129,19 @@ export default function OtherFindingsSection() {
               ))}
             </select>
           </div>
+
+          {(currentRecord.omlSite === '8' || currentRecord.omlCondition === '8') && (
+            <div className="field" style={{ gridColumn: '1 / -1', marginTop: '10px' }}>
+              <label className="field-label">OML Other Details</label>
+              <input
+                type="text"
+                id="f_omlOtherDetails"
+                placeholder="Specify details for other mucosal site/condition..."
+                value={currentRecord.omlOtherDetails || ''}
+                onChange={e => updateField('omlOtherDetails', e.target.value)}
+              />
+            </div>
+          )}
         </div>
       )}
 
