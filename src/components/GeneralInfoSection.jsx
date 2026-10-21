@@ -166,12 +166,18 @@ export default function GeneralInfoSection() {
         <div className="field">
           <label className="field-label" htmlFor="f_education">Years of Education</label>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             id="f_education"
-            min="0"
-            max="30"
+
+
             value={currentRecord.education !== undefined ? currentRecord.education : ''}
-            onChange={e => updateField('education', e.target.value)}
+            onChange={e => {
+              const val = e.target.value.replace(/\D/g, '').slice(0, 2);
+              updateField('education', val);
+            }}
+            autoComplete="off"
             placeholder="e.g. 12"
           />
         </div>
