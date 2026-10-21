@@ -1824,6 +1824,110 @@ table.records tr:hover { background: var(--teal-l); }
   box-shadow: 0 0 5px rgba(2, 132, 199, 0.6);
 }
 
+/* +/- Sign Toggle Buttons for Periodontal Status (+ve Green, -ve Red) */
+.sign-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 22px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.12s ease-in-out;
+  padding: 0;
+  line-height: 1;
+}
+
+.sign-toggle-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.sign-toggle-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+.sign-toggle-btn.sign-mini {
+  width: 18px;
+  height: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 3px;
+  flex: 1;
+  max-width: 20px;
+}
+
+/* Negative: Red button */
+.sign-toggle-btn.sign-negative {
+  background-color: #EF4444;
+  border-color: #DC2626;
+  color: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(239, 68, 68, 0.3);
+}
+
+.sign-toggle-btn.sign-negative:hover:not(:disabled) {
+  background-color: #DC2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.4);
+}
+
+/* Positive: Green button */
+.sign-toggle-btn.sign-positive {
+  background-color: #10B981;
+  border-color: #059669;
+  color: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.3);
+}
+
+.sign-toggle-btn.sign-positive:hover:not(:disabled) {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.4);
+}
+
+[data-theme="dark"] .sign-toggle-btn.sign-negative {
+  background-color: #DC2626;
+  border-color: #B91C1C;
+  color: #FFFFFF;
+}
+
+[data-theme="dark"] .sign-toggle-btn.sign-positive {
+  background-color: #059669;
+  border-color: #047857;
+  color: #FFFFFF;
+}
+
+.legend-sign-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 3px;
+  line-height: 1;
+}
+
+.legend-sign-badge.sign-negative {
+  background-color: #EF4444;
+  color: #FFFFFF;
+}
+
+.legend-sign-badge.sign-positive {
+  background-color: #10B981;
+  color: #FFFFFF;
+}
+
+
 /* Triple Inputs (GM, PD, CAL) */
 .perio-inputs-triple {
   display: flex;

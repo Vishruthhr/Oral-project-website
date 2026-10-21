@@ -212,12 +212,12 @@ export default function PeriodontalSection() {
         <div className="perio-cell cell-implant">
           <button
             type="button"
-            className={`implant-pill-btn ${tooth.implant ? 'active' : ''}`}
+            className={`sign-toggle-btn ${tooth.implant ? 'sign-positive' : 'sign-negative'}`}
             disabled={!tooth.present}
             onClick={() => togglePerioImplant(toothNum)}
-            title={`Tooth #${toothNum} — Toggle Implant Fixture`}
+            title={`Tooth #${toothNum} Implant — ${tooth.implant ? 'Positive (+)' : 'Negative (-)'}`}
           >
-            {tooth.implant ? '🔩 Imp' : '—'}
+            {tooth.implant ? '+' : '-'}
           </button>
         </div>
 
@@ -240,17 +240,18 @@ export default function PeriodontalSection() {
         {/* Row: Furcation Top */}
         <div className="perio-cell cell-furcation">
           {isMolar && tooth.present && showFurcations ? (
-            <select
-              className={`furc-select ${(isUpper ? tooth.furcation?.b : tooth.furcation?.l) > 0 ? 'active' : ''}`}
-              value={isUpper ? (tooth.furcation?.b || 0) : (tooth.furcation?.l || 0)}
-              onChange={e => setPerioFurcation(toothNum, isUpper ? 'b' : 'l', Number(e.target.value))}
-              title={`${isUpper ? 'Buccal' : 'Lingual'} Furcation Grade (0–3)`}
+            <button
+              type="button"
+              className={`sign-toggle-btn ${(isUpper ? tooth.furcation?.b : tooth.furcation?.l) > 0 ? 'sign-positive' : 'sign-negative'}`}
+              disabled={!tooth.present}
+              onClick={() => {
+                const cur = (isUpper ? tooth.furcation?.b : tooth.furcation?.l) || 0;
+                setPerioFurcation(toothNum, isUpper ? 'b' : 'l', cur > 0 ? 0 : 1);
+              }}
+              title={`${isUpper ? 'Buccal' : 'Lingual'} Furcation: ${(isUpper ? tooth.furcation?.b : tooth.furcation?.l) > 0 ? 'Positive (+)' : 'Negative (-)'}`}
             >
-              <option value={0}>0</option>
-              <option value={1}>▲ 1</option>
-              <option value={2}>▲ 2</option>
-              <option value={3}>▲ 3</option>
-            </select>
+              {(isUpper ? tooth.furcation?.b : tooth.furcation?.l) > 0 ? '+' : '-'}
+            </button>
           ) : (
             <span className="cell-dash">—</span>
           )}
@@ -259,32 +260,42 @@ export default function PeriodontalSection() {
         {/* Row: BOP Top */}
         <div className="perio-cell cell-dots">
           <div className="perio-dots-triple">
-            {(isUpper ? buccalSites : innerSites).map(s => (
-              <button
-                type="button"
-                key={`bop-top-${s}`}
-                className={`dot-btn bop-dot ${tooth.bop[s] ? 'active' : ''}`}
-                disabled={!tooth.present}
-                onClick={() => updatePerioSite(toothNum, 'bop', s, !tooth.bop[s])}
-                title={`BOP (${s.toUpperCase()}) — Click to toggle`}
-              />
-            ))}
+            {(isUpper ? buccalSites : innerSites).map(s => {
+              const isPos = !!tooth.bop[s];
+              return (
+                <button
+                  type="button"
+                  key={`bop-top-${s}`}
+                  className={`sign-toggle-btn sign-mini ${isPos ? 'sign-positive' : 'sign-negative'}`}
+                  disabled={!tooth.present}
+                  onClick={() => updatePerioSite(toothNum, 'bop', s, !isPos)}
+                  title={`BOP (${s.toUpperCase()}) — ${isPos ? 'Positive (+)' : 'Negative (-)'}`}
+                >
+                  {isPos ? '+' : '-'}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Row: Plaque Top */}
         <div className="perio-cell cell-dots">
           <div className="perio-dots-triple">
-            {(isUpper ? buccalSites : innerSites).map(s => (
-              <button
-                type="button"
-                key={`plaque-top-${s}`}
-                className={`dot-btn plaque-dot ${tooth.plaque[s] ? 'active' : ''}`}
-                disabled={!tooth.present}
-                onClick={() => updatePerioSite(toothNum, 'plaque', s, !tooth.plaque[s])}
-                title={`Plaque (${s.toUpperCase()}) — Click to toggle`}
-              />
-            ))}
+            {(isUpper ? buccalSites : innerSites).map(s => {
+              const isPos = !!tooth.plaque[s];
+              return (
+                <button
+                  type="button"
+                  key={`plaque-top-${s}`}
+                  className={`sign-toggle-btn sign-mini ${isPos ? 'sign-positive' : 'sign-negative'}`}
+                  disabled={!tooth.present}
+                  onClick={() => updatePerioSite(toothNum, 'plaque', s, !isPos)}
+                  title={`Plaque (${s.toUpperCase()}) — ${isPos ? 'Positive (+)' : 'Negative (-)'}`}
+                >
+                  {isPos ? '+' : '-'}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -409,49 +420,60 @@ export default function PeriodontalSection() {
         {/* Row: Plaque Bottom */}
         <div className="perio-cell cell-dots">
           <div className="perio-dots-triple">
-            {(isUpper ? innerSites : buccalSites).map(s => (
-              <button
-                type="button"
-                key={`plaque-bot-${s}`}
-                className={`dot-btn plaque-dot ${tooth.plaque[s] ? 'active' : ''}`}
-                disabled={!tooth.present}
-                onClick={() => updatePerioSite(toothNum, 'plaque', s, !tooth.plaque[s])}
-                title={`Plaque (${s.toUpperCase()})`}
-              />
-            ))}
+            {(isUpper ? innerSites : buccalSites).map(s => {
+              const isPos = !!tooth.plaque[s];
+              return (
+                <button
+                  type="button"
+                  key={`plaque-bot-${s}`}
+                  className={`sign-toggle-btn sign-mini ${isPos ? 'sign-positive' : 'sign-negative'}`}
+                  disabled={!tooth.present}
+                  onClick={() => updatePerioSite(toothNum, 'plaque', s, !isPos)}
+                  title={`Plaque (${s.toUpperCase()}) — ${isPos ? 'Positive (+)' : 'Negative (-)'}`}
+                >
+                  {isPos ? '+' : '-'}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Row: BOP Bottom */}
         <div className="perio-cell cell-dots">
           <div className="perio-dots-triple">
-            {(isUpper ? innerSites : buccalSites).map(s => (
-              <button
-                type="button"
-                key={`bop-bot-${s}`}
-                className={`dot-btn bop-dot ${tooth.bop[s] ? 'active' : ''}`}
-                disabled={!tooth.present}
-                onClick={() => updatePerioSite(toothNum, 'bop', s, !tooth.bop[s])}
-                title={`BOP (${s.toUpperCase()})`}
-              />
-            ))}
+            {(isUpper ? innerSites : buccalSites).map(s => {
+              const isPos = !!tooth.bop[s];
+              return (
+                <button
+                  type="button"
+                  key={`bop-bot-${s}`}
+                  className={`sign-toggle-btn sign-mini ${isPos ? 'sign-positive' : 'sign-negative'}`}
+                  disabled={!tooth.present}
+                  onClick={() => updatePerioSite(toothNum, 'bop', s, !isPos)}
+                  title={`BOP (${s.toUpperCase()}) — ${isPos ? 'Positive (+)' : 'Negative (-)'}`}
+                >
+                  {isPos ? '+' : '-'}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Row: Furcation Bottom */}
         <div className="perio-cell cell-furcation">
           {isMolar && tooth.present && showFurcations ? (
-            <select
-              className={`furc-select ${(isUpper ? tooth.furcation?.dp : tooth.furcation?.b) > 0 ? 'active' : ''}`}
-              value={isUpper ? (tooth.furcation?.dp || 0) : (tooth.furcation?.b || 0)}
-              onChange={e => setPerioFurcation(toothNum, isUpper ? 'dp' : 'b', Number(e.target.value))}
-              title={`${isUpper ? 'Palatal' : 'Buccal'} Furcation Grade`}
+            <button
+              type="button"
+              className={`sign-toggle-btn ${(isUpper ? tooth.furcation?.dp : tooth.furcation?.b) > 0 ? 'sign-positive' : 'sign-negative'}`}
+              disabled={!tooth.present}
+              onClick={() => {
+                const cur = (isUpper ? tooth.furcation?.dp : tooth.furcation?.b) || 0;
+                setPerioFurcation(toothNum, isUpper ? 'dp' : 'b', cur > 0 ? 0 : 1);
+              }}
+              title={`${isUpper ? 'Palatal' : 'Buccal'} Furcation: ${(isUpper ? tooth.furcation?.dp : tooth.furcation?.b) > 0 ? 'Positive (+)' : 'Negative (-)'}`}
             >
-              <option value={0}>0</option>
-              <option value={1}>▲ 1</option>
-              <option value={2}>▲ 2</option>
-              <option value={3}>▲ 3</option>
-            </select>
+              {(isUpper ? tooth.furcation?.dp : tooth.furcation?.b) > 0 ? '+' : '-'}
+            </button>
           ) : (
             <span className="cell-dash">—</span>
           )}
@@ -773,8 +795,10 @@ export default function PeriodontalSection() {
 
           {/* Legend Strip */}
           <div className="perio-legend-strip">
-            <div className="legend-entry"><span className="legend-dot bop-dot active" /> <b>BOP</b>: Bleeding on Probing (Red)</div>
-            <div className="legend-entry"><span className="legend-dot plaque-dot active" /> <b>PI</b>: Plaque Present (Blue)</div>
+            <div className="legend-entry"><span className="legend-sign-badge sign-positive">+</span> <b>Positive (+)</b>: Present / Detected (Green)</div>
+            <div className="legend-entry"><span className="legend-sign-badge sign-negative">-</span> <b>Negative (-)</b>: Absent / Healthy (Red)</div>
+            <div className="legend-entry"><span className="legend-dot bop-dot active" /> <b>BOP</b>: Bleeding on Probing</div>
+            <div className="legend-entry"><span className="legend-dot plaque-dot active" /> <b>PI</b>: Plaque Present</div>
             <div className="legend-entry"><span className="legend-badge pd-normal">1–3 mm</span> Normal Sulcus</div>
             <div className="legend-entry"><span className="legend-badge pd-moderate">4–5 mm</span> Moderate Pocket</div>
             <div className="legend-entry"><span className="legend-badge pd-severe">≥ 6 mm</span> Severe / Deep Pocket</div>
