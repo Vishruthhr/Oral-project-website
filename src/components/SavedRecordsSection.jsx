@@ -5,7 +5,7 @@ import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { storage } from '../utils/storage';
 
 export default function SavedRecordsSection() {
-  const { records, loadRecordForEdit, deleteRecord, setRecords, showToastMsg } = useDental();
+  const { records, loadRecordForEdit, deleteRecord, setRecords, showToastMsg, pendingSyncCount, syncPending, isOnline } = useDental();
   const [search, setSearch] = useState('');
   const [examinerFilter, setExaminerFilter] = useState('');
 
@@ -163,6 +163,12 @@ export default function SavedRecordsSection() {
           <div className="stat-val">{cariesFreePct}</div>
           <div className="stat-lbl">Caries Free (DMFT=0)</div>
         </div>
+        {pendingSyncCount > 0 && (
+          <div className="rec-stat-card" style={{ borderColor: '#F59E0B' }}>
+            <div className="stat-val" style={{ color: '#D97706' }}>{pendingSyncCount}</div>
+            <div className="stat-lbl">Pending Sync (Offline)</div>
+          </div>
+        )}
       </div>
 
       <div className="action-row" style={{ justifyContent: 'space-between', marginBottom: '14px', alignItems: 'center' }}>
@@ -171,7 +177,26 @@ export default function SavedRecordsSection() {
           {examinerFilter.trim() ? ` (filtered by Examiner "${examinerFilter.trim()}")` : ''}
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+          {pendingSyncCount > 0 && (
+            <button
+              type="button"
+              className="btn btn-sync-cloud"
+              onClick={syncPending}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: '#D97706',
+                color: '#FFFFFF',
+                border: 'none',
+                fontWeight: '700'
+              }}
+              title="Upload locally saved offline records to Supabase cloud"
+            >
+              🔄 Sync to Cloud ({pendingSyncCount})
+            </button>
+          )}
           <label className="btn ghost" style={{ cursor: 'pointer', margin: 0, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
             📥 Import Excel
             <input type="file" accept=".xlsx, .xls, .csv" onChange={handleImportExcel} style={{ display: 'none' }} />
@@ -255,7 +280,19 @@ export default function SavedRecordsSection() {
 
                   return (
                     <tr key={r.id}>
-                      <td><b>{r.patientName || '—'}</b></td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <b>{r.patientName || '—'}</b>
+                          {(r._isOffline || r._synced === false) && (
+                            <span
+                              className="badge-offline"
+                              title="Saved on this device (offline). Click Sync to upload to cloud."
+                            >
+                              ⚡ Local
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td>{r.participantId || '—'}</td>
                       <td><span className="badge" style={{ background: 'var(--card-sub-bg)', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>{r.examinerId || '—'}</span></td>
                       <td>{r.examDate || '—'}</td>

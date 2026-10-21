@@ -8,7 +8,11 @@ export default function TopBar() {
     theme,
     toggleTheme,
     setHelpDrawerOpen,
-    logout
+    logout,
+    isOnline,
+    isOfflineMode,
+    pendingSyncCount,
+    syncPending
   } = useDental();
 
   const themeLabels = {
@@ -31,6 +35,23 @@ export default function TopBar() {
             Patient: <b>{displayName}</b>
           </span>
           <span className="exam-timer">{timerDisplay}</span>
+          <div className="network-status-indicator">
+            {isOnline ? (
+              <span className="net-pill online" title="Connected to Cloud">🟢 Online</span>
+            ) : (
+              <span className="net-pill offline" title="Working Offline — records saved locally on device">⚡ Offline</span>
+            )}
+            {pendingSyncCount > 0 && (
+              <button
+                type="button"
+                className="sync-pill-btn"
+                onClick={syncPending}
+                title={`${pendingSyncCount} record(s) pending sync — click to sync with cloud`}
+              >
+                🔄 Sync ({pendingSyncCount})
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDental } from '../context/DentalContext';
 
 export default function LoginPage() {
-  const { login, signUp, requestPasswordReset, theme, toggleTheme } = useDental();
+  const { login, loginOffline, signUp, requestPasswordReset, theme, toggleTheme } = useDental();
   
   // Navigation view: 'login' | 'forgot' | 'signup'
   const [view, setView] = useState('login');
@@ -261,6 +261,32 @@ export default function LoginPage() {
                     }}
                   >
                     Create a new account
+                  </button>
+                </div>
+
+                <div className="login-divider">
+                  <span>OR</span>
+                </div>
+
+                <div className="offline-login-box">
+                  <div className="offline-login-info">
+                    <span className="offline-icon">🏕️</span>
+                    <div>
+                      <div className="offline-title">Working in Field Camp or Offline?</div>
+                      <div className="offline-desc">Work with zero internet. All records are saved securely on this device and can sync to cloud later.</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-offline-mode"
+                    onClick={() => {
+                      const code = prompt('Enter Examiner Code / Name for this Offline Session:', 'EX-01');
+                      if (code !== null) {
+                        loginOffline(code);
+                      }
+                    }}
+                  >
+                    ⚡ Work in Offline / Field Mode
                   </button>
                 </div>
               </form>

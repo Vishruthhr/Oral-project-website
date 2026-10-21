@@ -3,24 +3,17 @@
  * Provides 100% Offline Clinical Capability
  */
 
-const CACHE_NAME = 'oral-health-clinical-v2.0';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './css/styles.css',
-  './js/clinical-constants.js',
-  './js/storage.js',
-  './js/odontogram.js',
-  './js/export.js',
-  './js/app.js',
-  './icons/icon.svg'
+const CACHE_NAME = 'oral-health-clinical-v3.0';
+const PRECACHE_URLS = [
+  '/',
+  '/index.html',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(PRECACHE_URLS);
     }).then(() => self.skipWaiting())
   );
 });
@@ -36,23 +29,36 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Don't intercept Supabase API calls or browser extension URLs
+  if (url.origin.includes('supabase.co') || url.protocol === 'chrome-extension:') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+      const fetchPromise = fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
           return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+        })
+        .catch(() => {
+          // If offline and navigating to a page, serve cached index.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('/index.html') || caches.match('./index.html');
+          }
         });
-        return networkResponse;
-      }).catch(() => {
-        return caches.match('./index.html');
-      });
+
+      return cachedResponse || fetchPromise;
     })
   );
 });
