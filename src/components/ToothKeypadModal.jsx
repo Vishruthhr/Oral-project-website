@@ -133,7 +133,7 @@ export default function ToothKeypadModal() {
           {/* Left Panel: Zoomed Anatomical SVG */}
           <div className="detail-drawing-panel">
             <div className="drawing-instructions">
-              Click <b>Crown</b> or <b>Root</b> directly on drawing to select layer:
+              Click <b>Crown (Upper Half)</b> or <b>Root (Lower Half)</b> on drawing:
             </div>
 
             <div className="large-svg-container">
@@ -159,7 +159,7 @@ export default function ToothKeypadModal() {
                   setActivePart('crown');
                 }}
               >
-                👑 Crown Layer {crownCode ? `(${crownCode})` : ''}
+                👑 Crown (Upper Half) {crownCode ? `(${crownCode})` : ''}
               </button>
               <button
                 type="button"
@@ -169,7 +169,7 @@ export default function ToothKeypadModal() {
                   setActivePart('root');
                 }}
               >
-                🦷 Root Layer {rootCode ? `(${rootCode})` : ''}
+                🦷 Root (Lower Half) {rootCode ? `(${rootCode})` : ''}
               </button>
             </div>
 
@@ -178,12 +178,12 @@ export default function ToothKeypadModal() {
               <div className="active-part-chips-bar">
                 {activeCrownInfo && (
                   <span className="part-chip-tag" style={{ borderLeft: `4px solid ${activeCrownInfo.color}` }}>
-                    👑 <b>Crown:</b> {activeCrownInfo.label} ({crownCode})
+                    👑 <b>Crown (Upper Half):</b> {activeCrownInfo.label} ({crownCode})
                   </span>
                 )}
                 {activeRootInfo && (
                   <span className="part-chip-tag" style={{ borderLeft: `4px solid ${activeRootInfo.color}` }}>
-                    🦷 <b>Root:</b> {activeRootInfo.label} ({rootCode})
+                    🦷 <b>Root (Lower Half):</b> {activeRootInfo.label} ({rootCode})
                   </span>
                 )}
               </div>
@@ -196,8 +196,8 @@ export default function ToothKeypadModal() {
             <div className={`option-group-card ${activePart === 'crown' ? 'highlighted-group' : ''}`}>
               <div className="group-header">
                 <span className="group-icon">👑</span>
-                <h4>Crown Status Options</h4>
-                <span className="group-sub-hint">Click option to fill crown</span>
+                <h4>Crown Status Options (Upper Half)</h4>
+                <span className="group-sub-hint">Click option to color upper half</span>
               </div>
               <div className="chip-container">
                 {CLINICAL_CONSTANTS.CROWN_CODES.map(c => {
@@ -225,8 +225,8 @@ export default function ToothKeypadModal() {
             <div className={`option-group-card ${activePart === 'root' ? 'highlighted-group' : ''}`}>
               <div className="group-header">
                 <span className="group-icon">🦷</span>
-                <h4>Root Status Options</h4>
-                <span className="group-sub-hint">Click option to fill root</span>
+                <h4>Root Status Options (Lower Half)</h4>
+                <span className="group-sub-hint">Click option to color lower half</span>
               </div>
               <div className="chip-container">
                 {CLINICAL_CONSTANTS.ROOT_CODES.map(r => {
@@ -254,7 +254,7 @@ export default function ToothKeypadModal() {
         {/* Modal Footer */}
         <div className="modal-footer">
           <span className="footer-tip">
-            💡 Clicking a Crown option colors the crown. Clicking a Root option colors the root. Both can be active together.
+            💡 Clicking a Crown option colors the upper half (crown). Clicking a Root option colors the lower half (root). Both can be set together.
           </span>
           <button
             type="button"

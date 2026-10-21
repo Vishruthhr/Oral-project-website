@@ -26,27 +26,19 @@ export default function DentitionSection() {
 
     const mid = (total - 1) / 2;
     const offset = Math.round(Math.pow(Math.abs(index - mid) / mid, 1.6) * (isUpper ? 8 : -8));
-
-    const isRecorded = crownCode !== '' || rootCode !== '';
     const isCurrentActive = activeTooth === toothNum ? 'active-selection' : '';
 
-    // Status badge indicator
+    // Display index / code neutrally without changing badge background color
     let badgeLabel = crownCode || '0';
-    let badgeClass = 'sound';
-    if (crownCode === '1' || crownCode === '2' || rootCode === '1' || rootCode === '2') {
-      badgeClass = 'decay';
-    } else if (crownCode === '3' || rootCode === '3') {
-      badgeClass = 'filled';
-    } else if (crownCode === '7' || rootCode === '7') {
-      badgeClass = 'crown';
-    } else if (crownCode === '4' || crownCode === '5') {
-      badgeClass = 'missing';
+    if (rootCode && rootCode !== '0') {
+      badgeLabel = `${crownCode || '0'}/${rootCode}`;
     }
 
     return (
       <div
         key={toothNum}
-        className={`tooth-card tooth ${isCurrentActive} ${isRecorded ? 'has-data' : ''}`}
+        id={`tooth-card-${toothNum}`}
+        className={`tooth-card tooth ${isCurrentActive}`}
         style={{ transform: `translateY(${offset}px)` }}
         onClick={() => {
           playClick();
@@ -56,7 +48,7 @@ export default function DentitionSection() {
         tabIndex={0}
         title={`Tooth #${toothNum} | Crown: ${crownCode || 'Sound (0)'} | Root: ${rootCode || 'Sound (0)'}`}
       >
-        <div className="tooth-num-badge top-num">{toothNum}</div>
+        <div className="tooth-num-badge top-num" id={`tooth-num-${toothNum}`}>{toothNum}</div>
         
         <div className="tooth-svg-wrap">
           <AnatomicalToothSvg
@@ -67,7 +59,7 @@ export default function DentitionSection() {
           />
         </div>
 
-        <div className={`crown-code-badge badge-${badgeClass}`}>
+        <div className="crown-code-badge" id={`tooth-badge-${toothNum}`}>
           {badgeLabel}
         </div>
       </div>
