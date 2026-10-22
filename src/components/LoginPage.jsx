@@ -138,7 +138,7 @@ export default function LoginPage() {
           {/* Main Brand Header */}
           <div className="login-header">
             <div className="login-brand">
-              <span className="login-logo-icon">🦷</span>
+              <span className="login-logo-icon" aria-hidden="true">OH</span>
               <h1 className="login-title">Oral Health Clinical Workstation</h1>
             </div>
             <p className="login-tagline">Standard Digital Clinical Dental Charting Platform</p>
@@ -154,7 +154,6 @@ export default function LoginPage() {
 
               {generalError && (
                 <div className="login-error-alert" role="alert">
-                  <span className="alert-icon">⚠️</span>
                   <span>{generalError}</span>
                 </div>
               )}
@@ -208,7 +207,7 @@ export default function LoginPage() {
                       title={showPassword ? 'Hide password' : 'Show password'}
                       tabIndex={-1}
                     >
-                      {showPassword ? '🙈 Hide' : '👁️ Show'}
+                      {showPassword ? 'Hide' : 'Show'}
                     </button>
                   </div>
                   {passwordError && (
@@ -270,8 +269,7 @@ export default function LoginPage() {
 
                 <div className="offline-login-box">
                   <div className="offline-login-info">
-                    <span className="offline-icon">🏕️</span>
-                    <div>
+                      <div>
                       <div className="offline-title">Working in Field Camp or Offline?</div>
                       <div className="offline-desc">Work with zero internet. All records are saved securely on this device and can sync to cloud later.</div>
                     </div>
@@ -286,7 +284,7 @@ export default function LoginPage() {
                       }
                     }}
                   >
-                    ⚡ Work in Offline / Field Mode
+                    Work in Offline / Field Mode
                   </button>
                 </div>
               </form>
@@ -302,13 +300,11 @@ export default function LoginPage() {
 
               {signupError && (
                 <div className="login-error-alert" role="alert">
-                  <span className="alert-icon">⚠️</span>
                   <span>{signupError}</span>
                 </div>
               )}
               {signupSuccess && (
                 <div className="login-success-alert" role="status">
-                  <span className="alert-icon">✓</span>
                   <span>Account created. You can now use the workstation.</span>
                 </div>
               )}
@@ -390,7 +386,6 @@ export default function LoginPage() {
 
               {forgotSuccess && (
                 <div className="login-success-alert" role="status">
-                  <span className="alert-icon">✓</span>
                   <span>If this account exists, a reset link has been sent.</span>
                 </div>
               )}

@@ -2346,7 +2346,16 @@ table.records tr:hover { background: var(--teal-l); }
 }
 
 .login-logo-icon {
-  font-size: 28px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .login-title {
@@ -2887,11 +2896,6 @@ table.records tr:hover { background: var(--teal-l); }
   display: flex;
   gap: 10px;
   align-items: flex-start;
-}
-
-.offline-icon {
-  font-size: 20px;
-  line-height: 1;
 }
 
 .offline-title {
