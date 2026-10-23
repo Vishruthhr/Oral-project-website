@@ -11,6 +11,8 @@ export function DentalProvider({ children }) {
   const [isOfflineMode, setIsOfflineMode] = useState(() => Boolean(localStorage.getItem('dental_offline_session')));
   const [isOnline, setIsOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
   const [pendingSyncCount, setPendingSyncCount] = useState(() => storage.getPendingCount());
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const toggleNav = () => setIsNavOpen(prev => !prev);
   const [currentRecord, setCurrentRecord] = useState(getBlankRecord());
   const [editingRecordId, setEditingRecordId] = useState(null);
   const [records, setRecords] = useState([]);

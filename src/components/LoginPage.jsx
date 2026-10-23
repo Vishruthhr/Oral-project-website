@@ -98,21 +98,47 @@ export default function LoginPage() {
     e.preventDefault();
     setSignupError('');
     setSignupSuccess(false);
-    if (!signupEmail.trim() || !signupUsername.trim() || !signupPassword) {
-      setSignupError('Please complete all required fields.');
+
+    const trimmedUsername = signupUsername.trim();
+    const trimmedEmail = signupEmail.trim();
+
+    if (!trimmedUsername) {
+      setSignupError('Please enter a username or examiner identifier.');
+      return;
+    }
+    if (!trimmedEmail) {
+      setSignupError('Please enter your email address.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setSignupError('Please enter a valid email address (e.g., doctor@hospital.org).');
+      return;
+    }
+
+    if (!signupPassword) {
+      setSignupError('Please enter a password.');
+      return;
+    }
+    if (signupPassword.length < 6) {
+      setSignupError('Password must be at least 6 characters long.');
       return;
     }
     if (signupPassword !== signupConfirmPassword) {
       setSignupError('Passwords do not match.');
       return;
     }
+
     try {
-      const result = await signUp(signupEmail, signupUsername, signupPassword);
+      const result = await signUp(trimmedEmail, trimmedUsername, signupPassword);
       if (!result.success) {
         setSignupError(result.error);
         return;
       }
       setSignupSuccess(true);
+      setSignupEmail('');
+      setSignupUsername('');
       setSignupPassword('');
       setSignupConfirmPassword('');
     } catch (error) {
@@ -254,6 +280,8 @@ export default function LoginPage() {
                     onClick={() => {
                       setView('signup');
                       setSignupError('');
+                      setSignupSuccess(false);
+                      setSignupEmail('');
                       setSignupUsername('');
                       setSignupPassword('');
                       setSignupConfirmPassword('');
@@ -311,25 +339,33 @@ export default function LoginPage() {
 
               <form onSubmit={handleSignupSubmit} className="login-form" noValidate>
                 <div className="field">
-                  <label className="field-label" htmlFor="signup_username">Username <span className="req">*</span></label>
+                  <label className="field-label" htmlFor="signup_username">Username / Examiner Name <span className="req">*</span></label>
                   <input
                     type="text"
                     id="signup_username"
+                    name="signup_username"
                     value={signupUsername}
-                    onChange={(e) => setSignupUsername(e.target.value)}
-                    placeholder="Enter your username"
+                    onChange={(e) => {
+                      setSignupUsername(e.target.value);
+                      if (signupError) setSignupError('');
+                    }}
+                    placeholder="Enter your username (e.g. dr_smith)"
                     autoComplete="username"
                     autoFocus
                   />
                 </div>
                 <div className="field">
-                  <label className="field-label" htmlFor="signup_email">Email <span className="req">*</span></label>
+                  <label className="field-label" htmlFor="signup_email">Email Address <span className="req">*</span></label>
                   <input
                     type="email"
                     id="signup_email"
+                    name="signup_email"
                     value={signupEmail}
-                    onChange={(e) => setSignupEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    onChange={(e) => {
+                      setSignupEmail(e.target.value);
+                      if (signupError) setSignupError('');
+                    }}
+                    placeholder="Enter your email (e.g. doctor@hospital.org)"
                     autoComplete="email"
                   />
                 </div>
@@ -338,19 +374,27 @@ export default function LoginPage() {
                   <input
                     type="password"
                     id="signup_password"
+                    name="signup_password"
                     value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
-                    placeholder="Create a password"
+                    onChange={(e) => {
+                      setSignupPassword(e.target.value);
+                      if (signupError) setSignupError('');
+                    }}
+                    placeholder="Create a password (min. 6 characters)"
                     autoComplete="new-password"
                   />
                 </div>
                 <div className="field">
-                  <label className="field-label" htmlFor="signup_confirm_password">Confirm password <span className="req">*</span></label>
+                  <label className="field-label" htmlFor="signup_confirm_password">Confirm Password <span className="req">*</span></label>
                   <input
                     type="password"
                     id="signup_confirm_password"
+                    name="signup_confirm_password"
                     value={signupConfirmPassword}
-                    onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setSignupConfirmPassword(e.target.value);
+                      if (signupError) setSignupError('');
+                    }}
                     placeholder="Repeat your password"
                     autoComplete="new-password"
                   />
@@ -359,7 +403,19 @@ export default function LoginPage() {
                   Create account
                 </button>
                 <div className="forgot-back-wrap">
-                  <button type="button" className="back-to-login-btn" onClick={() => setView('login')}>
+                  <button
+                    type="button"
+                    className="back-to-login-btn"
+                    onClick={() => {
+                      setView('login');
+                      setSignupError('');
+                      setSignupSuccess(false);
+                      setSignupEmail('');
+                      setSignupUsername('');
+                      setSignupPassword('');
+                      setSignupConfirmPassword('');
+                    }}
+                  >
                     ← Back to sign in
                   </button>
                 </div>

@@ -123,49 +123,121 @@ body {
 }
 a { color: inherit; }
 
-/* ---------- App Shell Layout ---------- */
-.shell { display: flex; min-height: 100vh; }
+/* ---------- App Shell Layout (Full Width Main Content) ---------- */
+.shell {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  width: 100%;
+}
 
-/* ---------- Left Rail Navigation (Rich Colored Sidebar) ---------- */
+/* ---------- Navigation Drawer Backdrop Overlay ---------- */
+.rail-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rail-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Formal Professional Navigation Rail (Executive Drawer) ---------- */
 nav.rail {
-  width: 240px;
-  flex-shrink: 0;
-  background: var(--rail-bg);
-  border-right: 1.5px solid var(--rail-border);
-  color: var(--rail-ink);
-  padding: 24px 0;
-  position: sticky;
+  width: 280px;
+  position: fixed;
   top: 0;
+  bottom: 0;
+  left: 0;
   height: 100vh;
+  background: #0F172A; /* Formal deep executive navy slate */
+  border-right: 1.5px solid #1E293B;
+  color: #E2E8F0;
+  padding: 22px 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
-  z-index: 20;
-  transition: background .2s ease, border-color .2s ease;
+  box-shadow: 10px 0 35px rgba(0, 0, 0, 0.35);
+  z-index: 1001;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+nav.rail.open {
+  transform: translateX(0);
+}
+
+.rail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 20px 18px;
+  border-bottom: 1.5px solid #1E293B;
+  margin-bottom: 16px;
 }
 
 .rail-brand {
-  padding: 0 22px 20px;
-  border-bottom: 1.5px solid var(--rail-border);
-  margin-bottom: 14px;
+  padding: 0;
+  border-bottom: none;
+  margin-bottom: 0;
 }
+
 .rail-brand .mark {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
-  letter-spacing: -.2px;
+  letter-spacing: -0.3px;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--rail-mark);
+  color: #FFFFFF;
 }
+
+.rail-brand .mark-icon {
+  font-size: 20px;
+}
+
 .rail-brand .tag {
-  font-size: 11px;
-  color: var(--rail-tag);
+  font-size: 10.5px;
+  color: #94A3B8;
   margin-top: 4px;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   font-weight: 700;
+}
+
+.rail-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #94A3B8;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rail-close-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #EF4444;
+  border-color: #DC2626;
+  transform: scale(1.05);
+}
+
+.rail-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .tab-item {
@@ -177,86 +249,147 @@ nav.rail {
   font-size: 13.5px;
   font-weight: 600;
   border-left: 3.5px solid transparent;
-  color: var(--rail-ink);
-  transition: all .15s ease;
+  color: #94A3B8;
+  transition: all 0.15s ease;
   user-select: none;
 }
+
 .tab-item:hover {
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   color: #FFFFFF;
-  padding-left: 26px;
+  padding-left: 25px;
 }
+
 .tab-item.active {
-  background: var(--rail-active-bg);
-  border-left-color: var(--rail-active-ink);
-  color: var(--rail-active-ink);
+  background: #1E293B;
+  border-left-color: #0284C7;
+  color: #FFFFFF;
   font-weight: 800;
 }
+
 .tab-num {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--rail-tag);
-  width: 18px;
+  color: #64748B;
+  width: 20px;
   font-weight: 700;
 }
-.tab-item.active .tab-num { color: var(--rail-active-ink); }
+
+.tab-item.active .tab-num {
+  color: #38BDF8;
+}
 
 .rail-status {
   margin-top: auto;
   padding: 16px 18px;
-  border-top: 1.5px solid var(--rail-border);
-  background: var(--rail-card-bg);
-  margin-left: 12px;
-  margin-right: 12px;
+  border-top: 1.5px solid #1E293B;
+  background: #1E293B;
+  margin-left: 14px;
+  margin-right: 14px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--rail-card-border);
+  border: 1px solid #334155;
 }
+
 .rail-status .label {
   font-size: 10.5px;
   text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--rail-tag);
+  letter-spacing: 0.08em;
+  color: #94A3B8;
   margin-bottom: 8px;
   font-weight: 800;
   text-align: center;
 }
+
 .rail-dmft { display: flex; gap: 6px; }
+
 .rail-dmft div {
   flex: 1;
   text-align: center;
-  background: var(--rail-dmft-box);
+  background: #0F172A;
   border-radius: 7px;
   padding: 6px 2px;
-  border: 1px solid var(--rail-card-border);
+  border: 1px solid #334155;
 }
+
 .rail-dmft .n {
   font-family: var(--mono);
   font-weight: 800;
   font-size: 15px;
-  color: var(--rail-mark);
+  color: #FFFFFF;
 }
+
 .rail-dmft .l {
   font-size: 9.5px;
-  color: var(--rail-tag);
+  color: #94A3B8;
   text-transform: uppercase;
   font-weight: 800;
 }
 
-/* ---------- Main Content Column ---------- */
-main { flex: 1; min-width: 0; }
+/* ---------- Main Content Column (Takes full width when nav is drawer) ---------- */
+main {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
 
+/* ---------- TopBar with Hamburger Menu ---------- */
 header.topbar {
   background: var(--paper);
   border-bottom: 1.5px solid var(--line);
-  padding: 16px 36px;
+  padding: 14px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
-  z-index: 15;
+  z-index: 100; /* Stays above charts and scrolled elements */
   box-shadow: var(--shadow-sm);
   transition: background-color .2s ease, border-color .2s ease;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 40px;
+  height: 38px;
+  background: var(--sand);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 9px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.nav-hamburger-btn:hover {
+  background: var(--teal-l);
+  border-color: var(--teal);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.2);
+}
+
+.nav-hamburger-btn:active {
+  transform: translateY(0);
+}
+
+.hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2.5px;
+  background-color: var(--navy-2);
+  border-radius: 2px;
+  transition: background-color 0.15s ease;
+}
+
+.nav-hamburger-btn:hover .hamburger-line {
+  background-color: var(--navy);
 }
 
 .topbar-title-wrap h1 {
@@ -430,7 +563,7 @@ header.topbar {
   transform: scale(1.15);
 }
 
-input[type=text], input[type=number], input[type=date], select, textarea {
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], select, textarea {
   width: 100%;
   padding: 10px 14px;
   border: 1.5px solid var(--input-border);
@@ -880,7 +1013,7 @@ input.invalid, select.invalid {
   align-items: center;
   gap: 28px;
   box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
-  z-index: 12;
+  z-index: 90;
 }
 .summary-strip .grp { display: flex; gap: 16px; flex: 1; }
 .summary-strip .metric {
@@ -1450,14 +1583,18 @@ table.records tr:hover { background: var(--teal-l); }
   color: var(--muted);
 }
 
-/* Scrollable Container with Sticky Row Labels */
+/* Scrollable Container with Sticky Row Labels (Isolated Stacking & Solid Opaque) */
 .perio-table-scroll-container {
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   border: 1.5px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--paper);
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.03);
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
 }
 
 .perio-chart-table {
@@ -1466,20 +1603,21 @@ table.records tr:hover { background: var(--teal-l); }
   position: relative;
 }
 
-/* Row Labels Sticky Column */
+/* Row Labels Sticky Column: 100% Solid, Opaque, High Elevation so nothing bleeds through */
 .perio-labels-col {
   position: sticky;
   left: 0;
-  z-index: 15;
+  z-index: 20;
   width: 160px;
   flex-shrink: 0;
   background: var(--paper);
   border-right: 2px solid var(--line);
-  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.12);
 }
 
 .perio-label-cell {
   height: 32px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -1487,27 +1625,51 @@ table.records tr:hover { background: var(--teal-l); }
   font-weight: 700;
   color: var(--muted);
   border-bottom: 1px solid var(--line);
-  background: var(--paper);
+  background-color: var(--paper);
+  user-select: none;
 }
 
 .perio-label-cell:first-child {
   height: 38px;
   font-weight: 800;
   color: var(--ink);
-  background: var(--sand);
+  background-color: var(--sand);
 }
 
+/* Solid Opaque Backgrounds for Tags to prevent transparent text overlap during scrolling */
 .perio-label-cell.buccal-tag {
-  background: rgba(2, 132, 199, 0.04);
+  background-color: #EDF5FD;
+  color: var(--navy-2);
 }
 
 .perio-label-cell.lingual-tag {
-  background: rgba(14, 165, 233, 0.04);
+  background-color: #F0F9FF;
+  color: var(--navy-2);
+}
+
+[data-theme="dark"] .perio-label-cell {
+  background-color: #1E293B;
+  color: #94A3B8;
+}
+
+[data-theme="dark"] .perio-label-cell:first-child {
+  background-color: #0F172A;
+  color: #F8FAFC;
+}
+
+[data-theme="dark"] .perio-label-cell.buccal-tag {
+  background-color: #172437;
+  color: #38BDF8;
+}
+
+[data-theme="dark"] .perio-label-cell.lingual-tag {
+  background-color: #142840;
+  color: #38BDF8;
 }
 
 .perio-label-cell.graphic-label {
   height: 80px;
-  background: var(--sand);
+  background-color: var(--sand);
   font-weight: 800;
   color: var(--navy-2);
 }
@@ -1557,6 +1719,7 @@ table.records tr:hover { background: var(--teal-l); }
 /* Cells in Tooth Column */
 .perio-cell {
   height: 32px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2241,6 +2404,7 @@ table.records tr:hover { background: var(--teal-l); }
 
 /* ==================== UNIFORM FIELD STYLING ==================== */
 .field input[type="text"],
+.field input[type="email"],
 .field input[type="tel"],
 .field input[type="date"],
 .field input[type="number"],

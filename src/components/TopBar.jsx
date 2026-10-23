@@ -12,7 +12,8 @@ export default function TopBar() {
     isOnline,
     isOfflineMode,
     pendingSyncCount,
-    syncPending
+    syncPending,
+    toggleNav
   } = useDental();
 
   const themeLabels = {
@@ -26,7 +27,20 @@ export default function TopBar() {
 
   return (
     <header className="topbar">
-      <div className="topbar-title-wrap">
+      <div className="topbar-left">
+        <button
+          type="button"
+          className="nav-hamburger-btn"
+          onClick={toggleNav}
+          title="Open Navigation Menu"
+          aria-label="Open Navigation Menu"
+        >
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+          <span className="hamburger-line" />
+        </button>
+
+        <div className="topbar-title-wrap">
         <h1>Oral Health Assessment Form</h1>
         <div className="sub">Standard Digital Clinical Dental Charting Platform</div>
 
@@ -53,6 +67,7 @@ export default function TopBar() {
             )}
           </div>
         </div>
+      </div>
       </div>
 
       <div className="topbar-actions">
