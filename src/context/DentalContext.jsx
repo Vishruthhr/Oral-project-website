@@ -7,8 +7,14 @@ import { isSupabaseConfigured, supabase } from '../utils/supabase';
 const DentalContext = createContext();
 
 export function DentalProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isOfflineMode, setIsOfflineMode] = useState(() => Boolean(localStorage.getItem('dental_offline_session')));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return sessionStorage.getItem('dental_authenticated') === 'true';
+  });
+  const [isOfflineMode, setIsOfflineMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(sessionStorage.getItem('dental_offline_session'));
+  });
   const [isOnline, setIsOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
   const [pendingSyncCount, setPendingSyncCount] = useState(() => storage.getPendingCount());
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -36,8 +42,13 @@ export function DentalProvider({ children }) {
     if (!isSupabaseConfigured) {
       return { success: false, error: 'Supabase is not configured. Set the Supabase URL and anon key.' };
     }
-    const { error } = await supabase.auth.signInWithPassword({ email: username.trim(), password });
-    return error ? { success: false, error: error.message } : { success: true };
+    const { data, error } = await supabase.auth.signInWithPassword({ email: username.trim(), password });
+    if (error) return { success: false, error: error.message };
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_authenticated', 'true');
+    }
+    setIsAuthenticated(true);
+    return { success: true };
   }
 
   async function signUp(email, username, password) {
@@ -59,6 +70,10 @@ export function DentalProvider({ children }) {
         error: 'Account creation requires email confirmation. Disable Confirm email in Supabase Auth settings, then try again.',
       };
     }
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_authenticated', 'true');
+    }
+    setIsAuthenticated(true);
     return { success: true };
   }
 
@@ -71,20 +86,27 @@ export function DentalProvider({ children }) {
   }
 
   async function logout() {
-    if (isOfflineMode) {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('dental_offline_session');
+      sessionStorage.removeItem('dental_authenticated');
       localStorage.removeItem('dental_offline_session');
-      setIsOfflineMode(false);
-      setIsAuthenticated(false);
-      showToastMsg('Exited offline session.', 'info');
-      return;
     }
-    await supabase?.auth.signOut();
+    setIsOfflineMode(false);
     setIsAuthenticated(false);
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {}
+    }
     showToastMsg('Logged out successfully.', 'info');
   }
 
   function loginOffline(examinerCode = 'EX-01') {
-    localStorage.setItem('dental_offline_session', examinerCode);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_offline_session', examinerCode);
+      sessionStorage.setItem('dental_authenticated', 'true');
+      localStorage.removeItem('dental_offline_session');
+    }
     setIsOfflineMode(true);
     setIsAuthenticated(true);
     showToastMsg(`Entered Offline Field Mode as ${examinerCode}`, 'info');
@@ -206,21 +228,60 @@ export function DentalProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    const offlineSession = localStorage.getItem('dental_offline_session');
-    if (offlineSession) {
+    // Purge any legacy persistent tokens from localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('dental_offline_session');
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+            localStorage.removeItem(key);
+          }
+        });
+      } catch (e) {}
+    }
+
+    const isSessionAuth = typeof window !== 'undefined' && sessionStorage.getItem('dental_authenticated') === 'true';
+    const isOffline = typeof window !== 'undefined' && Boolean(sessionStorage.getItem('dental_offline_session'));
+
+    // If no active session in this tab/window, ALWAYS show the login page
+    if (!isSessionAuth) {
+      setIsAuthenticated(false);
+      setIsOfflineMode(false);
+      return undefined;
+    }
+
+    if (isOffline) {
       setIsOfflineMode(true);
       setIsAuthenticated(true);
-      return;
+      return undefined;
     }
-    if (!supabase) return undefined;
+
+    if (!supabase) {
+      setIsAuthenticated(false);
+      return undefined;
+    }
+
     supabase.auth.getSession().then(({ data }) => {
-      setIsAuthenticated(Boolean(data.session));
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!localStorage.getItem('dental_offline_session')) {
-        setIsAuthenticated(Boolean(session));
+      if (data && data.session && sessionStorage.getItem('dental_authenticated') === 'true') {
+        setIsAuthenticated(true);
+      } else {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('dental_authenticated');
+        }
+        setIsAuthenticated(false);
       }
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (sessionStorage.getItem('dental_offline_session')) {
+        setIsAuthenticated(true);
+      } else if (session && sessionStorage.getItem('dental_authenticated') === 'true') {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+
     return () => subscription.unsubscribe();
   }, []);
 
