@@ -386,6 +386,7 @@ header.topbar {
   background-color: var(--navy-2);
   border-radius: 2px;
   transition: background-color 0.15s ease;
+  pointer-events: none;
 }
 
 .nav-hamburger-btn:hover .hamburger-line {
@@ -2365,15 +2366,10 @@ table.records tr:hover { background: var(--teal-l); }
 }
 
 @media(max-width: 900px) {
-  .rail { width: 72px; }
-  .rail-brand .tag, .rail-brand .mark span, .rail-status, .tab-item span.label-text { display: none; }
-  .rail-brand { padding: 0 12px 16px; text-align: center; }
-  .rail-brand .mark { justify-content: center; font-size: 24px; }
-  .tab-item { justify-content: center; padding: 14px 0; }
-  .tab-num { width: auto; font-size: 13px; font-weight: 800; }
   .content { padding: 18px 16px 110px; }
-  header.topbar { padding: 12px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .topbar-actions { width: 100%; justify-content: space-between; }
+  header.topbar { padding: 12px 16px; flex-wrap: wrap; gap: 12px; }
+  .topbar-left { width: 100%; }
+  .topbar-actions { width: 100%; justify-content: flex-end; }
   .grid2, .grid3 { grid-template-columns: 1fr; }
   .sextant-grid { grid-template-columns: 1fr; }
   .summary-strip { padding: 12px 16px; flex-direction: column; gap: 10px; }
@@ -2383,21 +2379,6 @@ table.records tr:hover { background: var(--teal-l); }
 }
 
 @media(max-width: 600px) {
-  .shell { flex-direction: column; }
-  nav.rail {
-    width: 100%;
-    height: auto;
-    position: static;
-    flex-direction: row;
-    padding: 8px 12px;
-    overflow-x: auto;
-    box-shadow: none;
-    border-bottom: 1.5px solid var(--rail-border);
-    border-right: none;
-  }
-  .rail-brand { display: none; }
-  .tab-item { padding: 8px 12px; border-left: none; border-bottom: 2.5px solid transparent; }
-  .tab-item.active { border-bottom-color: var(--rail-active-ink); }
   .dentition-stats-strip { grid-template-columns: repeat(2, 1fr); }
   .records-stats-bar { grid-template-columns: 1fr 1fr; }
 }

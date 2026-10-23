@@ -71,8 +71,44 @@ export function DentalProvider({ children }) {
   }
 
   async function logout() {
+    if (isOfflineMode) {
+      localStorage.removeItem('dental_offline_session');
+      setIsOfflineMode(false);
+      setIsAuthenticated(false);
+      showToastMsg('Exited offline session.', 'info');
+      return;
+    }
     await supabase?.auth.signOut();
+    setIsAuthenticated(false);
     showToastMsg('Logged out successfully.', 'info');
+  }
+
+  function loginOffline(examinerCode = 'EX-01') {
+    localStorage.setItem('dental_offline_session', examinerCode);
+    setIsOfflineMode(true);
+    setIsAuthenticated(true);
+    showToastMsg(`Entered Offline Field Mode as ${examinerCode}`, 'info');
+  }
+
+  async function syncPending() {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      showToastMsg('Cannot sync while offline. Please connect to the internet.', 'warning');
+      return;
+    }
+    showToastMsg('Syncing offline records to cloud...', 'info');
+    try {
+      const res = await storage.syncPendingRecords();
+      setPendingSyncCount(storage.getPendingCount());
+      const all = await storage.getAllRecords();
+      setRecords(all);
+      if (res && res.syncedCount > 0) {
+        showToastMsg(`Successfully synced ${res.syncedCount} record(s) to cloud!`, 'success');
+      } else {
+        showToastMsg('All records are up to date.', 'info');
+      }
+    } catch (err) {
+      showToastMsg(`Sync failed: ${err.message}`, 'error');
+    }
   }
 
   function getBlankPerio() {
@@ -150,12 +186,40 @@ export function DentalProvider({ children }) {
   }, [theme]);
 
   useEffect(() => {
+    function handleOnline() {
+      setIsOnline(true);
+      showToastMsg('Network connection restored.', 'info');
+      if (storage.getPendingCount() > 0) {
+        syncPending();
+      }
+    }
+    function handleOffline() {
+      setIsOnline(false);
+      showToastMsg('Network offline. Working in local mode.', 'warning');
+    }
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    const offlineSession = localStorage.getItem('dental_offline_session');
+    if (offlineSession) {
+      setIsOfflineMode(true);
+      setIsAuthenticated(true);
+      return;
+    }
     if (!supabase) return undefined;
     supabase.auth.getSession().then(({ data }) => {
       setIsAuthenticated(Boolean(data.session));
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(Boolean(session));
+      if (!localStorage.getItem('dental_offline_session')) {
+        setIsAuthenticated(Boolean(session));
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -660,6 +724,14 @@ export function DentalProvider({ children }) {
 
   const value = {
     isAuthenticated,
+    isOfflineMode,
+    isOnline,
+    pendingSyncCount,
+    loginOffline,
+    syncPending,
+    isNavOpen,
+    setIsNavOpen,
+    toggleNav,
     login,
     signUp,
     requestPasswordReset,
