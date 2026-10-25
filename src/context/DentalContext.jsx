@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { storage } from '../utils/storage';
 import { calcDMFT, calcAge, getWorstCPI, getDeviceDate } from '../utils/exportUtils';
-import { isSupabaseConfigured, supabase } from '../utils/supabase';
+import { isSupabaseConfigured, supabase, saveExaminerProfileToCloud, fetchExaminerByIdFromCloud } from '../utils/supabase';
 
 const DentalContext = createContext();
 
@@ -10,6 +10,15 @@ export function DentalProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window === 'undefined') return false;
     return sessionStorage.getItem('dental_authenticated') === 'true';
+  });
+  const [currentExaminer, setCurrentExaminer] = useState(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const cached = sessionStorage.getItem('dental_current_examiner');
+      return cached ? JSON.parse(cached) : null;
+    } catch (e) {
+      return null;
+    }
   });
   const [isOfflineMode, setIsOfflineMode] = useState(() => {
     if (typeof window === 'undefined') return false;
@@ -44,33 +53,104 @@ export function DentalProvider({ children }) {
     }
     const { data, error } = await supabase.auth.signInWithPassword({ email: username.trim(), password });
     if (error) return { success: false, error: error.message };
+
+    // Retrieve examiner profile from cloud or local storage
+    let foundProfile = null;
+    try {
+      const authUserId = data.user?.id;
+      const { data: cloudRow } = await supabase
+        .from('examiners')
+        .select('*')
+        .or(`auth_user_id.eq.${authUserId},email.eq.${username.trim()}`)
+        .maybeSingle();
+
+      if (cloudRow) {
+        foundProfile = {
+          authUserId: cloudRow.auth_user_id,
+          examinerId: cloudRow.examiner_id,
+          examinerName: cloudRow.examiner_name,
+          mobileNumber: cloudRow.mobile_number || '',
+          email: cloudRow.email || '',
+          photoUrl: cloudRow.photo_url || null,
+          createdAt: cloudRow.created_at,
+        };
+        storage.saveExaminerProfile(foundProfile);
+      }
+    } catch (e) {
+      console.warn('Could not query examiners table from cloud:', e);
+    }
+
+    if (!foundProfile) {
+      const meta = data.user?.user_metadata || {};
+      const targetId = meta.examiner_id || meta.username || username.split('@')[0];
+      const localMatch = storage.getExaminerById(targetId);
+      foundProfile = localMatch || {
+        authUserId: data.user?.id || null,
+        examinerId: targetId,
+        examinerName: meta.examiner_name || meta.username || username.split('@')[0],
+        mobileNumber: meta.mobile_number || '',
+        email: username.trim(),
+        photoUrl: meta.photo_url || null,
+      };
+      storage.saveExaminerProfile(foundProfile);
+    }
+
+    setCurrentExaminer(foundProfile);
     if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_current_examiner', JSON.stringify(foundProfile));
       sessionStorage.setItem('dental_authenticated', 'true');
     }
     setIsAuthenticated(true);
     return { success: true };
   }
 
-  async function signUp(email, username, password) {
-    if (!email.trim() || !username.trim() || !password.trim()) {
-      return { success: false, error: 'Please complete all required fields.' };
+  async function signUp(email, password, examinerData = {}) {
+    const trimmedEmail = email.trim();
+    const trimmedId = (examinerData.examinerId || '').trim();
+    const trimmedName = (examinerData.examinerName || '').trim();
+    const trimmedMobile = (examinerData.mobileNumber || '').trim();
+
+    if (!trimmedEmail || !password.trim() || !trimmedId || !trimmedName) {
+      return { success: false, error: 'Please complete all required examiner fields.' };
     }
     if (!isSupabaseConfigured) {
       return { success: false, error: 'Supabase is not configured. Set the Supabase URL and anon key.' };
     }
+
     const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
+      email: trimmedEmail,
       password,
-      options: { data: { username: username.trim() } },
+      options: {
+        data: {
+          username: trimmedId,
+          examiner_id: trimmedId,
+          examiner_name: trimmedName,
+          mobile_number: trimmedMobile,
+        },
+      },
     });
+
     if (error) return { success: false, error: error.message };
-    if (!data.session) {
-      return {
-        success: false,
-        error: 'Account creation requires email confirmation. Disable Confirm email in Supabase Auth settings, then try again.',
-      };
-    }
+
+    const examinerProfile = {
+      authUserId: data.user?.id || null,
+      examinerId: trimmedId,
+      examinerName: trimmedName,
+      mobileNumber: trimmedMobile,
+      email: trimmedEmail,
+      photoUrl: examinerData.photoUrl || null,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to local registry
+    storage.saveExaminerProfile(examinerProfile);
+
+    // Save to separate cloud examiners table
+    await saveExaminerProfileToCloud(examinerProfile);
+
+    setCurrentExaminer(examinerProfile);
     if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_current_examiner', JSON.stringify(examinerProfile));
       sessionStorage.setItem('dental_authenticated', 'true');
     }
     setIsAuthenticated(true);
@@ -89,8 +169,10 @@ export function DentalProvider({ children }) {
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('dental_offline_session');
       sessionStorage.removeItem('dental_authenticated');
+      sessionStorage.removeItem('dental_current_examiner');
       localStorage.removeItem('dental_offline_session');
     }
+    setCurrentExaminer(null);
     setIsOfflineMode(false);
     setIsAuthenticated(false);
     if (supabase) {
@@ -102,7 +184,17 @@ export function DentalProvider({ children }) {
   }
 
   function loginOffline(examinerCode = 'EX-01') {
+    const localEx = storage.getExaminerById(examinerCode);
+    const offlineProfile = localEx || {
+      examinerId: examinerCode,
+      examinerName: `Examiner ${examinerCode}`,
+      mobileNumber: '',
+      email: '',
+      photoUrl: null,
+    };
+    setCurrentExaminer(offlineProfile);
     if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_current_examiner', JSON.stringify(offlineProfile));
       sessionStorage.setItem('dental_offline_session', examinerCode);
       sessionStorage.setItem('dental_authenticated', 'true');
       localStorage.removeItem('dental_offline_session');
@@ -110,6 +202,19 @@ export function DentalProvider({ children }) {
     setIsOfflineMode(true);
     setIsAuthenticated(true);
     showToastMsg(`Entered Offline Field Mode as ${examinerCode}`, 'info');
+  }
+
+  // Retrieve full examiner profile by their ID (from local storage or Supabase)
+  async function getExaminerDetails(id) {
+    if (!id) return null;
+    const local = storage.getExaminerById(id);
+    if (local && (local.examinerName || local.photoUrl)) return local;
+    const cloud = await fetchExaminerByIdFromCloud(id);
+    if (cloud) {
+      storage.saveExaminerProfile(cloud);
+      return cloud;
+    }
+    return local || null;
   }
 
   async function syncPending() {
@@ -173,7 +278,7 @@ export function DentalProvider({ children }) {
       patientName: '',
       participantId: '',
       examDate: getDeviceDate(),
-      examinerId: '',
+      examinerId: currentExaminer?.examinerId || '',
       village: '',
       phoneNumber: '',
       sex: '',
@@ -793,6 +898,9 @@ export function DentalProvider({ children }) {
     isNavOpen,
     setIsNavOpen,
     toggleNav,
+    currentExaminer,
+    setCurrentExaminer,
+    getExaminerDetails,
     login,
     signUp,
     requestPasswordReset,

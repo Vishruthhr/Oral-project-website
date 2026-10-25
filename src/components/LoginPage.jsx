@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDental } from '../context/DentalContext';
 
 export default function LoginPage() {
@@ -19,19 +19,28 @@ export default function LoginPage() {
   const [generalError, setGeneralError] = useState('');
 
   // Signup form state
-  const [signupUsername, setSignupUsername] = useState('');
+  const [examinerName, setExaminerName] = useState('');
+  const [examinerId, setExaminerId] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [signupPhoto, setSignupPhoto] = useState(null); // base64 string
   const [signupError, setSignupError] = useState('');
   const [signupSuccess, setSignupSuccess] = useState(false);
+
+  // Live Camera states
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState('');
+  const videoRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const streamRef = useRef(null);
 
   // Forgot password form state
   const [forgotInput, setForgotInput] = useState('');
   const [forgotError, setForgotError] = useState('');
   const [forgotSuccess, setForgotSuccess] = useState(false);
-
 
   // Load remembered username on mount
   useEffect(() => {
@@ -43,6 +52,124 @@ export default function LoginPage() {
     }
   }, []);
 
+  // Stop camera tracks when camera is closed or view changes
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, [view]);
+
+  function stopCamera() {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
+    setCameraError('');
+  }
+
+  async function startCamera() {
+    setCameraError('');
+    setIsCameraActive(true);
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera access is not supported by your browser.');
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 480 }, height: { ideal: 480 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch (err) {
+      console.warn('Camera error:', err);
+      setCameraError(err.message || 'Unable to access camera. You can upload a photo instead.');
+      stopCamera();
+    }
+  }
+
+  function capturePhoto() {
+    if (!videoRef.current) return;
+    try {
+      const video = videoRef.current;
+      const canvas = document.createElement('canvas');
+      const size = Math.min(video.videoWidth || 320, video.videoHeight || 320, 360);
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      
+      // Center crop square
+      const sx = ((video.videoWidth || size) - size) / 2;
+      const sy = ((video.videoHeight || size) - size) / 2;
+      ctx.drawImage(video, sx, sy, size, size, 0, 0, size, size);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      setSignupPhoto(dataUrl);
+      stopCamera();
+    } catch (err) {
+      setCameraError('Could not capture photo from video feed.');
+    }
+  }
+
+  function handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setSignupError('Please select a valid image file (JPEG, PNG, WebP).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 360;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        setSignupPhoto(dataUrl);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
+  function removePhoto() {
+    setSignupPhoto(null);
+  }
+
+  function resetSignupForm() {
+    setExaminerName('');
+    setExaminerId('');
+    setMobileNumber('');
+    setSignupEmail('');
+    setSignupPassword('');
+    setSignupConfirmPassword('');
+    setSignupPhoto(null);
+    setSignupError('');
+    setSignupSuccess(false);
+    stopCamera();
+  }
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setUsernameError('');
@@ -51,7 +178,7 @@ export default function LoginPage() {
 
     let hasError = false;
     if (!username.trim()) {
-      setUsernameError('Username is required');
+      setUsernameError('Email / Username is required');
       hasError = true;
     }
     if (!password.trim()) {
@@ -99,15 +226,25 @@ export default function LoginPage() {
     setSignupError('');
     setSignupSuccess(false);
 
-    const trimmedUsername = signupUsername.trim();
+    const trimmedName = examinerName.trim();
+    const trimmedId = examinerId.trim().toUpperCase();
+    const trimmedMobile = mobileNumber.replace(/\D/g, '');
     const trimmedEmail = signupEmail.trim();
 
-    if (!trimmedUsername) {
-      setSignupError('Please enter a username or examiner identifier.');
+    if (!trimmedName) {
+      setSignupError('Examiner Name is required.');
+      return;
+    }
+    if (!trimmedId) {
+      setSignupError('Examiner ID is required (e.g. EX-01).');
+      return;
+    }
+    if (!trimmedMobile || trimmedMobile.length < 10) {
+      setSignupError('Please enter a valid 10-digit mobile number.');
       return;
     }
     if (!trimmedEmail) {
-      setSignupError('Please enter your email address.');
+      setSignupError('Please enter an email address.');
       return;
     }
 
@@ -131,16 +268,20 @@ export default function LoginPage() {
     }
 
     try {
-      const result = await signUp(trimmedEmail, trimmedUsername, signupPassword);
+      const result = await signUp(trimmedEmail, signupPassword, {
+        examinerName: trimmedName,
+        examinerId: trimmedId,
+        mobileNumber: trimmedMobile,
+        email: trimmedEmail,
+        photoUrl: signupPhoto,
+      });
+
       if (!result.success) {
         setSignupError(result.error);
         return;
       }
       setSignupSuccess(true);
-      setSignupEmail('');
-      setSignupUsername('');
-      setSignupPassword('');
-      setSignupConfirmPassword('');
+      resetSignupForm();
     } catch (error) {
       setSignupError(error.message || 'Unable to create your account.');
     }
@@ -187,7 +328,7 @@ export default function LoginPage() {
               <form onSubmit={handleLoginSubmit} className="login-form" noValidate>
                 <div className="field">
                   <label className="field-label" htmlFor="login_username">
-                    Email <span className="req">*</span>
+                    Email / Examiner ID <span className="req">*</span>
                   </label>
                   <input
                     type="text"
@@ -198,7 +339,7 @@ export default function LoginPage() {
                       if (usernameError) setUsernameError('');
                       if (generalError) setGeneralError('');
                     }}
-                    placeholder="Enter your email"
+                    placeholder="Enter your email or examiner ID"
                     autoComplete="email"
                     className={usernameError || generalError ? 'input-error' : ''}
                     autoFocus
@@ -279,12 +420,7 @@ export default function LoginPage() {
                     style={{ fontWeight: '600' }}
                     onClick={() => {
                       setView('signup');
-                      setSignupError('');
-                      setSignupSuccess(false);
-                      setSignupEmail('');
-                      setSignupUsername('');
-                      setSignupPassword('');
-                      setSignupConfirmPassword('');
+                      resetSignupForm();
                     }}
                   >
                     Create a new account
@@ -297,7 +433,7 @@ export default function LoginPage() {
 
                 <div className="offline-login-box">
                   <div className="offline-login-info">
-                      <div>
+                    <div>
                       <div className="offline-title">Working in Field Camp or Offline?</div>
                       <div className="offline-desc">Work with zero internet. All records are saved securely on this device and can sync to cloud later.</div>
                     </div>
@@ -306,9 +442,9 @@ export default function LoginPage() {
                     type="button"
                     className="btn-offline-mode"
                     onClick={() => {
-                      const code = prompt('Enter Examiner Code / Name for this Offline Session:', 'EX-01');
-                      if (code !== null) {
-                        loginOffline(code);
+                      const code = prompt('Enter Examiner Code / ID for this Offline Session:', 'EX-01');
+                      if (code !== null && code.trim()) {
+                        loginOffline(code.trim().toUpperCase());
                       }
                     }}
                   >
@@ -320,10 +456,11 @@ export default function LoginPage() {
           )}
 
           {view === 'signup' && (
+            /* ================= SIGNUP VIEW ================= */
             <>
               <div className="login-welcome-section">
-                <h2 className="login-welcome-title">Create your account</h2>
-                <p className="login-welcome-sub">Register an examiner account to access the workstation.</p>
+                <h2 className="login-welcome-title">Register Examiner Account</h2>
+                <p className="login-welcome-sub">Create your clinical examiner profile to conduct dental surveys.</p>
               </div>
 
               {signupError && (
@@ -333,87 +470,217 @@ export default function LoginPage() {
               )}
               {signupSuccess && (
                 <div className="login-success-alert" role="status">
-                  <span>Account created. You can now use the workstation.</span>
+                  <span>Examiner account created successfully! You can now use the workstation.</span>
+                </div>
+              )}
+
+              {/* Live Camera Viewfinder Modal/Card */}
+              {isCameraActive && (
+                <div className="camera-viewfinder-card">
+                  <div className="camera-header">
+                    <span>📷 Position your face in view</span>
+                    <button type="button" className="btn-close-camera" onClick={stopCamera}>✕</button>
+                  </div>
+                  <div className="camera-video-container">
+                    <video ref={videoRef} className="camera-live-video" autoPlay playsInline />
+                  </div>
+                  <div className="camera-actions">
+                    <button type="button" className="btn teal btn-snap-photo" onClick={capturePhoto}>
+                      Capture Photo
+                    </button>
+                    <button type="button" className="btn btn-cancel-camera" onClick={stopCamera}>
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               )}
 
               <form onSubmit={handleSignupSubmit} className="login-form" noValidate>
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_username">Username / Examiner Name <span className="req">*</span></label>
-                  <input
-                    type="text"
-                    id="signup_username"
-                    name="signup_username"
-                    value={signupUsername}
-                    onChange={(e) => {
-                      setSignupUsername(e.target.value);
-                      if (signupError) setSignupError('');
-                    }}
-                    placeholder="Enter your username (e.g. dr_smith)"
-                    autoComplete="username"
-                    autoFocus
-                  />
+                {/* Photo Section (Upload or Take Photo) */}
+                <div className="signup-photo-section">
+                  <div className="signup-photo-avatar-wrap">
+                    {signupPhoto ? (
+                      <img src={signupPhoto} alt="Examiner avatar" className="signup-photo-avatar" />
+                    ) : (
+                      <div className="signup-photo-placeholder">
+                        <span>👤</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="signup-photo-controls">
+                    <div className="signup-photo-label-row">
+                      <span className="field-label">Examiner Photo</span>
+                      <span className="optional-tag">(Optional)</span>
+                    </div>
+                    <div className="signup-photo-btn-group">
+                      <button
+                        type="button"
+                        className="btn-photo-action"
+                        onClick={startCamera}
+                        title="Take a live photo using your device camera"
+                      >
+                        📷 Take Photo
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-photo-action"
+                        onClick={() => fileInputRef.current?.click()}
+                        title="Upload a photo from your device"
+                      >
+                        📁 Upload Photo
+                      </button>
+                      {signupPhoto && (
+                        <button
+                          type="button"
+                          className="btn-photo-remove"
+                          onClick={removePhoto}
+                          title="Remove this photo"
+                        >
+                          ✕ Remove
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handleFileUpload}
+                    />
+                    {cameraError && (
+                      <div className="camera-err-hint">{cameraError}</div>
+                    )}
+                  </div>
                 </div>
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_email">Email Address <span className="req">*</span></label>
-                  <input
-                    type="email"
-                    id="signup_email"
-                    name="signup_email"
-                    value={signupEmail}
-                    onChange={(e) => {
-                      setSignupEmail(e.target.value);
-                      if (signupError) setSignupError('');
-                    }}
-                    placeholder="Enter your email (e.g. doctor@hospital.org)"
-                    autoComplete="email"
-                  />
+
+                <div className="grid2" style={{ gap: '12px' }}>
+                  <div className="field">
+                    <label className="field-label" htmlFor="signup_examiner_name">
+                      Examiner Name <span className="req">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="signup_examiner_name"
+                      name="signup_examiner_name"
+                      value={examinerName}
+                      onChange={(e) => {
+                        setExaminerName(e.target.value);
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="e.g. Dr. Jane Smith"
+                      autoComplete="name"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label className="field-label" htmlFor="signup_examiner_id">
+                      Examiner ID <span className="req">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="signup_examiner_id"
+                      name="signup_examiner_id"
+                      value={examinerId}
+                      onChange={(e) => {
+                        setExaminerId(e.target.value.toUpperCase());
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="e.g. EX-101"
+                      autoComplete="off"
+                    />
+                  </div>
                 </div>
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_password">Password <span className="req">*</span></label>
-                  <input
-                    type="password"
-                    id="signup_password"
-                    name="signup_password"
-                    value={signupPassword}
-                    onChange={(e) => {
-                      setSignupPassword(e.target.value);
-                      if (signupError) setSignupError('');
-                    }}
-                    placeholder="Create a password (min. 6 characters)"
-                    autoComplete="new-password"
-                  />
+
+                <div className="grid2" style={{ gap: '12px' }}>
+                  <div className="field">
+                    <label className="field-label" htmlFor="signup_mobile">
+                      Mobile Number <span className="req">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="signup_mobile"
+                      name="signup_mobile"
+                      value={mobileNumber}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        setMobileNumber(val);
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="10-digit mobile number"
+                      autoComplete="tel"
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label className="field-label" htmlFor="signup_email">
+                      Email Address <span className="req">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="signup_email"
+                      name="signup_email"
+                      value={signupEmail}
+                      onChange={(e) => {
+                        setSignupEmail(e.target.value);
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="e.g. doctor@hospital.org"
+                      autoComplete="email"
+                    />
+                  </div>
                 </div>
-                <div className="field">
-                  <label className="field-label" htmlFor="signup_confirm_password">Confirm Password <span className="req">*</span></label>
-                  <input
-                    type="password"
-                    id="signup_confirm_password"
-                    name="signup_confirm_password"
-                    value={signupConfirmPassword}
-                    onChange={(e) => {
-                      setSignupConfirmPassword(e.target.value);
-                      if (signupError) setSignupError('');
-                    }}
-                    placeholder="Repeat your password"
-                    autoComplete="new-password"
-                  />
+
+                <div className="grid2" style={{ gap: '12px' }}>
+                  <div className="field">
+                    <label className="field-label" htmlFor="signup_password">
+                      Password <span className="req">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      id="signup_password"
+                      name="signup_password"
+                      value={signupPassword}
+                      onChange={(e) => {
+                        setSignupPassword(e.target.value);
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="Min. 6 characters"
+                      autoComplete="new-password"
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label className="field-label" htmlFor="signup_confirm_password">
+                      Confirm Password <span className="req">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      id="signup_confirm_password"
+                      name="signup_confirm_password"
+                      value={signupConfirmPassword}
+                      onChange={(e) => {
+                        setSignupConfirmPassword(e.target.value);
+                        if (signupError) setSignupError('');
+                      }}
+                      placeholder="Repeat password"
+                      autoComplete="new-password"
+                    />
+                  </div>
                 </div>
+
                 <button type="submit" className="btn teal login-submit-btn">
-                  Create account
+                  Create Examiner Account
                 </button>
+
                 <div className="forgot-back-wrap">
                   <button
                     type="button"
                     className="back-to-login-btn"
                     onClick={() => {
                       setView('login');
-                      setSignupError('');
-                      setSignupSuccess(false);
-                      setSignupEmail('');
-                      setSignupUsername('');
-                      setSignupPassword('');
-                      setSignupConfirmPassword('');
+                      resetSignupForm();
                     }}
                   >
                     ← Back to sign in
@@ -423,10 +690,9 @@ export default function LoginPage() {
 
               <div className="login-footer-hint">
                 <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
-                  Your account is securely managed by Supabase.
+                  Examiner profiles are securely stored separately in the database and linked by Examiner ID.
                 </span>
               </div>
-
             </>
           )}
 
