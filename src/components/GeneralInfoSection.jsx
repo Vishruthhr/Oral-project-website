@@ -1,9 +1,17 @@
 import React from 'react';
 import { useDental } from '../context/DentalContext';
 import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
+import { getDeviceDate } from '../utils/exportUtils';
 
 export default function GeneralInfoSection() {
   const { currentRecord, updateField, calculatedAge, playClick } = useDental();
+
+  // Automatically take the examination date from device date if not set
+  React.useEffect(() => {
+    if (!currentRecord.examDate) {
+      updateField('examDate', getDeviceDate());
+    }
+  }, [currentRecord.examDate, updateField]);
 
   const phoneVal = currentRecord.phoneNumber || '';
   const isPhoneInvalid = phoneVal.length > 0 && phoneVal.length < 10;
@@ -72,15 +80,30 @@ export default function GeneralInfoSection() {
 
       <div className="grid3">
         <div className="field">
-          <label className="field-label" htmlFor="f_examDate">
-            Examination Date <span className="req">*</span>
-          </label>
-          <input
-            type="date"
-            id="f_examDate"
-            value={currentRecord.examDate || ''}
-            onChange={e => updateField('examDate', e.target.value)}
-          />
+          <div className="field-label-row">
+            <label className="field-label" htmlFor="f_examDate">
+              Examination Date <span className="req">*</span>
+            </label>
+            <span className="badge-device-date" title="Synchronized with device date">
+              📅 Device Date
+            </span>
+          </div>
+          <div className="date-input-wrap">
+            <input
+              type="date"
+              id="f_examDate"
+              value={currentRecord.examDate || getDeviceDate()}
+              onChange={e => updateField('examDate', e.target.value)}
+            />
+            <button
+              type="button"
+              className="btn-today-date"
+              onClick={() => updateField('examDate', getDeviceDate())}
+              title="Reset to today's device date"
+            >
+              Today
+            </button>
+          </div>
         </div>
 
         <div className="field">

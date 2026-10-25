@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { storage } from '../utils/storage';
-import { calcDMFT, calcAge, getWorstCPI } from '../utils/exportUtils';
+import { calcDMFT, calcAge, getWorstCPI, getDeviceDate } from '../utils/exportUtils';
 import { isSupabaseConfigured, supabase } from '../utils/supabase';
 
 const DentalContext = createContext();
@@ -172,7 +172,7 @@ export function DentalProvider({ children }) {
       id: null,
       patientName: '',
       participantId: '',
-      examDate: new Date().toISOString().slice(0, 10),
+      examDate: getDeviceDate(),
       examinerId: '',
       village: '',
       phoneNumber: '',

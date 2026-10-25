@@ -1,3 +1,4 @@
+import { getDeviceDate } from './exportUtils';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -138,6 +139,7 @@ export async function deleteAllClinicalRecords() {
 export function toClinicalRecordPayload(record) {
   return {
     ...record,
+    examDate: record.examDate || getDeviceDate(),
     perio: normalizePerioMeasurements(record.perio),
     sex: record.sex === '1' ? 'male' : record.sex === '2' ? 'female' : null,
     education: numberOrNull(record.education),
