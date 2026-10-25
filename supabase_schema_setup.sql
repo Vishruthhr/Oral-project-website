@@ -31,6 +31,39 @@ BEGIN
   END IF;
 END $$;
 
+-- 2b. Create Examiners Registry Table (Separate Examiner Profiles)
+CREATE TABLE IF NOT EXISTS public.examiners (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  auth_user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+  examiner_id varchar(50) UNIQUE NOT NULL,
+  examiner_name varchar(100) NOT NULL,
+  mobile_number varchar(20),
+  email varchar(100),
+  photo_url text,
+  created_at timestamp with time zone DEFAULT now() NOT NULL,
+  updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS examiners_examiner_id_idx ON public.examiners (examiner_id);
+CREATE INDEX IF NOT EXISTS examiners_auth_user_id_idx ON public.examiners (auth_user_id);
+
+ALTER TABLE public.examiners ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read access to examiners" ON public.examiners;
+CREATE POLICY "Allow public read access to examiners"
+  ON public.examiners FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Allow authenticated users to insert examiners" ON public.examiners;
+CREATE POLICY "Allow authenticated users to insert examiners"
+  ON public.examiners FOR INSERT
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow authenticated users to update their own examiner profile" ON public.examiners;
+CREATE POLICY "Allow authenticated users to update their own examiner profile"
+  ON public.examiners FOR UPDATE
+  USING (auth.uid() = auth_user_id OR auth.uid() IS NOT NULL);
+
 -- 3. Create Patient Records Table
 CREATE TABLE IF NOT EXISTS public.patient_records (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,

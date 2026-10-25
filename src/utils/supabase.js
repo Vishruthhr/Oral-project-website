@@ -146,3 +146,55 @@ export function toClinicalRecordPayload(record) {
     phoneNumber: emptyToNull(record.phoneNumber),
   };
 }
+
+export async function saveExaminerProfileToCloud(examiner) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+  try {
+    const payload = {
+      examiner_id: examiner.examinerId,
+      examiner_name: examiner.examinerName,
+      mobile_number: examiner.mobileNumber || null,
+      email: examiner.email || null,
+      photo_url: examiner.photoUrl || null,
+    };
+    if (examiner.authUserId) {
+      payload.auth_user_id = examiner.authUserId;
+    }
+    const { data, error } = await supabase
+      .from('examiners')
+      .upsert(payload, { onConflict: 'examiner_id' })
+      .select()
+      .maybeSingle();
+    if (error) {
+      console.warn('Supabase examiners table upsert warning:', error.message);
+      return { success: false, error: error.message };
+    }
+    return { success: true, data };
+  } catch (err) {
+    console.warn('saveExaminerProfileToCloud error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function fetchExaminerByIdFromCloud(examinerId) {
+  if (!supabase || !examinerId) return null;
+  try {
+    const { data, error } = await supabase
+      .from('examiners')
+      .select('*')
+      .eq('examiner_id', String(examinerId).trim())
+      .maybeSingle();
+    if (error || !data) return null;
+    return {
+      examinerId: data.examiner_id,
+      examinerName: data.examiner_name,
+      mobileNumber: data.mobile_number || '',
+      email: data.email || '',
+      photoUrl: data.photo_url || null,
+      createdAt: data.created_at,
+    };
+  } catch (err) {
+    console.warn('fetchExaminerByIdFromCloud error:', err);
+    return null;
+  }
+}

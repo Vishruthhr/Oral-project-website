@@ -20,6 +20,7 @@ class StorageManager {
     this.settingsKey = 'oral_settings';
     this.offlineRecordsKey = 'oral_offline_records';
     this.cachedCloudRecordsKey = 'oral_cached_records';
+    this.examinersKey = 'oral_examiners_registry';
   }
 
   // Get raw offline records stored locally
@@ -56,6 +57,36 @@ class StorageManager {
     try {
       localStorage.setItem(this.cachedCloudRecordsKey, JSON.stringify(records));
     } catch (e) {}
+  }
+
+
+  // Get all examiners from local registry
+  getExaminers() {
+    try {
+      const raw = localStorage.getItem(this.examinersKey);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Save or update examiner profile locally
+  saveExaminerProfile(examiner) {
+    if (!examiner || !examiner.examinerId) return;
+    try {
+      const examiners = this.getExaminers().filter(e => e.examinerId !== examiner.examinerId);
+      const updated = [examiner, ...examiners];
+      localStorage.setItem(this.examinersKey, JSON.stringify(updated));
+    } catch (e) {
+      console.warn('Could not save examiner to localStorage', e);
+    }
+  }
+
+  // Retrieve an examiner by their examinerId
+  getExaminerById(examinerId) {
+    if (!examinerId) return null;
+    const all = this.getExaminers();
+    return all.find(e => String(e.examinerId).trim().toLowerCase() === String(examinerId).trim().toLowerCase()) || null;
   }
 
   getPendingCount() {
