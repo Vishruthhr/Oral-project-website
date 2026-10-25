@@ -1,7 +1,9 @@
 import React from 'react';
 import { useDental } from '../context/DentalContext';
+import ExaminerInfoModal from './ExaminerInfoModal';
 
 export default function TopBar() {
+  const [viewingProfileId, setViewingProfileId] = React.useState(null);
   const {
     currentRecord,
     timerDisplay,
@@ -13,7 +15,8 @@ export default function TopBar() {
     isOfflineMode,
     pendingSyncCount,
     syncPending,
-    toggleNav
+    toggleNav,
+    currentExaminer
   } = useDental();
 
   const themeLabels = {
@@ -71,6 +74,27 @@ export default function TopBar() {
       </div>
 
       <div className="topbar-actions">
+        {currentExaminer && (
+          <button
+            type="button"
+            className="btn-examiner-topbar-profile"
+            onClick={() => setViewingProfileId(currentExaminer.examinerId)}
+            title="View Active Examiner Profile"
+          >
+            {currentExaminer.photoUrl ? (
+              <img src={currentExaminer.photoUrl} alt="" className="topbar-examiner-avatar" />
+            ) : (
+              <span className="topbar-examiner-icon">👤</span>
+            )}
+            <span className="topbar-examiner-label">
+              <b>{currentExaminer.examinerId}</b>
+              {currentExaminer.examinerName && (
+                <span className="topbar-examiner-name"> ({currentExaminer.examinerName.split(' ')[0]})</span>
+              )}
+            </span>
+          </button>
+        )}
+
         <button
           type="button"
           className="btn-topbar"
@@ -98,6 +122,11 @@ export default function TopBar() {
           🚪 Logout
         </button>
       </div>
+      <ExaminerInfoModal
+        examinerId={viewingProfileId}
+        isOpen={Boolean(viewingProfileId)}
+        onClose={() => setViewingProfileId(null)}
+      />
     </header>
   );
 }

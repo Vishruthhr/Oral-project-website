@@ -2,9 +2,19 @@ import React from 'react';
 import { useDental } from '../context/DentalContext';
 import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { getDeviceDate } from '../utils/exportUtils';
+import ExaminerInfoModal from './ExaminerInfoModal';
 
 export default function GeneralInfoSection() {
-  const { currentRecord, updateField, calculatedAge, playClick } = useDental();
+  const { currentRecord, updateField, calculatedAge, playClick, currentExaminer } = useDental();
+  const [modalExaminerId, setModalExaminerId] = React.useState(null);
+
+
+  // Automatically pre-fill the Examiner ID with the active examiner ID when starting survey
+  React.useEffect(() => {
+    if (!currentRecord.examinerId && currentExaminer?.examinerId) {
+      updateField('examinerId', currentExaminer.examinerId);
+    }
+  }, [currentExaminer, currentRecord.examinerId, updateField]);
 
   // Automatically take the examination date from device date if not set
   React.useEffect(() => {
@@ -107,14 +117,53 @@ export default function GeneralInfoSection() {
         </div>
 
         <div className="field">
-          <label className="field-label" htmlFor="f_examinerId">Examiner ID</label>
-          <input
-            type="text"
-            id="f_examinerId"
-            value={currentRecord.examinerId || ''}
-            onChange={e => updateField('examinerId', e.target.value)}
-            placeholder="e.g. EX1"
-          />
+          <div className="field-label-row">
+            <label className="field-label" htmlFor="f_examinerId">
+              Examiner ID <span className="req">*</span>
+            </label>
+            {currentRecord.examinerId && (
+              <button
+                type="button"
+                className="btn-view-examiner-info"
+                onClick={() => setModalExaminerId(currentRecord.examinerId)}
+                title="Retrieve full profile for this Examiner ID"
+              >
+                👁️ View Info
+              </button>
+            )}
+          </div>
+          <div className="date-input-wrap">
+            <input
+              type="text"
+              id="f_examinerId"
+              value={currentRecord.examinerId || ''}
+              onChange={e => updateField('examinerId', e.target.value.toUpperCase())}
+              placeholder="e.g. EX-101"
+            />
+            {currentExaminer?.examinerId && currentRecord.examinerId !== currentExaminer.examinerId && (
+              <button
+                type="button"
+                className="btn-today-date"
+                onClick={() => updateField('examinerId', currentExaminer.examinerId)}
+                title="Assign active examiner ID"
+              >
+                My ID
+              </button>
+            )}
+          </div>
+          {currentExaminer && currentRecord.examinerId === currentExaminer.examinerId && (
+            <div className="examiner-quick-preview">
+              {currentExaminer.photoUrl ? (
+                <img src={currentExaminer.photoUrl} alt="" className="examiner-thumb-mini" />
+              ) : (
+                <span className="examiner-icon-mini">👤</span>
+              )}
+              <span className="examiner-name-mini">{currentExaminer.examinerName}</span>
+              {currentExaminer.mobileNumber && (
+                <span className="examiner-phone-mini">📱 {currentExaminer.mobileNumber}</span>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="field">
@@ -286,6 +335,11 @@ export default function GeneralInfoSection() {
           placeholder="e.g., smoking, drinking, tobacco chewing"
         />
       </div>
+      <ExaminerInfoModal
+        examinerId={modalExaminerId}
+        isOpen={Boolean(modalExaminerId)}
+        onClose={() => setModalExaminerId(null)}
+      />
     </section>
   );
 }

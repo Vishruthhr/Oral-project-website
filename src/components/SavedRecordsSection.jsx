@@ -5,6 +5,7 @@ import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { storage } from '../utils/storage';
 
 export default function SavedRecordsSection() {
+  const [selectedExaminerModalId, setSelectedExaminerModalId] = useState(null);
   const { records, loadRecordForEdit, deleteRecord, setRecords, showToastMsg, pendingSyncCount, syncPending, isOnline } = useDental();
   const [search, setSearch] = useState('');
   const [examinerFilter, setExaminerFilter] = useState('');
@@ -294,7 +295,20 @@ export default function SavedRecordsSection() {
                         </div>
                       </td>
                       <td>{r.participantId || '—'}</td>
-                      <td><span className="badge" style={{ background: 'var(--card-sub-bg)', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>{r.examinerId || '—'}</span></td>
+                      <td>
+  {r.examinerId ? (
+    <button
+      type="button"
+      className="btn-examiner-chip"
+      onClick={() => setSelectedExaminerModalId(r.examinerId)}
+      title={`Click to retrieve full profile for Examiner ${r.examinerId}`}
+    >
+      👤 {r.examinerId}
+    </button>
+  ) : (
+    <span className="text-muted">—</span>
+  )}
+</td>
                       <td>{r.examDate || '—'}</td>
                       <td>{age !== null ? age : '—'}</td>
                       <td>
@@ -326,6 +340,11 @@ export default function SavedRecordsSection() {
           </div>
         )}
       </div>
+      <ExaminerInfoModal
+        examinerId={selectedExaminerModalId}
+        isOpen={Boolean(selectedExaminerModalId)}
+        onClose={() => setSelectedExaminerModalId(null)}
+      />
     </section>
   );
 }
