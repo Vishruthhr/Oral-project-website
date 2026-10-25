@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDental } from '../context/DentalContext';
 import { CLINICAL_CONSTANTS } from '../utils/clinicalConstants';
 import { getDeviceDate } from '../utils/exportUtils';
@@ -6,18 +6,18 @@ import ExaminerInfoModal from './ExaminerInfoModal';
 
 export default function GeneralInfoSection() {
   const { currentRecord, updateField, calculatedAge, playClick, currentExaminer } = useDental();
-  const [modalExaminerId, setModalExaminerId] = React.useState(null);
+  const [modalExaminerId, setModalExaminerId] = useState(null);
 
 
   // Automatically pre-fill the Examiner ID with the active examiner ID when starting survey
-  React.useEffect(() => {
+  useEffect(() => {
     if (!currentRecord.examinerId && currentExaminer?.examinerId) {
       updateField('examinerId', currentExaminer.examinerId);
     }
   }, [currentExaminer, currentRecord.examinerId, updateField]);
 
   // Automatically take the examination date from device date if not set
-  React.useEffect(() => {
+  useEffect(() => {
     if (!currentRecord.examDate) {
       updateField('examDate', getDeviceDate());
     }

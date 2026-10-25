@@ -1,14 +1,32 @@
+import React from 'react';
+import { useDental } from './context/DentalContext';
+import LoginPage from './components/LoginPage';
+import NavigationRail from './components/NavigationRail';
+import TopBar from './components/TopBar';
+import GeneralInfoSection from './components/GeneralInfoSection';
+import DentitionSection from './components/DentitionSection';
+import PeriodontalSection from './components/PeriodontalSection';
+import OtherFindingsSection from './components/OtherFindingsSection';
+import SavedRecordsSection from './components/SavedRecordsSection';
+import ToothKeypadModal from './components/ToothKeypadModal';
+import CodebookDrawer from './components/CodebookDrawer';
+import StickySummaryStrip from './components/StickySummaryStrip';
+import Toast from './components/Toast';
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false, error: null };
   }
+
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
+
   componentDidCatch(error, errorInfo) {
     console.error('Workstation Render Error:', error, errorInfo);
   }
+
   render() {
     if (this.state.hasError) {
       return (
@@ -39,60 +57,43 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-import React from 'react';
-import { useDental } from './context/DentalContext';
-import LoginPage from './components/LoginPage';
-import NavigationRail from './components/NavigationRail';
-import TopBar from './components/TopBar';
-import GeneralInfoSection from './components/GeneralInfoSection';
-import DentitionSection from './components/DentitionSection';
-import PeriodontalSection from './components/PeriodontalSection';
-import OtherFindingsSection from './components/OtherFindingsSection';
-import SavedRecordsSection from './components/SavedRecordsSection';
-import ToothKeypadModal from './components/ToothKeypadModal';
-import CodebookDrawer from './components/CodebookDrawer';
-import StickySummaryStrip from './components/StickySummaryStrip';
-import Toast from './components/Toast';
-
 export default function App() {
   const { isAuthenticated } = useDental();
 
-  if (!isAuthenticated) {
-    return (
-      <>
-        <LoginPage />
-        <Toast />
-      </>
-    );
-  }
-
   return (
     <ErrorBoundary>
-      <div className="shell">
-      <NavigationRail />
-      
-      <main>
-        <TopBar />
+      {!isAuthenticated ? (
+        <>
+          <LoginPage />
+          <Toast />
+        </>
+      ) : (
+        <div className="shell">
+          <NavigationRail />
+          
+          <main>
+            <TopBar />
 
-        <div className="content">
-          <div className="demo-banner">
-            <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. Clinical records sync to your Supabase account; drafts remain on this device.
-          </div>
+            <div className="content">
+              <div className="demo-banner">
+                <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. Clinical records sync to your Supabase account; drafts remain on this device.
+              </div>
 
-          <GeneralInfoSection />
-          <DentitionSection />
-          <PeriodontalSection />
-          <OtherFindingsSection />
-          <SavedRecordsSection />
+              <GeneralInfoSection />
+              <DentitionSection />
+              <PeriodontalSection />
+              <OtherFindingsSection />
+              <SavedRecordsSection />
+            </div>
+
+            <StickySummaryStrip />
+          </main>
+
+          <ToothKeypadModal />
+          <CodebookDrawer />
+          <Toast />
         </div>
-
-        <StickySummaryStrip />
-      </main>
-
-      <ToothKeypadModal />
-      <CodebookDrawer />
-      <Toast />
-    </div>
+      )}
     </ErrorBoundary>
   );
 }

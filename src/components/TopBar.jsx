@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDental } from '../context/DentalContext';
 import ExaminerInfoModal from './ExaminerInfoModal';
 
 export default function TopBar() {
-  const [viewingProfileId, setViewingProfileId] = React.useState(null);
+  const [viewingProfileId, setViewingProfileId] = useState(null);
   const {
     currentRecord,
     timerDisplay,
