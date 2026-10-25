@@ -51,8 +51,16 @@ export function DentalProvider({ children }) {
     if (!isSupabaseConfigured) {
       return { success: false, error: 'Supabase is not configured. Set the Supabase URL and anon key.' };
     }
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_authenticated', 'true');
+    }
     const { data, error } = await supabase.auth.signInWithPassword({ email: username.trim(), password });
-    if (error) return { success: false, error: error.message };
+    if (error) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('dental_authenticated');
+      }
+      return { success: false, error: error.message };
+    }
 
     // Retrieve examiner profile from cloud or local storage
     let foundProfile = null;
@@ -382,7 +390,9 @@ export function DentalProvider({ children }) {
         setIsAuthenticated(true);
       } else if (session && sessionStorage.getItem('dental_authenticated') === 'true') {
         setIsAuthenticated(true);
-      } else {
+      } else if (_event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+      } else if (!session && !sessionStorage.getItem('dental_authenticated')) {
         setIsAuthenticated(false);
       }
     });

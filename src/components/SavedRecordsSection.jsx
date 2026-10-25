@@ -1,3 +1,4 @@
+import ExaminerInfoModal from './ExaminerInfoModal';
 import React, { useState } from 'react';
 import { useDental } from '../context/DentalContext';
 import { calcDMFT, calcAge, exportRecordsToExcel, readExcelFile } from '../utils/exportUtils';

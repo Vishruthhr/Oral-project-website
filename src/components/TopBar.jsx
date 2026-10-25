@@ -89,7 +89,7 @@ export default function TopBar() {
             <span className="topbar-examiner-label">
               <b>{currentExaminer.examinerId}</b>
               {currentExaminer.examinerName && (
-                <span className="topbar-examiner-name"> ({currentExaminer.examinerName.split(' ')[0]})</span>
+                <span className="topbar-examiner-name"> ({typeof currentExaminer.examinerName === 'string' ? currentExaminer.examinerName.split(' ')[0] : currentExaminer.examinerName})</span>
               )}
             </span>
           </button>
