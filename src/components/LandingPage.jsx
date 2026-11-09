@@ -31,33 +31,33 @@ export default function LandingPage() {
   const websiteOptions = [
     {
       num: '01',
-      title: 'General Information & Patient Demographics',
+      title: 'General Information & Demographics',
       icon: '📋',
       badge: 'Demographics & Case Data',
       desc: 'Complete recording of patient demographics, identification codes, and baseline clinical parameters.',
       highlights: [
         'Automatic device examination date synchronization',
         'Auto-calculated patient age from Date of Birth',
-        'Unique Patient ID and 10-digit mobile number validation',
-        'Demographics: Village / Area, Sex, Years of Education, Ethnic Group, Occupation, Habits'
+        'Patient ID, Name, and 10-digit mobile number validation',
+        'Village / Area, Sex, Education, Ethnic Group, Occupation, Habits'
       ]
     },
     {
       num: '02',
-      title: 'Dentition Status & Anatomical Odontogram',
+      title: 'Dentition Status & Odontogram',
       icon: '🦷',
       badge: 'WHO 1997 / 2013 Criteria',
       desc: 'Chairside interactive anatomical arch supporting 32 permanent and 20 primary teeth with touch-optimized keypad.',
       highlights: [
         'Dual scoring for Crown Status & Root Status per tooth',
-        'Full WHO diagnostic codes: Sound (0/A), Caries (1/B), Filled (2-3/C-D), Missing (4-5/E), Sealant (6/F), Abutment/Crown (7/G), Unerupted (8), Trauma (T/T)',
-        'Real-time automated DMFT (Decayed, Missing, Filled Teeth) index calculation',
+        'Full WHO diagnostic codes: Sound (0/A), Caries (1/B), Filled (2-3/C-D), Missing (4-5/E), Sealant (6/F), Abutment (7/G), Unerupted (8), Trauma (T/T)',
+        'Real-time automated DMFT (Decayed, Missing, Filled Teeth) computation',
         'Auto-advance sequential tooth navigation with audible acoustic feedback'
       ]
     },
     {
       num: '03',
-      title: 'Periodontal Assessment (CPI & Loss of Attachment)',
+      title: 'Periodontal Assessment (CPI & LOA)',
       icon: '🩺',
       badge: 'Periodontal Screening',
       desc: 'Systematic periodontal charting across six clinical sextants using the Community Periodontal Index.',
@@ -70,7 +70,7 @@ export default function LandingPage() {
     },
     {
       num: '04',
-      title: 'Other Clinical Findings & Oral Pathology',
+      title: 'Other Clinical Findings & Pathology',
       icon: '🔬',
       badge: 'Oral Pathology & Needs',
       desc: 'Standardized assessment of environmental, traumatic, mucosal conditions, and prosthetic needs.',
@@ -83,7 +83,7 @@ export default function LandingPage() {
     },
     {
       num: '05',
-      title: 'Saved Records & Epidemiological Data Management',
+      title: 'Saved Records & Epidemiological Data',
       icon: '📂',
       badge: 'Storage & Analytics',
       desc: 'Unified local and cloud database management for clinical examination surveys.',
@@ -96,12 +96,12 @@ export default function LandingPage() {
     },
     {
       num: '06',
-      title: 'Field Camp Offline Operation (Zero Internet)',
+      title: 'Field Camp Offline Operation',
       icon: '⚡',
-      badge: 'Rural Dental Camps',
-      desc: 'Purpose-built for uninterrupted epidemiological fieldwork in rural and remote locations.',
+      badge: 'Rural Outreach',
+      desc: 'Purpose-built for uninterrupted epidemiological fieldwork in rural and remote locations with zero internet.',
       highlights: [
-        '100% full application functionality with zero internet connectivity',
+        '100% full application functionality without internet connectivity',
         'Secure local device encryption and IndexedDB/LocalStorage storage',
         'Automatic cloud synchronization when internet connection is restored',
         'Dedicated Offline Session Examiner login'
@@ -109,9 +109,9 @@ export default function LandingPage() {
     },
     {
       num: '07',
-      title: 'Examiner Identity & Profile Verification',
+      title: 'Examiner Identity & Verification',
       icon: '👤',
-      badge: 'Multi-Examiner Security',
+      badge: 'Identity & Security',
       desc: 'Accredited examiner management ensuring data integrity and survey accountability.',
       highlights: [
         'Unique Examiner ID assignment (e.g., EX-101) linking surveys strictly by ID',
@@ -142,7 +142,7 @@ export default function LandingPage() {
           <p className="landing-platform-sub">Standard Digital Clinical Dental Charting Platform</p>
         </div>
 
-        {/* Right Corner: Workstation Access & Theme (NO ADMISSION OPTION) */}
+        {/* Right Corner: Workstation Access & Theme */}
         <div className="landing-nav-right">
           <button
             type="button"
@@ -150,7 +150,7 @@ export default function LandingPage() {
             onClick={handleOpenWorkstation}
             title="Open Clinical Dental Workstation"
           >
-            {isAuthenticated ? 'Enter Workstation ➔' : 'Sign In / Register ➔'}
+            {isAuthenticated ? 'Open Workstation ➔' : 'Sign In / Register ➔'}
           </button>
 
           <button
@@ -167,7 +167,7 @@ export default function LandingPage() {
       {/* ================= HERO SECTION WITH DOCTOR PICTURE ================= */}
       <section className="landing-hero-showcase">
         <div className="landing-hero-backdrop">
-          {/* Doctor picture from screenshot */}
+          {/* Doctor picture */}
           <img
             src="/img/hero_dental_banner.jpg"
             alt="Doctor examining typodont dental model in clinical laboratory at A B Shetty Memorial Institute of Dental Sciences"
@@ -179,18 +179,18 @@ export default function LandingPage() {
         <div className="landing-hero-inner">
           <div className="institutional-hero-tag">
             <span className="inst-dot" />
-            A B Shetty Memorial Institute of Dental Sciences • NITTE (Deemed to be University)
+            NITTE (Deemed to be University) • A B Shetty Memorial Institute of Dental Sciences
           </div>
 
           <h1 className="hero-main-heading">
             Department of Public Health Dentistry
           </h1>
           <h2 className="hero-sub-heading">
-            Digital Oral Health Clinical Assessment & Epidemiological Survey Workstation
+            Oral Health Clinical Assessment &amp; Epidemiological Survey Platform
           </h2>
 
           <p className="hero-text-description">
-            A comprehensive, WHO-compliant chairside dental examination platform engineered for dental hospitals, clinical research, and community epidemiological field camps. Featuring interactive anatomical odontograms, automated DMFT index computation, periodontal CPI/LOA screening, and offline-first cloud synchronization.
+            A standardized, WHO-compliant chairside digital dental examination platform engineered for dental colleges, clinical research, and community epidemiological field surveys. Features rapid anatomical tooth scoring, automated DMFT index calculation, CPI/LOA periodontal charting, and offline-first cloud synchronization.
           </p>
 
           <div className="hero-cta-button-group">
@@ -199,7 +199,7 @@ export default function LandingPage() {
               className="btn-cta-primary"
               onClick={handleOpenWorkstation}
             >
-              <span>🚀 Launch Clinical Workstation</span>
+              <span>🚀 Open Clinical Workstation</span>
             </button>
 
             <button
@@ -207,7 +207,7 @@ export default function LandingPage() {
               className="btn-cta-secondary"
               onClick={handleOfflineMode}
             >
-              <span>⚡ Start Offline Field Session</span>
+              <span>⚡ Offline Field Camp Mode</span>
             </button>
 
             <button
@@ -224,10 +224,10 @@ export default function LandingPage() {
       {/* ================= ALL WEBSITE OPTIONS & DESCRIPTIONS ================= */}
       <section className="landing-options-section" id="platform-options">
         <div className="options-section-header">
-          <span className="section-eyebrow">Comprehensive Clinical Modules</span>
-          <h2 className="section-title">All Website Options &amp; Capabilities</h2>
+          <span className="section-eyebrow">Clinical Examination System</span>
+          <h2 className="section-title">All Website Modules &amp; Capabilities</h2>
           <p className="section-lead">
-            Explore every clinical assessment module, diagnostic criteria tool, and data management feature available in the Oral Health Assessment Workstation.
+            Comprehensive digital implementation of the World Health Organization (WHO) Oral Health Surveys — Basic Methods (5th Edition).
           </p>
         </div>
 
@@ -236,7 +236,7 @@ export default function LandingPage() {
             <div key={opt.num} className="option-card">
               <div className="option-card-top">
                 <span className="option-icon" aria-hidden="true">{opt.icon}</span>
-                <span className="option-num">Module {opt.num}</span>
+                <span className="option-num">{opt.num}</span>
                 <span className="option-badge">{opt.badge}</span>
               </div>
 
@@ -244,23 +244,39 @@ export default function LandingPage() {
               <p className="option-description">{opt.desc}</p>
 
               <div className="option-features-list">
-                <div className="features-label">Key Capabilities:</div>
+                <div className="features-label">Key Parameters:</div>
                 <ul>
                   {opt.highlights.map((h, i) => (
                     <li key={i}>{h}</li>
                   ))}
                 </ul>
               </div>
-
-              <button
-                type="button"
-                className="btn-option-action"
-                onClick={handleOpenWorkstation}
-              >
-                Open in Workstation ➔
-              </button>
             </div>
           ))}
+        </div>
+
+        {/* Single Unified Call-to-Action Banner */}
+        <div className="platform-cta-banner">
+          <div className="cta-banner-text">
+            <h3>Ready to Conduct Dental Health Surveys?</h3>
+            <p>Launch the chairside charting interface, perform rapid anatomical tooth scoring, or synchronize field survey records.</p>
+          </div>
+          <div className="cta-banner-actions">
+            <button
+              type="button"
+              className="btn-cta-primary"
+              onClick={handleOpenWorkstation}
+            >
+              🚀 Launch Clinical Workstation
+            </button>
+            <button
+              type="button"
+              className="btn-cta-secondary"
+              onClick={handleOfflineMode}
+            >
+              ⚡ Offline Field Camp
+            </button>
+          </div>
         </div>
       </section>
 

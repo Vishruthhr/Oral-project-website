@@ -4150,24 +4150,57 @@ table.records tr:hover { background: var(--teal-l); }
   font-weight: 800;
 }
 
-.btn-option-action {
-  width: 100%;
-  background: rgba(56, 189, 248, 0.1);
-  color: #38BDF8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: center;
+
+/* ---------- Single Unified Platform CTA Banner ---------- */
+.platform-cta-banner {
+  max-width: 1240px;
+  margin: 56px auto 0;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, rgba(15, 23, 42, 0.85) 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  border-radius: 16px;
+  padding: 36px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
-.btn-option-action:hover {
-  background: #0284C7;
+
+.cta-banner-text h3 {
+  font-size: 22px;
+  font-weight: 800;
   color: #FFFFFF;
-  border-color: #0284C7;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
 }
+
+.cta-banner-text p {
+  font-size: 14.5px;
+  color: #CBD5E1;
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.cta-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .platform-cta-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 20px;
+  }
+  .cta-banner-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 
 /* ---------- Institutional Footer ---------- */
 .landing-bottom-footer {
