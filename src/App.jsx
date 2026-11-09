@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDental } from './context/DentalContext';
+import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import NavigationRail from './components/NavigationRail';
 import TopBar from './components/TopBar';
@@ -58,42 +59,60 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
-  const { isAuthenticated } = useDental();
+  const { isAuthenticated, currentView, navigateTo } = useDental();
 
+  // If user navigated to or defaulted to the landing page, show LandingPage
+  if (currentView === 'landing') {
+    return (
+      <ErrorBoundary>
+        <LandingPage
+          onOpenLogin={() => navigateTo('login')}
+          onOpenSignup={() => navigateTo('login')}
+        />
+        <CodebookDrawer />
+        <Toast />
+      </ErrorBoundary>
+    );
+  }
+
+  // If user selected login or is not authenticated, show LoginPage
+  if (currentView === 'login' || !isAuthenticated) {
+    return (
+      <ErrorBoundary>
+        <LoginPage />
+        <Toast />
+      </ErrorBoundary>
+    );
+  }
+
+  // Clinical Workstation View (when authenticated)
   return (
     <ErrorBoundary>
-      {!isAuthenticated ? (
-        <>
-          <LoginPage />
-          <Toast />
-        </>
-      ) : (
-        <div className="shell">
-          <NavigationRail />
-          
-          <main>
-            <TopBar />
+      <div className="shell">
+        <NavigationRail />
+        
+        <main>
+          <TopBar />
 
-            <div className="content">
-              <div className="demo-banner">
-                <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. Clinical records sync to your Supabase account; drafts remain on this device.
-              </div>
-
-              <GeneralInfoSection />
-              <DentitionSection />
-              <PeriodontalSection />
-              <OtherFindingsSection />
-              <SavedRecordsSection />
+          <div className="content">
+            <div className="demo-banner">
+              <b>Chairside Clinical Examination:</b> Tap any tooth in the anatomical arch for rapid scoring with auto-advance sequence progression. Clinical records sync to your Supabase account; drafts remain on this device.
             </div>
 
-            <StickySummaryStrip />
-          </main>
+            <GeneralInfoSection />
+            <DentitionSection />
+            <PeriodontalSection />
+            <OtherFindingsSection />
+            <SavedRecordsSection />
+          </div>
 
-          <ToothKeypadModal />
-          <CodebookDrawer />
-          <Toast />
-        </div>
-      )}
+          <StickySummaryStrip />
+        </main>
+
+        <ToothKeypadModal />
+        <CodebookDrawer />
+        <Toast />
+      </div>
     </ErrorBoundary>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDental } from '../context/DentalContext';
+import NitteLogo from './NitteLogo';
 
 export default function LoginPage() {
-  const { login, loginOffline, signUp, requestPasswordReset, theme, toggleTheme } = useDental();
+  const { login, loginOffline, signUp, requestPasswordReset, theme, toggleTheme, navigateTo } = useDental();
   
   // Navigation view: 'login' | 'forgot' | 'signup'
   const [view, setView] = useState('login');
@@ -289,15 +290,26 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrapper">
-      <div className="login-top-bar">
-        <button
-          type="button"
-          className="btn-topbar"
-          onClick={toggleTheme}
-          title="Toggle Theme"
-        >
-          {theme === 'light' ? 'Light Theme' : 'Dark Theme'}
-        </button>
+      <div className="login-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '1200px', margin: '0 auto', padding: '12px 20px' }}>
+        <NitteLogo variant="auto" height={36} onClick={() => navigateTo && navigateTo('landing')} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            type="button"
+            className="btn-topbar"
+            onClick={() => navigateTo && navigateTo('landing')}
+            title="Return to Landing Page"
+          >
+            🏛️ Landing Page
+          </button>
+          <button
+            type="button"
+            className="btn-topbar"
+            onClick={toggleTheme}
+            title="Toggle Theme"
+          >
+            {theme === 'light' ? 'Light Theme' : 'Dark Theme'}
+          </button>
+        </div>
       </div>
 
       <div className="login-card-container">
