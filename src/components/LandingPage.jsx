@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDental } from '../context/DentalContext';
 import NitteLogo from './NitteLogo';
 
 export default function LandingPage() {
-  const { isAuthenticated, navigateTo } = useDental();
-  const [slideIndex, setSlideIndex] = useState(0);
+  const {
+    isAuthenticated,
+    navigateTo,
+    loginOffline,
+    setHelpDrawerOpen,
+    theme,
+    toggleTheme
+  } = useDental();
 
-  const slides = [
-    {
-      image: '/img/hero_dental_banner.jpg',
-      caption: 'A B Shetty Memorial Institute of Dental Sciences'
-    }
-  ];
-
-  const handleEnterWorkstation = () => {
+  const handleOpenWorkstation = () => {
     if (isAuthenticated) {
       navigateTo('workstation');
     } else {
@@ -21,97 +20,279 @@ export default function LandingPage() {
     }
   };
 
+  const handleOfflineMode = () => {
+    const code = prompt('Enter Examiner Code / ID for Offline Field Session:', 'EX-01');
+    if (code !== null && code.trim()) {
+      loginOffline(code.trim().toUpperCase());
+    }
+  };
+
+  // Comprehensive list of all website modules, features, and clinical options
+  const websiteOptions = [
+    {
+      num: '01',
+      title: 'General Information & Patient Demographics',
+      icon: '📋',
+      badge: 'Demographics & Case Data',
+      desc: 'Complete recording of patient demographics, identification codes, and baseline clinical parameters.',
+      highlights: [
+        'Automatic device examination date synchronization',
+        'Auto-calculated patient age from Date of Birth',
+        'Unique Patient ID and 10-digit mobile number validation',
+        'Demographics: Village / Area, Sex, Years of Education, Ethnic Group, Occupation, Habits'
+      ]
+    },
+    {
+      num: '02',
+      title: 'Dentition Status & Anatomical Odontogram',
+      icon: '🦷',
+      badge: 'WHO 1997 / 2013 Criteria',
+      desc: 'Chairside interactive anatomical arch supporting 32 permanent and 20 primary teeth with touch-optimized keypad.',
+      highlights: [
+        'Dual scoring for Crown Status & Root Status per tooth',
+        'Full WHO diagnostic codes: Sound (0/A), Caries (1/B), Filled (2-3/C-D), Missing (4-5/E), Sealant (6/F), Abutment/Crown (7/G), Unerupted (8), Trauma (T/T)',
+        'Real-time automated DMFT (Decayed, Missing, Filled Teeth) index calculation',
+        'Auto-advance sequential tooth navigation with audible acoustic feedback'
+      ]
+    },
+    {
+      num: '03',
+      title: 'Periodontal Assessment (CPI & Loss of Attachment)',
+      icon: '🩺',
+      badge: 'Periodontal Screening',
+      desc: 'Systematic periodontal charting across six clinical sextants using the Community Periodontal Index.',
+      highlights: [
+        'CPI Sextant Probing: Healthy (0), Gingival Bleeding (1), Calculus (2), Shallow Pocket 4–5mm (3), Deep Pocket 6mm+ (4)',
+        'Loss of Attachment (LOA) measurement: 0–3mm (0), 4–5mm (1), 6–8mm (2), 9–11mm (3), 12mm+ (4)',
+        'Automated worst CPI score detection across all sextants',
+        'Color-coded sextant indicators for instant chairside review'
+      ]
+    },
+    {
+      num: '04',
+      title: 'Other Clinical Findings & Oral Pathology',
+      icon: '🔬',
+      badge: 'Oral Pathology & Needs',
+      desc: 'Standardized assessment of environmental, traumatic, mucosal conditions, and prosthetic needs.',
+      highlights: [
+        "Enamel Fluorosis scoring via Dean's Index (Normal to Severe)",
+        'Dental Trauma (TDI) WHO classification (Enamel, Dentin, Pulp, Avulsion)',
+        'Oral Mucosal Lesions (OML) recording with anatomical location and pathological condition',
+        'Prosthetic Status & Prosthetic Needs assessment for Upper and Lower dental arches'
+      ]
+    },
+    {
+      num: '05',
+      title: 'Saved Records & Epidemiological Data Management',
+      icon: '📂',
+      badge: 'Storage & Analytics',
+      desc: 'Unified local and cloud database management for clinical examination surveys.',
+      highlights: [
+        'Real-time search and filter by Patient Name, Patient ID, or Examiner ID',
+        'Instant retrieval of full examiner profiles by ID',
+        'One-click multi-format data export: CSV, JSON, and printable clinical summaries',
+        'Pending offline sync indicator with manual and automated cloud sync'
+      ]
+    },
+    {
+      num: '06',
+      title: 'Field Camp Offline Operation (Zero Internet)',
+      icon: '⚡',
+      badge: 'Rural Dental Camps',
+      desc: 'Purpose-built for uninterrupted epidemiological fieldwork in rural and remote locations.',
+      highlights: [
+        '100% full application functionality with zero internet connectivity',
+        'Secure local device encryption and IndexedDB/LocalStorage storage',
+        'Automatic cloud synchronization when internet connection is restored',
+        'Dedicated Offline Session Examiner login'
+      ]
+    },
+    {
+      num: '07',
+      title: 'Examiner Identity & Profile Verification',
+      icon: '👤',
+      badge: 'Multi-Examiner Security',
+      desc: 'Accredited examiner management ensuring data integrity and survey accountability.',
+      highlights: [
+        'Unique Examiner ID assignment (e.g., EX-101) linking surveys strictly by ID',
+        'Examiner registration with Name, Mobile Number, Email, and Photo',
+        'Live device camera photo capture or photo file upload',
+        'Modal examiner profile retrieval for verification across the workstation'
+      ]
+    }
+  ];
+
   return (
-    <div className="landing-screen">
-      {/* Top Bar matching screenshot */}
-      <header className="landing-topbar">
+    <div className="landing-page-wrapper">
+      {/* ================= TOP NAVIGATION BAR ================= */}
+      <header className="landing-navbar">
         {/* Top Left: NITTE ABSMIDS official logo */}
-        <div className="landing-topbar-left">
+        <div className="landing-nav-left">
           <NitteLogo
             variant="light"
             height={44}
-            className="landing-nitte-logo"
-            onClick={handleEnterWorkstation}
+            className="landing-logo-btn"
+            onClick={handleOpenWorkstation}
           />
         </div>
 
-        {/* Middle of the bar: Website name & details */}
-        <div className="landing-topbar-middle">
-          <div className="landing-bar-title-wrap">
-            <span className="landing-bar-title">Oral Health Assessment Workstation</span>
-            <span className="landing-bar-sub">Standard Digital Clinical Dental Charting Platform</span>
-          </div>
+        {/* Middle of the bar: Website Name & Description */}
+        <div className="landing-nav-middle">
+          <h1 className="landing-platform-title">Oral Health Assessment Workstation</h1>
+          <p className="landing-platform-sub">Standard Digital Clinical Dental Charting Platform</p>
         </div>
 
-        {/* Right Corner Features: Stay the same as in the screenshot */}
-        <div className="landing-topbar-right">
+        {/* Right Corner: Workstation Access & Theme (NO ADMISSION OPTION) */}
+        <div className="landing-nav-right">
           <button
             type="button"
-            className="landing-pill-btn"
-            onClick={handleEnterWorkstation}
-            title="Enter Workstation / Admissions"
+            className="btn-enter-workstation"
+            onClick={handleOpenWorkstation}
+            title="Open Clinical Dental Workstation"
           >
-            ADMISSIONS 2026-27
+            {isAuthenticated ? 'Enter Workstation ➔' : 'Sign In / Register ➔'}
           </button>
 
           <button
             type="button"
-            className="landing-search-btn"
-            onClick={handleEnterWorkstation}
-            title="Search / Access Portal"
-            aria-label="Search"
+            className="btn-landing-theme"
+            onClick={toggleTheme}
+            title="Toggle Light / Dark Theme"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            className="landing-hamburger-btn"
-            onClick={handleEnterWorkstation}
-            title="Menu / Access Portal"
-            aria-label="Open Menu"
-          >
-            <span />
-            <span />
-            <span />
+            {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
           </button>
         </div>
       </header>
 
-      {/* Hero Section: exact visual matching the screenshot */}
-      <section className="landing-hero-container" onClick={handleEnterWorkstation}>
-        <div
-          className="landing-hero-image"
-          style={{ backgroundImage: `url(${slides[slideIndex].image})` }}
-          role="img"
-          aria-label="A B Shetty Memorial Institute of Dental Sciences"
-        />
+      {/* ================= HERO SECTION WITH DOCTOR PICTURE ================= */}
+      <section className="landing-hero-showcase">
+        <div className="landing-hero-backdrop">
+          {/* Doctor picture from screenshot */}
+          <img
+            src="/img/hero_dental_banner.jpg"
+            alt="Doctor examining typodont dental model in clinical laboratory at A B Shetty Memorial Institute of Dental Sciences"
+            className="doctor-hero-photo"
+          />
+          <div className="doctor-hero-gradient-overlay" />
+        </div>
 
-        {/* Bottom Left Carousel Arrows (< >) just like in the screenshot */}
-        <div className="landing-carousel-arrows" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            className="carousel-circle-btn"
-            onClick={() => setSlideIndex(prev => (prev === 0 ? slides.length - 1 : prev - 1))}
-            title="Previous"
-            aria-label="Previous"
-          >
-            ❮
-          </button>
-          <button
-            type="button"
-            className="carousel-circle-btn"
-            onClick={() => setSlideIndex(prev => (prev + 1) % slides.length)}
-            title="Next"
-            aria-label="Next"
-          >
-            ❯
-          </button>
+        <div className="landing-hero-inner">
+          <div className="institutional-hero-tag">
+            <span className="inst-dot" />
+            A B Shetty Memorial Institute of Dental Sciences • NITTE (Deemed to be University)
+          </div>
+
+          <h1 className="hero-main-heading">
+            Department of Public Health Dentistry
+          </h1>
+          <h2 className="hero-sub-heading">
+            Digital Oral Health Clinical Assessment & Epidemiological Survey Workstation
+          </h2>
+
+          <p className="hero-text-description">
+            A comprehensive, WHO-compliant chairside dental examination platform engineered for dental hospitals, clinical research, and community epidemiological field camps. Featuring interactive anatomical odontograms, automated DMFT index computation, periodontal CPI/LOA screening, and offline-first cloud synchronization.
+          </p>
+
+          <div className="hero-cta-button-group">
+            <button
+              type="button"
+              className="btn-cta-primary"
+              onClick={handleOpenWorkstation}
+            >
+              <span>🚀 Launch Clinical Workstation</span>
+            </button>
+
+            <button
+              type="button"
+              className="btn-cta-secondary"
+              onClick={handleOfflineMode}
+            >
+              <span>⚡ Start Offline Field Session</span>
+            </button>
+
+            <button
+              type="button"
+              className="btn-cta-outline"
+              onClick={() => setHelpDrawerOpen(true)}
+            >
+              <span>📖 WHO Diagnostic Codebook</span>
+            </button>
+          </div>
         </div>
       </section>
+
+      {/* ================= ALL WEBSITE OPTIONS & DESCRIPTIONS ================= */}
+      <section className="landing-options-section" id="platform-options">
+        <div className="options-section-header">
+          <span className="section-eyebrow">Comprehensive Clinical Modules</span>
+          <h2 className="section-title">All Website Options &amp; Capabilities</h2>
+          <p className="section-lead">
+            Explore every clinical assessment module, diagnostic criteria tool, and data management feature available in the Oral Health Assessment Workstation.
+          </p>
+        </div>
+
+        <div className="options-cards-grid">
+          {websiteOptions.map(opt => (
+            <div key={opt.num} className="option-card">
+              <div className="option-card-top">
+                <span className="option-icon" aria-hidden="true">{opt.icon}</span>
+                <span className="option-num">Module {opt.num}</span>
+                <span className="option-badge">{opt.badge}</span>
+              </div>
+
+              <h3 className="option-title">{opt.title}</h3>
+              <p className="option-description">{opt.desc}</p>
+
+              <div className="option-features-list">
+                <div className="features-label">Key Capabilities:</div>
+                <ul>
+                  {opt.highlights.map((h, i) => (
+                    <li key={i}>{h}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                className="btn-option-action"
+                onClick={handleOpenWorkstation}
+              >
+                Open in Workstation ➔
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= INSTITUTIONAL FOOTER ================= */}
+      <footer className="landing-bottom-footer">
+        <div className="footer-container">
+          <div className="footer-brand-info">
+            <NitteLogo variant="light" height={42} />
+            <p className="footer-inst-name">
+              A B Shetty Memorial Institute of Dental Sciences<br />
+              <b>NITTE (Deemed to be University)</b>
+            </p>
+            <p className="footer-dept-name">
+              Department of Public Health Dentistry • Medical Sciences Complex, Deralakatte, Mangaluru, Karnataka 575018
+            </p>
+          </div>
+
+          <div className="footer-quick-actions">
+            <h4>Workstation Navigation</h4>
+            <div className="footer-action-links">
+              <button type="button" onClick={handleOpenWorkstation}>Launch Workstation</button>
+              <button type="button" onClick={handleOfflineMode}>Offline Field Mode</button>
+              <button type="button" onClick={() => setHelpDrawerOpen(true)}>Clinical Reference Codebook</button>
+              <button type="button" onClick={handleOpenWorkstation}>Examiner Registration</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-copyright">
+          © {new Date().getFullYear()} A B Shetty Memorial Institute of Dental Sciences, NITTE (Deemed to be University). Standard Digital Clinical Dental Charting Platform.
+        </div>
+      </footer>
     </div>
   );
 }
