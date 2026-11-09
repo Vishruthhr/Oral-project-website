@@ -7,6 +7,20 @@ import { isSupabaseConfigured, supabase, saveExaminerProfileToCloud, fetchExamin
 const DentalContext = createContext();
 
 export function DentalProvider({ children }) {
+  const [currentView, setCurrentView] = useState(() => {
+    if (typeof window === 'undefined') return 'landing';
+    const saved = sessionStorage.getItem('dental_view');
+    if (saved) return saved;
+    return 'landing';
+  });
+
+  const navigateTo = (view) => {
+    setCurrentView(view);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('dental_view', view);
+    }
+  };
+
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window === 'undefined') return false;
     return sessionStorage.getItem('dental_authenticated') === 'true';
@@ -109,6 +123,7 @@ export function DentalProvider({ children }) {
       sessionStorage.setItem('dental_authenticated', 'true');
     }
     setIsAuthenticated(true);
+    navigateTo('workstation');
     return { success: true };
   }
 
@@ -183,6 +198,7 @@ export function DentalProvider({ children }) {
     setCurrentExaminer(null);
     setIsOfflineMode(false);
     setIsAuthenticated(false);
+    navigateTo('landing');
     if (supabase) {
       try {
         await supabase.auth.signOut();
@@ -899,6 +915,8 @@ export function DentalProvider({ children }) {
   const timerDisplay = `⏱️ ${mins}:${secs}`;
 
   const value = {
+    currentView,
+    navigateTo,
     isAuthenticated,
     isOfflineMode,
     isOnline,

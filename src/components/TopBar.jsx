@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDental } from '../context/DentalContext';
 import ExaminerInfoModal from './ExaminerInfoModal';
+import NitteLogo from './NitteLogo';
 
 export default function TopBar() {
   const [viewingProfileId, setViewingProfileId] = useState(null);
@@ -16,7 +17,8 @@ export default function TopBar() {
     pendingSyncCount,
     syncPending,
     toggleNav,
-    currentExaminer
+    currentExaminer,
+    navigateTo
   } = useDental();
 
   const themeLabels = {
@@ -30,6 +32,7 @@ export default function TopBar() {
 
   return (
     <header className="topbar">
+      {/* LEFT: Hamburger menu + NITTE ABSMIDS official logo */}
       <div className="topbar-left">
         <button
           type="button"
@@ -43,36 +46,47 @@ export default function TopBar() {
           <span className="hamburger-line" />
         </button>
 
-        <div className="topbar-title-wrap">
-        <h1>Oral Health Assessment Form</h1>
-        <div className="sub">Standard Digital Clinical Dental Charting Platform</div>
+        <NitteLogo
+          variant="auto"
+          height={38}
+          onClick={() => navigateTo('landing')}
+          className="topbar-nitte-logo"
+        />
+      </div>
 
-        <div className="chairside-banner-pill">
-          <span className="patient-badge">
-            Patient: <b>{displayName}</b>
-          </span>
-          <span className="exam-timer">{timerDisplay}</span>
-          <div className="network-status-indicator">
-            {isOnline ? (
-              <span className="net-pill online" title="Connected to Cloud">🟢 Online</span>
-            ) : (
-              <span className="net-pill offline" title="Working Offline — records saved locally on device">⚡ Offline</span>
-            )}
-            {pendingSyncCount > 0 && (
-              <button
-                type="button"
-                className="sync-pill-btn"
-                onClick={syncPending}
-                title={`${pendingSyncCount} record(s) pending sync — click to sync with cloud`}
-              >
-                🔄 Sync ({pendingSyncCount})
-              </button>
-            )}
+      {/* CENTER: Website Name & Chairside Clinical Status */}
+      <div className="topbar-center">
+        <div className="topbar-title-wrap">
+          <h1>Oral Health Assessment Form</h1>
+          <div className="sub">Standard Digital Clinical Dental Charting Platform</div>
+
+          <div className="chairside-banner-pill">
+            <span className="patient-badge">
+              Patient: <b>{displayName}</b>
+            </span>
+            <span className="exam-timer">{timerDisplay}</span>
+            <div className="network-status-indicator">
+              {isOnline ? (
+                <span className="net-pill online" title="Connected to Cloud">🟢 Online</span>
+              ) : (
+                <span className="net-pill offline" title="Working Offline — records saved locally on device">⚡ Offline</span>
+              )}
+              {pendingSyncCount > 0 && (
+                <button
+                  type="button"
+                  className="sync-pill-btn"
+                  onClick={syncPending}
+                  title={`${pendingSyncCount} record(s) pending sync — click to sync with cloud`}
+                >
+                  🔄 Sync ({pendingSyncCount})
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
-      </div>
 
+      {/* RIGHT: Actions stay identical (Examiner, Home, Theme, Help, Logout) */}
       <div className="topbar-actions">
         {currentExaminer && (
           <button
@@ -94,6 +108,15 @@ export default function TopBar() {
             </span>
           </button>
         )}
+
+        <button
+          type="button"
+          className="btn-topbar btn-home-nav"
+          onClick={() => navigateTo('landing')}
+          title="Return to ABSMIDS Landing Page"
+        >
+          🏛️ Home
+        </button>
 
         <button
           type="button"
@@ -122,6 +145,7 @@ export default function TopBar() {
           🚪 Logout
         </button>
       </div>
+
       <ExaminerInfoModal
         examinerId={viewingProfileId}
         isOpen={Boolean(viewingProfileId)}
