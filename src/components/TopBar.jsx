@@ -32,7 +32,7 @@ export default function TopBar() {
 
   return (
     <header className="topbar">
-      {/* LEFT: Hamburger menu + NITTE ABSMIDS official logo */}
+      {/* Top Left Corner: NITTE ABSMIDS official logo & hamburger */}
       <div className="topbar-left">
         <button
           type="button"
@@ -49,12 +49,12 @@ export default function TopBar() {
         <NitteLogo
           variant="auto"
           height={38}
-          onClick={() => navigateTo('landing')}
+          onClick={() => navigateTo && navigateTo('landing')}
           className="topbar-nitte-logo"
         />
       </div>
 
-      {/* CENTER: Website Name & Chairside Clinical Status */}
+      {/* Middle of the Bar: Website Name & Patient/Clinical Status */}
       <div className="topbar-center">
         <div className="topbar-title-wrap">
           <h1>Oral Health Assessment Form</h1>
@@ -86,7 +86,7 @@ export default function TopBar() {
         </div>
       </div>
 
-      {/* RIGHT: Actions stay identical (Examiner, Home, Theme, Help, Logout) */}
+      {/* Right Corner: Features stay the same (Examiner profile, Theme, Help, Logout) */}
       <div className="topbar-actions">
         {currentExaminer && (
           <button
@@ -108,15 +108,6 @@ export default function TopBar() {
             </span>
           </button>
         )}
-
-        <button
-          type="button"
-          className="btn-topbar btn-home-nav"
-          onClick={() => navigateTo('landing')}
-          title="Return to ABSMIDS Landing Page"
-        >
-          🏛️ Home
-        </button>
 
         <button
           type="button"

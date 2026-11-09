@@ -59,23 +59,19 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function App() {
-  const { isAuthenticated, currentView, navigateTo } = useDental();
+  const { isAuthenticated, currentView } = useDental();
 
-  // If user navigated to or defaulted to the landing page, show LandingPage
+  // Show Landing Page
   if (currentView === 'landing') {
     return (
       <ErrorBoundary>
-        <LandingPage
-          onOpenLogin={() => navigateTo('login')}
-          onOpenSignup={() => navigateTo('login')}
-        />
-        <CodebookDrawer />
+        <LandingPage />
         <Toast />
       </ErrorBoundary>
     );
   }
 
-  // If user selected login or is not authenticated, show LoginPage
+  // Show Login Page if not authenticated or explicitly in login view
   if (currentView === 'login' || !isAuthenticated) {
     return (
       <ErrorBoundary>
